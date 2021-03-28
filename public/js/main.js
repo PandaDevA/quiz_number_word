@@ -14,13 +14,10 @@ const config = {
     dom: {
         createContainer: true
     },        
-    backgroundColor: "#4488AA"
+    backgroundColor: "#4488AA",
+    scene: [LoginScreen]
 };
 
 var game = new Phaser.Game(config);
 
-game.state.add('login',Login);
-game.state.add('home',Home);
-game.state.add('game',Game);
-
-game.state.start('login');
+game.scene.start('LoginScreen');
