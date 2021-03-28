@@ -16,7 +16,7 @@ const session = require('express-session')({
 const sharedsession = require('express-socket.io-session');
 
 const port = process.env.PORT || 8081;
-const baseUrl = '192.168.104.56';
+const baseUrl = '192.168.104.55';
 
 app.use(express.static(__dirname + '/public'));
 

@@ -1,7 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
 const settings = {
   mongoConfig: {
-    serverUrl: 'mongodb://localhost:27017/',
+    serverUrl: 'mongodb://192.168.104.56:27017/',
     database: 'Puzzle_number_word'
   }
 };

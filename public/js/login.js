@@ -19,21 +19,22 @@ class LoginScreen extends Phaser.Scene{
     }
 
     create() {
-        this.userName = this.add.text(100, 300, 'UserName', { fixedWidth: 150, fixedHeight: 36 });
-        // this.usernameText = this.rexUI.add.rexInputText(100, 200, 100, 50);
-        // this.password = this.rexUI.add.rexInputText(100, 200, 100, 50);
+        this.userName = this.add.text(100, 100, 'testuser', { fixedWidth: 150, fixedHeight: 36 });
+        this.password = this.add.text(100, 200, '123', { fixedWidth: 150, fixedHeight: 36 });
     
         this.userName.setInteractive().on('pointerdown', () => {
-            this.rexUI.edit(text)
+            this.rexUI.edit(this.userName)
         });
 
-        this.helloButton = this.add.text(100, 300, 'Hello Phaser!', this.onLogin, this, 2, 1, 0);
-        helloButton.setInteractive();
+        this.password.setInteractive().on('pointerdown', () => {
+            this.rexUI.edit(this.password)
+        });
+
+        this.helloButton = this.add.text(100, 300, 'Hello Phaser!');
+        this.helloButton.setInteractive().on('pointerdown', () => {
+            Client.login(this.userName.text, this.password.text);
+        });
     }
     update(){
-    }
-
-    onLogin(){
-        client.login(this.usernameText.text, this.password.text);
     }
 }

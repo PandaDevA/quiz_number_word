@@ -23,8 +23,18 @@ Client.sendClick = function(x,y){
   Client.socket.emit('click',{x:x,y:y});
 };
 
-
 ////////////////////////////////////////////////////////////////////////////
+Client.socket.on('login response',function(data){
+    if(data.result)
+    {
+        console.log('success');
+    }
+    else
+    {
+        console.log('failed');
+    }
+});
+
 Client.socket.on('newplayer',function(data){
     Game.addNewPlayer(data.id,data.x,data.y);
 });
