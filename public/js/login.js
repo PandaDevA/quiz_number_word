@@ -9,11 +9,11 @@ class LoginScreen extends Phaser.Scene{
     }
 
     preload() {
-        this.load.plugin({
-            key: 'rexuiplugin',
-            url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
-            sceneKey: 'rexUI'
-        });
+        // this.load.plugin({
+        //     key: 'rexuiplugin',
+        //     url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+        //     sceneKey: 'rexUI'
+        // });
     }
 
     create() {

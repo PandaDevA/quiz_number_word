@@ -15,7 +15,14 @@ const config = {
         createContainer: true
     },        
     backgroundColor: "#4488AA",
-    scene: [LoginScreen]
+    scene: [LoginScreen],
+    plugins: {
+        scene: [{
+            key: 'rexUI',
+            plugin: rexboardplugin,
+            mapping: 'rexUI'
+        }]
+  }
 };
 
 var game = new Phaser.Game(config);
