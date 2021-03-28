@@ -13,8 +13,8 @@ class LoginScreen extends Phaser.Scene{
     }
 
     create() {
-        this.usernameText = this.scene.add.rexInputText(100, 100, 100, 50, config);
-        this.password = this.scene.add.rexInputText(100, 200, 100, 50, config);
+        this.usernameText = this.rexUI.add.rexInputText(100, 100, 100, 50, config);
+        this.password = this.rexUI.add.rexInputText(100, 200, 100, 50, config);
     
         this.helloButton = this.scene.add.text(100, 300, 'Hello Phaser!', this.onLogin, this, 2, 1, 0);
         helloButton.setInteractive();
