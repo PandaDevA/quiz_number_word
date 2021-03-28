@@ -19,7 +19,7 @@ const config = {
     plugins: {
         scene: [{
             key: 'rexUI',
-            plugin: rexboardplugin,
+            plugin: rexuiplugin,
             mapping: 'rexUI'
         }]
   }
