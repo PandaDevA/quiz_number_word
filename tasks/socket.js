@@ -17,7 +17,7 @@ const exportedMethods = {
         // console.log('socket.js is imported');
         let result = await users.getAllUsers();
         console.log(result);
-        // result = await users.getUserByEmail('testuser@gmail.com');
+        // result = await users.getUserByName('testuser', '1234');
         // if(result) console.log(result);
 
         io.on('connection', socket => {
@@ -50,10 +50,16 @@ const exportedMethods = {
             io.emit('disconnect', socket.id);
             });
 
-            socket.on('login', () => {
+            socket.on('login', (data) => {
             console.log('login request recevied');
-            users.getUserByEmail('testuser@gmail.com').then((result) => {
-                if(result) console.log(result);
+            users.getUserByName(data.username, data.password).then((result) => {
+                if(result) {
+                    console.log(`${data.username} is logged`);
+                    socket.emit('login response', {result: result});
+                } else {
+                    console.log(`${data.username} is not logged`);
+                    socket.emit('login response', {result: false});
+                }
                 });
             });
         

@@ -6,9 +6,13 @@ async function main() {
   const db = await dbConnection();
   await db.dropDatabase();
 
-  let isAdded = await users.addUser("testuser@gmail.com", "123456");
+  let isAdded = await users.addUser("testuser", "1234");
   if(isAdded) console.log('user Added');
-  else console.log("user can't add");
+  else console.log("user not add");
+
+  isAdded = await users.addUser("testuser2", "1234");
+  if(isAdded) console.log('user Added');
+  else console.log("user not add");
 
   console.log('Done seeding database');
 

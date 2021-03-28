@@ -9,33 +9,33 @@ const exportedMethods = {
     return result;
   },
 
-  async getUserByEmail(email) {
-    if (!email) {
-      console.log('Error: email is not referred while getUserByEmail');
+  async getUserByName(username, password) {
+    if (!username || !password) {
+      console.log('Error: username or password is not referred while getUserByName');
       return undefined;
     }
 
     const userCollection = await users();
-    const user =await userCollection.findOne({email: email});
+    const user =await userCollection.findOne({username: username});
 
     if (!user) {
-      console.log(`Error: user "${email}" not exist while getUserByEmail`);
+      console.log(`Error: user "${username}" not exist while getUserByName`);
       return undefined;
     }
 
     return user;
   },
 
-  async addUser(email, password) {
-    if(email === undefined || password ===undefined) {
-      console.log("Failed in AddUser! Email or Password is undefined");
+  async addUser(username, password) {
+    if(username === undefined || password ===undefined) {
+      console.log("Failed in AddUser! Username or Password is undefined");
       return false;
     }
 
     const userCollection = await users();
 
     const newuser = {
-      email: email,
+      username: username,
       password: password,
       point: 1000,
       socketId: null,
