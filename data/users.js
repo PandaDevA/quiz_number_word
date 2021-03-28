@@ -23,6 +23,11 @@ const exportedMethods = {
       return undefined;
     }
 
+    if (user.password != password) {
+      console.log(`Error: user "${username}" password is not correct while getUserByName`);
+      return undefined;
+    }
+
     return user;
   },
 
