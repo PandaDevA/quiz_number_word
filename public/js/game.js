@@ -65,6 +65,19 @@ function create() {
 
   this.blueScoreText = this.add.text(0, 10, '', { fontSize: '10px', fill: '#0000FF' });
   this.redScoreText = this.add.text(150, 10, '', { fontSize: '10px', fill: '#FF0000' });
+  
+  var password = game.add.inputField(10, 90, {
+    font: '18px Arial',
+    fill: '#212121',
+    fontWeight: 'bold',
+    width: 150,
+    padding: 8,
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 6,
+    placeHolder: 'Password',
+    type: PhaserInput.InputType.password
+  });
 
   this.socket.on('scoreUpdate', scores => {
     self.blueScoreText.setText('Blue: ' + scores.blue);
