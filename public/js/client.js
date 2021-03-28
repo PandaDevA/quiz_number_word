@@ -27,6 +27,8 @@ Client.sendClick = function(x,y){
 Client.socket.on('login response',function(data){
     if(data.result)
     {
+        game.scene.remove('LoginScreen');
+        game.scene.start('HomeScreen');
         console.log('success');
     }
     else
