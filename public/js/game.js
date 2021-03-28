@@ -1,6 +1,6 @@
 const config = {
   type: Phaser.AUTO,
-  parent: 'phaser-example',
+  parent: '#phaser-area',
   width: 800,
   height: 600,
   physics: {
