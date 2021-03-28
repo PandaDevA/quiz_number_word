@@ -1,8 +1,8 @@
 const config = {
   type: Phaser.AUTO,
   parent: '#phaser-area',
-  width: 800,
-  height: 600,
+  width: 200,
+  height: 500,
   physics: {
     default: 'arcade',
     arcade: {
@@ -63,8 +63,8 @@ function create() {
     });
   });
 
-  this.blueScoreText = this.add.text(16, 16, '', { fontSize: '32px', fill: '#0000FF' });
-  this.redScoreText = this.add.text(584, 16, '', { fontSize: '32px', fill: '#FF0000' });
+  this.blueScoreText = this.add.text(0, 10, '', { fontSize: '10px', fill: '#0000FF' });
+  this.redScoreText = this.add.text(150, 10, '', { fontSize: '10px', fill: '#FF0000' });
 
   this.socket.on('scoreUpdate', scores => {
     self.blueScoreText.setText('Blue: ' + scores.blue);
@@ -84,20 +84,20 @@ function create() {
 function update() {
   if (this.ship) {
     if (this.cursors.left.isDown) {
-      this.ship.setAngularVelocity(-150);
+      this.ship.setAngularVelocity(-20);
     } else if (this.cursors.right.isDown) {
-      this.ship.setAngularVelocity(150);
+      this.ship.setAngularVelocity(20);
     } else {
       this.ship.setAngularVelocity(0);
     }
 
     if (this.cursors.up.isDown) {
-      this.physics.velocityFromRotation(this.ship.rotation + 1.5, 100, this.ship.body.acceleration);
+      this.physics.velocityFromRotation(this.ship.rotation + 1.5, 20, this.ship.body.acceleration);
     } else {
       this.ship.setAcceleration(0);
     }
 
-    this.physics.world.wrap(this.ship, 5);
+    this.physics.world.wrap(this.ship, 2);
 
     // emit player movement
     const x = this.ship.x;
@@ -119,23 +119,23 @@ function update() {
 function addPlayer(self, playerInfo) {
   self.ship = self.physics.add
     .image(playerInfo.x, playerInfo.y, 'ship')
-    .setOrigin(0.5, 0.5)
-    .setDisplaySize(53, 40);
+    .setOrigin(0.2, 0.2)
+    .setDisplaySize(10, 10);
   if (playerInfo.team === 'blue') {
     self.ship.setTint(0x0000ff);
   } else {
     self.ship.setTint(0xff0000);
   }
-  self.ship.setDrag(100);
-  self.ship.setAngularDrag(100);
-  self.ship.setMaxVelocity(200);
+  self.ship.setDrag(10);
+  self.ship.setAngularDrag(10);
+  self.ship.setMaxVelocity(20);
 }
 
 function addOtherPlayers(self, playerInfo) {
   const otherPlayer = self.add
     .sprite(playerInfo.x, playerInfo.y, 'otherPlayer')
-    .setOrigin(0.5, 0.5)
-    .setDisplaySize(53, 40);
+    .setOrigin(0.2, 0.2)
+    .setDisplaySize(10, 10);
   if (playerInfo.team === 'blue') {
     otherPlayer.setTint(0x0000ff);
   } else {
