@@ -19,6 +19,10 @@ const config = {
 
 const game = new Phaser.Game(config);
 
+Phaser.Device.whenReady(function () {
+  game.plugins.add(PhaserInput.Plugin);
+});
+
 function preload() {
   this.load.image('ship', 'assets/spaceShips_001.png');
   this.load.image('otherPlayer', 'assets/enemyBlack5.png');
@@ -66,17 +70,21 @@ function create() {
   this.blueScoreText = this.add.text(0, 10, '', { fontSize: '10px', fill: '#0000FF' });
   this.redScoreText = this.add.text(150, 10, '', { fontSize: '10px', fill: '#FF0000' });
   
-  var password = game.add.inputField(10, 90, {
+  user = game.add.inputField(10, 90, {
     font: '18px Arial',
     fill: '#212121',
+    fillAlpha: 0,
     fontWeight: 'bold',
+    forceCase: PhaserInput.ForceCase.upper,
     width: 150,
+    max: 20,
     padding: 8,
     borderWidth: 1,
     borderColor: '#000',
     borderRadius: 6,
-    placeHolder: 'Password',
-    type: PhaserInput.InputType.password
+    placeHolder: 'Username',
+    textAlign: 'center',
+    zoom: true
   });
 
   this.socket.on('scoreUpdate', scores => {
