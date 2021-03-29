@@ -58,11 +58,11 @@ const exportedMethods = {
     }
 
     const result = {
-      id: String(updatedRoomData._id),
-      userName: updatedRoomData.username,
-      joinUsers: updatedRoomData.joinUsers,
-      isStarted: updatedRoomData.isStarted,
-      isClosed: updatedRoomData.isClosed,
+      id: String(updatedInfo._id),
+      userName: updatedInfo.username,
+      joinUsers: updatedInfo.joinUsers,
+      isStarted: updatedInfo.isStarted,
+      isClosed: updatedInfo.isClosed,
     }
     return result;
   },
@@ -104,7 +104,14 @@ const exportedMethods = {
       console.log('could not set ready for joinuser while readyuser');
     }
 
-    return true;
+    const result = {
+      id: String(updatedInfo._id),
+      userName: updatedInfo.username,
+      joinUsers: updatedInfo.joinUsers,
+      isStarted: updatedInfo.isStarted,
+      isClosed: updatedInfo.isClosed,
+    }
+    return result;
   },
 
   async getRooms() {
