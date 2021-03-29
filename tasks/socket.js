@@ -112,10 +112,9 @@ const exportedMethods = {
             rooms.startRoom(data.roomId).then((result) => {
                 if (result) {
                     const data = puzzle.getNumberData();
-                    words.getRandomWord().then((wordData) => {
-                        socket.to(`game_of_${data.roomId}`).emit('start', {result: true, numData: data, wordData: wordData});
-                        socket.emit('start', {result: true, numData: data, wordData: wordData});
-                    });
+                    const wordData = puzzle.getWordData();
+                    socket.to(`game_of_${data.roomId}`).emit('start', {result: true, numData: data, wordData: wordData});
+                    socket.emit('start', {result: true, numData: data, wordData: wordData});
                 } else {
                     socket.emit('start', {result: false});
                     console.log('the room could not start');
