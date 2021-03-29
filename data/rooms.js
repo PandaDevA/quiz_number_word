@@ -134,11 +134,12 @@ const exportedMethods = {
 
     const result = [];
     room.map((roomdata, index) => {
-      if(!roomdata.isStarted) result.push({
+      if(1 || !roomdata.isStarted) result.push({
         id: String(roomdata._id),
         createuser: roomdata.userName,
         joinUsers: roomdata.joinUsers,
         isStarted: roomdata.isStarted,
+        isClosed: roomdata.isClosed,
       });
     });
 

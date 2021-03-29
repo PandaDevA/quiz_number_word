@@ -1,5 +1,5 @@
 const mongoCollections = require('../config/mongoCollections');
-const rooms = mongoCollections.rooms;
+const words = mongoCollections.words;
 
 const generateRandom = (from, to) => {
   let start = from, end = to;
@@ -61,7 +61,13 @@ const exportedMethods = {
       data = generatedNumber()
     }
     return data;
-  }
+  },
+
+  getWordData() {
+    let data;
+    
+    return data;
+  },
 
 };
 

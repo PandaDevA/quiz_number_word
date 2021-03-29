@@ -2,6 +2,7 @@ const data = require('../data/');
 const puzzle = require('./puzzle');
 const users = data.users;
 const rooms = data.rooms;
+const words = data.words;
 
 // const players = {};
 // const star = {
@@ -111,8 +112,10 @@ const exportedMethods = {
             rooms.startRoom(data.roomId).then((result) => {
                 if (result) {
                     const data = puzzle.getNumberData();
-                    socket.to(`game_of_${data.roomId}`).emit('start', {result: true, numData: data});
-                    socket.emit('start', {result: true, numData: data});
+                    words.getRandomWord().then((wordData) => {
+                        socket.to(`game_of_${data.roomId}`).emit('start', {result: true, numData: data, wordData: wordData});
+                        socket.emit('start', {result: true, numData: data, wordData: wordData});
+                    });
                 } else {
                     socket.emit('start', {result: false});
                     console.log('the room could not start');
