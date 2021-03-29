@@ -58,7 +58,7 @@ const exportedMethods = {
     }
 
     const updatedRoomData = room;
-    updatedRoomData.joinUsers.push({username: username, isReady: false});
+    updatedRoomData.joinUsers.push({userName: username, isReady: false});
 
     const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
 
@@ -67,11 +67,11 @@ const exportedMethods = {
     }
 
     const result = {
-      id: String(updatedInfo._id),
-      userName: updatedInfo.username,
-      joinUsers: updatedInfo.joinUsers,
-      isStarted: updatedInfo.isStarted,
-      isClosed: updatedInfo.isClosed,
+      id: String(updatedRoomData._id),
+      userName: updatedRoomData.userName,
+      joinUsers: updatedRoomData.joinUsers,
+      isStarted: updatedRoomData.isStarted,
+      isClosed: updatedRoomData.isClosed,
     }
     return result;
   },
@@ -105,7 +105,7 @@ const exportedMethods = {
     const updatedRoomData = room;
     for(let i=0; i<room.joinUsers.length; i++){
       const element = room.joinUsers[i];
-      if(element.username == username)
+      if(element.userName == username)
       {
         updatedRoomData.joinUsers[i].isReady = true;
         break;
@@ -119,11 +119,11 @@ const exportedMethods = {
     }
 
     const result = {
-      id: String(updatedInfo._id),
-      userName: updatedInfo.username,
-      joinUsers: updatedInfo.joinUsers,
-      isStarted: updatedInfo.isStarted,
-      isClosed: updatedInfo.isClosed,
+      id: String(updatedRoomData._id),
+      userName: updatedRoomData.userName,
+      joinUsers: updatedRoomData.joinUsers,
+      isStarted: updatedRoomData.isStarted,
+      isClosed: updatedRoomData.isClosed,
     }
     return result;
   },
@@ -136,7 +136,7 @@ const exportedMethods = {
     room.map((roomdata, index) => {
       if(1 || !roomdata.isStarted) result.push({
         id: String(roomdata._id),
-        createuser: roomdata.userName,
+        userName: roomdata.userName,
         joinUsers: roomdata.joinUsers,
         isStarted: roomdata.isStarted,
         isClosed: roomdata.isClosed,

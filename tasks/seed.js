@@ -25,28 +25,28 @@ async function main() {
   else console.log("user not added");
 
   let addedData = await rooms.createRoom('createuser');
-  if(addedData) console.log('room created');
+  if(addedData) console.log(`room created: ${JSON.stringify(addedData)}`);
   else console.log('room not created');
 
   let result = await rooms.getRooms();
   if(result) console.log(result);
 
   result = await rooms.joinRoom(addedData.id, 'joinuser');
-  if(result) console.log('user joined');
+  if(result) console.log(`user joined: ${JSON.stringify(result)}`);
   else console.log('user is not joined');
   
   result = await rooms.getRooms();
   if(result) console.dir(result, {'maxArrayLength': null, depth:null});
 
   result = await rooms.readyUser(addedData.id, 'joinuser');
-  if(result) console.log('user id ready');
+  if(result) console.log(`user id ready: ${JSON.stringify(result)}`);
   else console.log('user is not ready');
 
   result = await rooms.getRooms();
   if(result) console.dir(result, {'maxArrayLength': null, depth:null});
 
   result = await rooms.startRoom(addedData.id);
-  if(result) console.log('room started');
+  if(result) console.log(`room started: ${JSON.stringify(result)}`);
   else console.log('room is not started');
 
   result = await rooms.getRooms();
