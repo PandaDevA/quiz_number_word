@@ -24,7 +24,7 @@ class RoomScreen extends Phaser.Scene{
             });
         }
         else{
-            this.readyButton = this.add.text(150, 100, 'ready');
+            this.readyButton = this.add.text(150, 100, 'unReady');
             this.readyButton.setInteractive().on('pointerdown', () => {
                 Client.ready();
             });
@@ -44,5 +44,36 @@ class RoomScreen extends Phaser.Scene{
         }
     }
     update(){
+        var plus=0;
+        if(userData.username != roomData.userName)
+        {
+            plus=1;
+        }
+        for(let i=0; i<roomData.joinUsers.length; i++)
+        {
+            if(roomData.joinUsers[i].username == userData.username)
+            {
+                if(roomData.joinUsers[i].isReady)
+                {
+                    this.readyButton.setText('Ready');
+                }
+            }
+            if(i>=this.userList.length-plus)
+            {
+                this.userList.push(this.add.text(50, 100 + (i+1+plus)*50, roomData.joinUsers[i].username, { fixedWidth: 100, fixedHeight: 36 }));
+                this.stateList.push(this.add.text(150, 100 + (i+1+plus)*50, roomData.joinUsers[i].isReady?'Ready' : 'unReady', { fixedWidth: 100, fixedHeight: 36 }));
+                continue;
+            }
+            if(roomData.joinUsers[i].username != this.userList[i+plus].text())
+            {
+                let deleted_item = this.userList.splice(i+plus);
+                deleted_item.destroy();
+                deleted_item = this.stateList.splice(i+plus);
+                deleted_item.destroy();
+                continue;
+            }
+            this.userList[i+plus].setPosition(50, 100 + (i+1+plus)*50);
+            this.stateList[i+plus].setPosition(50, 100 + (i+1+plus)*50);
+        }
     }
 }
