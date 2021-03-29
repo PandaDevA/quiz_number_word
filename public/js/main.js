@@ -20,7 +20,7 @@ const config = {
 };
 
 var game = new Phaser.Game(config);
-var username = '';
+var userData = {};
 
 if (!game.device.desktop) {
     game.input.mspointer.stop();
