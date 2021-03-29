@@ -1,5 +1,5 @@
 const mongoCollections = require('../config/mongoCollections');
-const words = mongoCollections.words;
+const words = require('../data');
 
 const generateRandom = (from, to) => {
   let start = from, end = to;
