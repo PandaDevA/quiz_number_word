@@ -23,7 +23,7 @@ var game = new Phaser.Game(config);
 var username = '';
 
 if (!game.device.desktop) {
-     game.input.mspointer.stop();
-      game.input.touch.start();
-    }
+    game.input.mspointer.stop();
+    game.input.touch.start();
+}
 game.scene.start('LoginScreen');
