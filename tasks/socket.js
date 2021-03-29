@@ -68,8 +68,8 @@ const exportedMethods = {
             rooms.createRoom(data.username).then((result) => {
                 if (result) {
                     socket.join(`game_of_${result}`);
-                    socket.emit('create', {result: {roomId: result, createUser: data.username}});
-                    socket.broadcast.emit('create', {result: {roomId: result, createUser: data.username}});
+                    socket.emit('create', {result: result});
+                    socket.broadcast.emit('create', {result: result});
                     console.log(`created room is ${data.username}: ${result}`);
                 } else {
                     socket.emit('create', {result: false});
@@ -105,26 +105,18 @@ const exportedMethods = {
                 });
             });
         
-            // when a player moves, update the player data
-            // socket.on('playerMovement', movementData => {
-            // players[socket.id].x = movementData.x;
-            // players[socket.id].y = movementData.y;
-            // players[socket.id].rotation = movementData.rotation;
-            // emit a message to all players about the player that moved
-            // socket.broadcast.emit('playerMoved', players[socket.id]);
-            // });
-        
-            // socket.on('starCollected', () => {
-            // if (players[socket.id].team === 'red') {
-            //     scores.red += 10;
-            // } else {
-            //     scores.blue += 10;
-            // }
-            // star.x = Math.floor(Math.random() * 700) + 50;
-            // star.y = Math.floor(Math.random() * 500) + 50;
-            // io.emit('starLocation', star);
-            // io.emit('scoreUpdate', scores);
-            // })
+            socket.on('start', (data) => {
+            console.log('start request received');
+            rooms.startRoom(data.roomId).then((result) => {
+                if (result) {
+                    socket.to(`game_of_${data.roomId}`).emit('start', {result: true});
+                    socket.emit('start', {result: true});
+                } else {
+                    socket.emit('start', {result: false});
+                    console.log('the room could not start');
+                }
+                });
+            });
         });
     },
 };

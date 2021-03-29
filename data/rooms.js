@@ -24,7 +24,11 @@ const exportedMethods = {
       console.log('Could not add room');
       return false;
     }
-    return String(newInsertInformation.insertedId);
+
+    const result = newroom;
+    result.id = String(newInsertInformation.insertedId);
+
+    return result;
   },
 
   async joinRoom(id, username) {
@@ -45,6 +49,11 @@ const exportedMethods = {
     const room =await roomCollection.findOne({_id: parsedId});
     if (!room) {
       console.log(`Error: room not exist while joinroom`);
+      return false;
+    }
+
+    if (room.isStarted || room.isClosed) {
+      console.log('Room is not prepare status while joinroom');
       return false;
     }
 
@@ -85,6 +94,11 @@ const exportedMethods = {
     const room =await roomCollection.findOne({_id: parsedId});
     if (!room) {
       console.log(`Error: room not exist while readyuser`);
+      return false;
+    }
+
+    if(room.isClosed || room.isStarted) {
+      console.log('Room is not prepare status while readyuser');
       return false;
     }
 
@@ -149,6 +163,11 @@ const exportedMethods = {
     const room =await roomCollection.findOne({_id: parsedId});
     if (!room) {
       console.log(`Error: room not exist while startroom`);
+      return false;
+    }
+
+    if (room.isClosed) {
+      console.log('The room is closed while startRoom');
       return false;
     }
 
