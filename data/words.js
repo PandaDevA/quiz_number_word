@@ -61,7 +61,7 @@ const exportedMethods = {
 
     const rndIndex =  Math.floor(Math.random() * word.length);
 
-    let result;
+    let result = '';
     word.map((worddata, index) => {
       if(index == rndIndex) {
         result = worddata.word;

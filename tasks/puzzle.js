@@ -63,12 +63,8 @@ const exportedMethods = {
     return data;
   },
 
-  getWordData() {
-    let data;
-    words.getRandomWord().then((wordData) => {
-      data = wordData;
-    });
-    return data;
+  async getWordData() {
+    return await words.getRandomWord();
   },
 
 };
