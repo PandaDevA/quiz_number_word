@@ -69,7 +69,7 @@ const exportedMethods = {
             console.log('create request recevied');
             rooms.createRoom(data.username).then((result) => {
                 if (result) {
-                    socket.join(`game_of_${result}`);
+                    socket.join(`game_of_${result.id}`);
                     socket.emit('create', {result: result});
                     socket.broadcast.emit('create', {result: result});
                     console.log(`created room is ${data.username}: ${result}`);
