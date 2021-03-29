@@ -22,7 +22,7 @@ const config = {
 var game = new Phaser.Game(config);
 var userData = {};
 
-if (!game.device.desktop) {
+if (!game.device.os.desktop) {
     game.input.mspointer.stop();
     game.input.touch.start();
 }

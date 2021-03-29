@@ -32,6 +32,7 @@ class LoginScreen extends Phaser.Scene{
 
         this.loginButton = this.add.text(100, 300, 'Log In');
         this.loginButton.setInteractive().on('pointerdown', () => {
+            console.log('login_request');
             Client.login(this.userName.text, this.password.text);
         });
     }
