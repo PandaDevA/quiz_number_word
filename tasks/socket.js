@@ -114,7 +114,7 @@ const exportedMethods = {
                     const numData = puzzle.getNumberData();
                     puzzle.getWordData().then((wordData) => {
                         socket.to(`game_of_${data.roomId}`).emit('start', {result: true, gameData: {numData: numData, wordData: wordData}});
-                        socket.emit('start', {result: true, gameData: {numData: data, wordData: wordData}});
+                        socket.emit('start', {result: true, gameData: {numData: numData, wordData: wordData}});
                     });
                 } else {
                     socket.emit('start', {result: false});
