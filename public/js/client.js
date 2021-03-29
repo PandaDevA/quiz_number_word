@@ -71,14 +71,14 @@ Client.socket.on('join',function(data){
         roomData = data.result;
         if(game.scene.isActive('RoomScreen'))
         {
-            game.scene.get('RoomScreen').update();
+            game.scene.getScene('RoomScreen').update();
         }
         else if(game.scene.isActive('ListScreen'))
         {
             game.scene.remove('ListScreen');
             game.scene.start('RoomScreen');
         }
-        console.log('success');
+        console.log(data);
     }
     else
     {
@@ -90,7 +90,7 @@ Client.socket.on('ready',function(data){
     if(data.result)
     {
         roomData = data.result;
-        game.scene.get('RoomScreen').update();
+        game.scene.getScene('RoomScreen').update();
         console.log('success');
     }
     else
@@ -102,9 +102,10 @@ Client.socket.on('ready',function(data){
 Client.socket.on('start',function(data){
     if(data.result)
     {
-        roomData = data.result;
-        game.scene.get('RoomScreen').update();
-        console.log('success');
+        gameData = data.result;
+        game.scene.remove('RoomScreen');
+        game.scene.start('NumberGameScreen');
+        console.log(data);
     }
     else
     {

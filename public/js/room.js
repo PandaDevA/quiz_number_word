@@ -39,7 +39,9 @@ class RoomScreen extends Phaser.Scene{
         }
         for(let i = 0; i<roomData.joinUsers.length; i++)
         {
-            this.userList.push(this.add.text(50, 100 + (i+1+plus)*50, roomData.joinUsers[i].username, { fixedWidth: 100, fixedHeight: 36 }));
+            if(roomData.joinUsers[i].userName == userData.username)
+                continue;
+            this.userList.push(this.add.text(50, 100 + (i+1+plus)*50, roomData.joinUsers[i].userName, { fixedWidth: 100, fixedHeight: 36 }));
             this.stateList.push(this.add.text(150, 100 + (i+1+plus)*50, roomData.joinUsers[i].isReady?'Ready' : 'unReady', { fixedWidth: 100, fixedHeight: 36 }));
         }
     }
@@ -51,20 +53,22 @@ class RoomScreen extends Phaser.Scene{
         }
         for(let i=0; i<roomData.joinUsers.length; i++)
         {
-            if(roomData.joinUsers[i].username == userData.username)
+            if(roomData.joinUsers[i].userName == userData.username)
             {
                 if(roomData.joinUsers[i].isReady)
                 {
                     this.readyButton.setText('Ready');
+                    this.readyButton.setInteractive(false);
                 }
+                continue;
             }
             if(i>=this.userList.length-plus)
             {
-                this.userList.push(this.add.text(50, 100 + (i+1+plus)*50, roomData.joinUsers[i].username, { fixedWidth: 100, fixedHeight: 36 }));
+                this.userList.push(this.add.text(50, 100 + (i+1+plus)*50, roomData.joinUsers[i].userName, { fixedWidth: 100, fixedHeight: 36 }));
                 this.stateList.push(this.add.text(150, 100 + (i+1+plus)*50, roomData.joinUsers[i].isReady?'Ready' : 'unReady', { fixedWidth: 100, fixedHeight: 36 }));
                 continue;
             }
-            if(roomData.joinUsers[i].username != this.userList[i+plus].text())
+            if(roomData.joinUsers[i].userName != this.userList[i+plus].text)
             {
                 let deleted_item = this.userList.splice(i+plus);
                 deleted_item.destroy();
@@ -72,8 +76,10 @@ class RoomScreen extends Phaser.Scene{
                 deleted_item.destroy();
                 continue;
             }
+            if(this.stateList[i+plus].text == 'unReady' && roomData.joinUsers[i].isReady)
+                this.stateList[i+plus].setText('Ready');
             this.userList[i+plus].setPosition(50, 100 + (i+1+plus)*50);
-            this.stateList[i+plus].setPosition(50, 100 + (i+1+plus)*50);
+            this.stateList[i+plus].setPosition(150, 100 + (i+1+plus)*50);
         }
     }
 }
