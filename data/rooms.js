@@ -16,6 +16,7 @@ const exportedMethods = {
       userName: username,
       joinUsers: [],
       isStarted: false,
+      isClosed: false,
     };
 
     const newInsertInformation = await roomCollection.insertOne(newroom);
