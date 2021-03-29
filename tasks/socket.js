@@ -1,4 +1,5 @@
 const data = require('../data/');
+const puzzle = require('./puzzle');
 const users = data.users;
 const rooms = data.rooms;
 
@@ -109,8 +110,9 @@ const exportedMethods = {
             console.log('start request received');
             rooms.startRoom(data.roomId).then((result) => {
                 if (result) {
-                    socket.to(`game_of_${data.roomId}`).emit('start', {result: true});
-                    socket.emit('start', {result: true});
+                    const data = puzzle.getNumberData();
+                    socket.to(`game_of_${data.roomId}`).emit('start', {result: true, numData: data});
+                    socket.emit('start', {result: true, numData: data});
                 } else {
                     socket.emit('start', {result: false});
                     console.log('the room could not start');
