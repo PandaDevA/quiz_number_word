@@ -16,11 +16,13 @@ const config = {
         createContainer: true
     },        
     backgroundColor: "#4488AA",
-    scene: [LoginScreen, HomeScreen, GameListScreen]
+    scene: [LoginScreen, HomeScreen, ListScreen, RoomScreen]
 };
 
 var game = new Phaser.Game(config);
 var userData = {};
+var roomData = {};
+var gameData = {};
 
 if (!game.device.os.desktop) {
     game.input.mspointer.stop();

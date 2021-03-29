@@ -3,9 +3,9 @@
  * E-mail: jerome.renaux@gmail.com
  */
 
-class HomeScreen extends Phaser.Scene{
+class RoomScreen extends Phaser.Scene{
     constructor(){
-        super({key: "HomeScreen"});
+        super({key: "RoomScreen"});
     }
 
     preload() {
@@ -30,10 +30,9 @@ class HomeScreen extends Phaser.Scene{
         //     this.rexUI.edit(this.password)
         // });
 
-        this.multiplayerButton = this.add.text(100, 300, 'MultiPlayer');
-        this.multiplayerButton.setInteractive().on('pointerdown', () => {
-            game.scene.remove('HomeScreen');
-            game.scene.start('ListScreen');
+        this.roomcreateButton = this.add.text(100, 300, 'Create Room');
+        this.roomcreateButton.setInteractive().on('pointerdown', () => {
+            Client.create_room();
         });
     }
     update(){
