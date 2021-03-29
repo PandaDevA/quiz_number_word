@@ -2,7 +2,7 @@ const data = require('../data/');
 const users = data.users;
 const rooms = data.rooms;
 
-const players = {};
+// const players = {};
 // const star = {
 //   x: Math.floor(Math.random() * 700) + 50,
 //   y: Math.floor(Math.random() * 500) + 50,
@@ -27,35 +27,35 @@ const exportedMethods = {
             // (check prevents creating multiple ships when browser auto disconnects
             // and reconnects socket)
            
-            if (!socket.handshake.session.ship_exists) {
+            // if (!socket.handshake.session.ship_exists) {
 
             // create a new player and add it to our players object
-            players[socket.id] = {
-                playerId: socket.id,
-            };
+            // players[socket.id] = {
+            //     playerId: socket.id,
+            // };
 
             // send the players object to the new player
             // socket.emit('currentPlayers', players);
             // socket.broadcast.emit('newPlayer', players[socket.id]);
         
-            socket.handshake.session.ship_exists = true;
-            socket.handshake.session.save();
-            }
+            // socket.handshake.session.ship_exists = true;
+            // socket.handshake.session.save();
+            // }
         
             socket.on('disconnect', () => {
             console.log('user disconnected');
             // remove this player from our players object
-            delete players[socket.id];
+            // delete players[socket.id];
             // emit a message to all players to remove this player
-            io.emit('disconnect', socket.id);
+            // io.emit('disconnect', socket.id);
             });
 
             socket.on('login', (data) => {
             console.log('login request recevied');
             users.getUserByName(data.username, data.password).then((result) => {
                 if(result) {
-                    console.log(`${data.username} is logged`);
                     socket.emit('login', {result: result});
+                    console.log(`${data.username} is logged`);
                 } else {
                     console.log(`${data.username} is not logged`);
                     socket.emit('login', {result: false});
@@ -67,7 +67,9 @@ const exportedMethods = {
             console.log('create request recevied');
             rooms.createRoom(data.username).then((result) => {
                 if (result) {
-                    players = {};
+                    socket.join(`game_of_${result}`);
+                    socket.emit('create', {result: {roomId: result, createUser: data.username}});
+                    socket.broadcast.emit('create', {result: {roomId: result, createUser: data.username}});
                 } else {
                     socket.emit('create', {result: false});
                 }
