@@ -102,7 +102,7 @@ Client.socket.on('ready',function(data){
 Client.socket.on('start',function(data){
     if(data.result)
     {
-        gameData = data.result;
+        gameData = data.gameData;
         game.scene.remove('RoomScreen');
         game.scene.start('NumberGameScreen');
         console.log(data);
