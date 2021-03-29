@@ -78,17 +78,29 @@ const exportedMethods = {
                 });
             });
         
-
             socket.on('join', (data) => {
             console.log('join request recevied');
             rooms.joinRoom(data.roomId, data.joinUser).then((result) => {
                 if (result) {
                     socket.join(`game_of_${data.roomId}`);
                     socket.emit('join', {result: result});
-                    socket.to(`game_of_${data.roomId}`, {result: result});
+                    socket.to(`game_of_${data.roomId}`).emit('join', {result: result});
                 } else {
                     socket.emit('join', {result: false});
                     console.log(`join request of ${data.joinUser} is failed`);
+                }
+                });
+            });
+
+            socket.on('ready', (data) => {
+            console.log('ready request received');
+            rooms.readyUser(data.roomId, data.readyUser).then((result) => {
+                if (result) {
+                    socket.emit('ready', {result: result});
+                    socket.to(`game_of_${data.roomId}`).emit('ready', {result: result});
+                } else {
+                    socket.emit('ready', {result: false});
+                    console.log(`ready request of ${data.readyUser} is failed`);
                 }
                 });
             });
