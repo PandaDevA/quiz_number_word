@@ -15,13 +15,13 @@ class NumberGameScreen extends Phaser.Scene{
     }
 
     create() {
-        this.targetNumber = this.add.text(50, 100, 'Target:' + gameData.result, { fixedWidth: 100, fixedHeight: 36 });
+        this.targetNumber = this.add.text(50, 100, 'Target:' + gameData.numData.result, { fixedWidth: 100, fixedHeight: 36 });
         this.remainTime = this.add.text(180, 100, 'RemainTime:', { fixedWidth: 100, fixedHeight: 36 });
         this.timeText = this.add.text(250, 100, '', { fixedWidth: 100, fixedHeight: 36 });
 
         for(let i=0; i<6; i++)
         {
-            let numberText = this.add.text(50 + (i%3)*50, 200 + Math.floor(i/2) * 100, gameData.array[i], { fixedWidth: 30, fixedHeight: 36 });
+            let numberText = this.add.text(50 + (i%3)*50, 200 + Math.floor(i/2) * 100, gameData.numData.array[i], { fixedWidth: 30, fixedHeight: 36 });
             this.numberTexts.push(numberText);
             numberText.setInteractive().on('pointerdown', () => {
                 if(this.numberTexts[i].style.color == '#aaaaaa')
@@ -143,7 +143,7 @@ class NumberGameScreen extends Phaser.Scene{
         this.selected_index = -1;
         for(let i=0; i<6; i++)
         {
-            this.numberTexts[i].setText(gameData.array[i]);
+            this.numberTexts[i].setText(gameData.numData.array[i]);
             this.numberTexts[i].setColor('#ffffff');
         }
     }
