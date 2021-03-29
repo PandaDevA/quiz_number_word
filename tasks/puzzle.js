@@ -1,4 +1,5 @@
-const words = require('../data');
+const data = require('../data');
+const words = data.words;
 
 const generateRandom = (from, to) => {
   let start = from, end = to;
