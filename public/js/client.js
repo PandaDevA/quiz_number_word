@@ -33,7 +33,7 @@ Client.socket.on('create',function(data){
     if(data.result)
     {
         userData = data.result;
-        game.scene.remove('LoginScreen');
+        game.scene.remove('GameListScreen');
         game.scene.start('HomeScreen');
         console.log('success');
     }
