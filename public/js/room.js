@@ -6,34 +6,42 @@
 class RoomScreen extends Phaser.Scene{
     constructor(){
         super({key: "RoomScreen"});
+        this.userList = [];
+        this.stateList = [];
     }
 
     preload() {
-        // this.load.scenePlugin({
-        //     key: 'rexuiplugin',
-        //     url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
-        //     sceneKey: 'rexUI'
-        // });
-
-        // this.load.plugin('rextexteditplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rextexteditplugin.min.js', true);
     }
 
     create() {
-        // this.userName = this.add.text(100, 100, 'testuser', { fixedWidth: 150, fixedHeight: 36 });
-        // this.password = this.add.text(100, 200, '123', { fixedWidth: 150, fixedHeight: 36 });
-    
-        // this.userName.setInteractive().on('pointerdown', () => {
-        //     this.rexUI.edit(this.userName)
-        // });
+        this.userName = this.add.text(50, 100, userData.username, { fixedWidth: 100, fixedHeight: 36 });
+        
+        if(userData.username == roomData.userName)
+        {
+            this.startButton = this.add.text(150, 100, 'start');
+            this.startButton.setInteractive().on('pointerdown', () => {
+                Client.start();
+            });
+        }
+        else{
+            this.readyButton = this.add.text(150, 100, 'ready');
+            this.readyButton.setInteractive().on('pointerdown', () => {
+                Client.ready();
+            });
+        }
 
-        // this.password.setInteractive().on('pointerdown', () => {
-        //     this.rexUI.edit(this.password)
-        // });
-
-        this.roomcreateButton = this.add.text(100, 300, 'Create Room');
-        this.roomcreateButton.setInteractive().on('pointerdown', () => {
-            Client.create_room();
-        });
+        var plus=0;
+        if(userData.username != roomData.userName)
+        {
+            plus=1;
+            this.userList.push(this.add.text(50, 150, roomData.userName, { fixedWidth: 100, fixedHeight: 36 }));
+            this.stateList.push(this.add.text(150, 150, 'Creator', { fixedWidth: 100, fixedHeight: 36 }));
+        }
+        for(let i = 0; i<roomData.joinUsers.length; i++)
+        {
+            this.userList.push(this.add.text(50, 100 + (i+1+plus)*50, roomData.joinUsers[i].username, { fixedWidth: 100, fixedHeight: 36 }));
+            this.stateList.push(this.add.text(150, 100 + (i+1+plus)*50, roomData.joinUsers[i].isReady?'Ready' : 'unReady', { fixedWidth: 100, fixedHeight: 36 }));
+        }
     }
     update(){
     }

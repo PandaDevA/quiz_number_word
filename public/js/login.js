@@ -20,7 +20,7 @@ class LoginScreen extends Phaser.Scene{
 
     create() {
         this.userName = this.add.text(100, 100, 'testuser', { fixedWidth: 150, fixedHeight: 36 });
-        this.password = this.add.text(100, 200, '123', { fixedWidth: 150, fixedHeight: 36 });
+        this.password = this.add.text(100, 200, '1234', { fixedWidth: 150, fixedHeight: 36 });
     
         this.userName.setInteractive().on('pointerdown', () => {
             this.rexUI.edit(this.userName)

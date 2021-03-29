@@ -3,9 +3,11 @@
  * E-mail: jerome.renaux@gmail.com
  */
 
-class GameListScreen extends Phaser.Scene{
+class ListScreen extends Phaser.Scene{
+
     constructor(){
-        super({key: "GameListScreen"});
+        super({key: "ListScreen"});
+        this.roomList = [];
     }
 
     preload() {
@@ -30,11 +32,20 @@ class GameListScreen extends Phaser.Scene{
         //     this.rexUI.edit(this.password)
         // });
 
-        this.roomcreateButton = this.add.text(100, 300, 'Create Room');
+        this.roomcreateButton = this.add.text(100, 100, 'Create Room');
         this.roomcreateButton.setInteractive().on('pointerdown', () => {
             Client.create_room();
         });
     }
+    
     update(){
+        
+    }
+
+    add_item(roomData){
+        this.roomList.push(this.add.text(100, 100 + (this.roomList.length+1)*50, roomData.userName));
+        this.roomList[this.roomList.length-1].setInteractive().on('pointerdown', () => {
+            Client.join_room(roomData.id);
+        });
     }
 }
