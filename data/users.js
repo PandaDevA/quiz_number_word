@@ -43,7 +43,6 @@ const exportedMethods = {
       username: username,
       password: password,
       point: 1000,
-      socketId: null,
     };
 
     const newInsertInformation = await userCollection.insertOne(newuser);
