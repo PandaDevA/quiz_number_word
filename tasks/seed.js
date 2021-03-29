@@ -43,9 +43,9 @@ async function main() {
   result = await rooms.getRooms();
   if(result) console.log(result);
 
-  result = await rooms.removeRoom(addedId);
-  if(result) console.log('room removed');
-  else console.log('room is not removed');
+  // result = await rooms.removeRoom(addedId);
+  // if(result) console.log('room removed');
+  // else console.log('room is not removed');
 
   console.log('Done seeding database');
 
