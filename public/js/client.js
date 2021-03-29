@@ -29,7 +29,7 @@ Client.socket.on('login',function(data){
     }
 });
 
-Client.socket.on('create_room',function(data){
+Client.socket.on('create',function(data){
     if(data.result)
     {
         userData = data.result;
