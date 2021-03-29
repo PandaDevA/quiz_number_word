@@ -57,7 +57,14 @@ const exportedMethods = {
       console.log('could not join to the room while joinroom');
     }
 
-    return true;
+    const result = {
+      id: String(updatedRoomData._id),
+      userName: updatedRoomData.username,
+      joinUsers: updatedRoomData.joinUsers,
+      isStarted: updatedRoomData.isStarted,
+      isClosed: updatedRoomData.isClosed,
+    }
+    return result;
   },
 
   async readyUser(id, username) {

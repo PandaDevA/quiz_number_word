@@ -57,8 +57,8 @@ const exportedMethods = {
                     socket.emit('login', {result: result});
                     console.log(`${data.username} is logged`);
                 } else {
-                    console.log(`${data.username} is not logged`);
                     socket.emit('login', {result: false});
+                    console.log(`${data.username} is not logged`);
                 }
                 });
             });
@@ -70,12 +70,28 @@ const exportedMethods = {
                     socket.join(`game_of_${result}`);
                     socket.emit('create', {result: {roomId: result, createUser: data.username}});
                     socket.broadcast.emit('create', {result: {roomId: result, createUser: data.username}});
+                    console.log(`created room is ${data.username}: ${result}`);
                 } else {
                     socket.emit('create', {result: false});
+                    console.log(`create request of ${data.username} is failed`);
                 }
                 });
             });
         
+
+            socket.on('join', (data) => {
+            console.log('join request recevied');
+            rooms.joinRoom(data.roomId, data.joinUser).then((result) => {
+                if (result) {
+                    socket.join(`game_of_${data.roomId}`);
+                    socket.emit('join', {result: result});
+                    socket.to(`game_of_${data.roomId}`, {result: result});
+                } else {
+                    socket.emit('join', {result: false});
+                    console.log(`join request of ${data.joinUser} is failed`);
+                }
+                });
+            });
         
             // when a player moves, update the player data
             // socket.on('playerMovement', movementData => {
