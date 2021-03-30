@@ -6,43 +6,81 @@
 class WordGameScreen extends Phaser.Scene{
     constructor(){
         super({key: "WordGameScreen"});
-        this.userList = [];
-        this.stateList = [];
+        this.characterTexts = [];
     }
 
     preload() {
     }
 
     create() {
-        this.userName = this.add.text(50, 100, userData.username, { fixedWidth: 100, fixedHeight: 36 });
-        
-        if(userData.username == roomData.userName)
-        {
-            this.startButton = this.add.text(150, 100, 'start');
-            this.startButton.setInteractive().on('pointerdown', () => {
-                Client.start();
-            });
+        this.resultText = this.add.text(50, 100, 'Result:', { fixedWidth: 50, fixedHeight: 36 });
+        this.resultWord = this.add.text(100, 100, '', { fixedWidth: 200, fixedHeight: 36 });
+        this.remainTime = this.add.text(150, 100, 'RemainTime:', { fixedWidth: 100, fixedHeight: 36 });
+        this.timeText = this.add.text(250, 100, '30', { fixedWidth: 100, fixedHeight: 36 });
+
+        let quiz_word = gameData.wordData.split('');
+        let mix_word = [];
+        while (quiz_word.length > 0) {
+            let character = '';
+            if(Math.random() >= 0.5)
+                character = quiz_word.pop();
+            else
+                character = quiz_word.shift();
+
+            if(Math.random() >= 0.5)
+                mix_word.push(character);
+            else
+                mix_word.unshift(character);
         }
-        else{
-            this.readyButton = this.add.text(150, 100, 'ready');
-            this.readyButton.setInteractive().on('pointerdown', () => {
-                Client.ready();
+
+        for(let i=0; i<mix_word.length; i++)
+        {
+            let characterText = this.add.text(50 + (i%5)*30, 200 + Math.floor(i/5) * 100, mix_word[i], { fixedWidth: 30, fixedHeight: 36 });
+            this.characterTexts.push(characterText);
+            characterText.setInteractive().on('pointerdown', () => {
+                if(this.characterTexts[i].style.color == '#aaaaaa')
+                    return;
+                this.resultWord.setText(this.resultWord.text + this.characterTexts[i].text);
+                this.characterTexts[i].setColor('#aaaaaa');
             });
         }
 
-        var plus=0;
-        if(userData.username != roomData.userName)
-        {
-            plus=1;
-            this.userList.push(this.add.text(50, 150, roomData.userName, { fixedWidth: 100, fixedHeight: 36 }));
-            this.stateList.push(this.add.text(150, 150, 'Creator', { fixedWidth: 100, fixedHeight: 36 }));
-        }
-        for(let i = 0; i<roomData.joinUsers.length; i++)
-        {
-            this.userList.push(this.add.text(50, 100 + (i+1+plus)*50, roomData.joinUsers[i].username, { fixedWidth: 100, fixedHeight: 36 }));
-            this.stateList.push(this.add.text(150, 100 + (i+1+plus)*50, roomData.joinUsers[i].isReady?'Ready' : 'unReady', { fixedWidth: 100, fixedHeight: 36 }));
-        }
+        this.checkButton = this.add.text(100, 500, 'check');
+        this.checkButton.setInteractive().on('pointerdown', () => {
+            if(this.resultWord.text == gameData.wordData)
+            {
+                game.scene.remove('WordGameScreen');
+                game.scene.start('EndScreen');
+            }
+        });
+
+        this.refreshButton = this.add.text(200, 500, 'refresh');
+        this.refreshButton.setInteractive().on('pointerdown', () => {
+            this.resultWord.setText('');
+            for(let i=0; i<this.characterTexts.length; i++)
+                this.characterTexts[i].setColor('#ffffff');
+        });
+        this.timer = this.time.addEvent({
+            delay: 1000,
+            callback: this.updateTimer,
+            args: [this],
+            loop: true
+        });
     }
     update(){
+    }
+
+    updateTimer(scene){
+        let current_time = Number.parseInt(scene.timeText.text) - 1;
+        if(current_time < 0)
+        {
+            scene.timer.remove();
+            scene.time.removeEvent(scene.timer);
+            game.scene.remove('WordGameScreen');
+            game.scene.start('EndScreen');
+        }
+        else{
+            scene.timeText.setText(current_time);
+        }
     }
 }
