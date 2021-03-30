@@ -18,7 +18,7 @@ class NumberGameScreen extends Phaser.Scene{
         this.targetText = this.add.text(50, 100, 'Target:', { fixedWidth: 50, fixedHeight: 36 });
         this.targetNumber = this.add.text(100, 100, gameData.numData.result, { fixedWidth: 50, fixedHeight: 36 });
         this.remainTime = this.add.text(150, 100, 'RemainTime:', { fixedWidth: 100, fixedHeight: 36 });
-        this.timeText = this.add.text(250, 100, '100', { fixedWidth: 100, fixedHeight: 36 });
+        this.timeText = this.add.text(250, 100, '10', { fixedWidth: 100, fixedHeight: 36 });
 
         for(let i=0; i<6; i++)
         {
@@ -147,7 +147,9 @@ class NumberGameScreen extends Phaser.Scene{
                 return;
             if(this.numberTexts[this.selected_index].text == this.targetNumber.text)
             {
-                game.scene.remove('NumberGameScreen');
+                this.timer.remove();
+                this.time.removeEvent(this.timer);
+                game.scene.stop('NumberGameScreen');
                 game.scene.start('WordGameScreen');
             }
         });
@@ -173,7 +175,7 @@ class NumberGameScreen extends Phaser.Scene{
         {
             scene.timer.remove();
             scene.time.removeEvent(scene.timer);
-            game.scene.remove('NumberGameScreen');
+            game.scene.stop('NumberGameScreen');
             game.scene.start('WordGameScreen');
         }
         else{

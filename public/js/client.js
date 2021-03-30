@@ -25,13 +25,17 @@ Client.start = function(){
     Client.socket.emit('start', {roomId : roomData.id});
 };
 
+Client.end = function(isTimeOut){
+    Client.socket.emit('end', {isTimeOut : isTimeOut, roomId : roomData.id, username : userData.username});
+};
+
 ////////////////////////////////////////////////////////////////////////////
 
 Client.socket.on('login',function(data){
     if(data.result)
     {
         userData = data.result;
-        game.scene.remove('LoginScreen');
+        game.scene.stop('LoginScreen');
         game.scene.start('HomeScreen');
         console.log('success');
     }
@@ -47,7 +51,7 @@ Client.socket.on('create',function(data){
         if(data.result.userName == userData.username)
         {
             roomData = data.result;
-            game.scene.remove('ListScreen');
+            game.scene.stop('ListScreen');
             game.scene.start('RoomScreen');
         }
         else{
@@ -75,7 +79,7 @@ Client.socket.on('join',function(data){
         }
         else if(game.scene.isActive('ListScreen'))
         {
-            game.scene.remove('ListScreen');
+            game.scene.stop('ListScreen');
             game.scene.start('RoomScreen');
         }
         console.log(data);
@@ -103,8 +107,30 @@ Client.socket.on('start',function(data){
     if(data.result)
     {
         gameData = data.gameData;
-        game.scene.remove('RoomScreen');
+        game.scene.stop('RoomScreen');
         game.scene.start('NumberGameScreen');
+        console.log(data);
+    }
+    else
+    {
+        console.log('failed');
+    }
+});
+
+Client.socket.on('end',function(data){
+    if(data.result)
+    {
+        winner_name = data.winner;
+        if(game.scene.isActive('EndScreen'))
+            game.scene.getScene('EndScreen').updateResult();
+        else if(game.scene.isActive('WordGameScreen')){
+            game.scene.stop('WordGameScreen');
+            game.scene.start('EndScreen');
+        }
+        else if(game.scene.isActive('NumberGameScreen')){
+            game.scene.stop('NumberGameScreen');
+            game.scene.start('EndScreen');
+        }
         console.log(data);
     }
     else

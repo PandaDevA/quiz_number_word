@@ -32,7 +32,7 @@ class HomeScreen extends Phaser.Scene{
 
         this.multiplayerButton = this.add.text(100, 300, 'MultiPlayer');
         this.multiplayerButton.setInteractive().on('pointerdown', () => {
-            game.scene.remove('HomeScreen');
+            game.scene.stop('HomeScreen');
             game.scene.start('ListScreen');
         });
     }

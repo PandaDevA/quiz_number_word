@@ -16,7 +16,7 @@ class WordGameScreen extends Phaser.Scene{
         this.resultText = this.add.text(50, 100, 'Result:', { fixedWidth: 50, fixedHeight: 36 });
         this.resultWord = this.add.text(100, 100, '', { fixedWidth: 200, fixedHeight: 36 });
         this.remainTime = this.add.text(150, 100, 'RemainTime:', { fixedWidth: 100, fixedHeight: 36 });
-        this.timeText = this.add.text(250, 100, '30', { fixedWidth: 100, fixedHeight: 36 });
+        this.timeText = this.add.text(250, 100, '10', { fixedWidth: 100, fixedHeight: 36 });
 
         let quiz_word = gameData.wordData.split('');
         let mix_word = [];
@@ -49,8 +49,11 @@ class WordGameScreen extends Phaser.Scene{
         this.checkButton.setInteractive().on('pointerdown', () => {
             if(this.resultWord.text == gameData.wordData)
             {
-                game.scene.remove('WordGameScreen');
+                this.timer.remove();
+                this.time.removeEvent(this.timer);
+                game.scene.stop('WordGameScreen');
                 game.scene.start('EndScreen');
+                Client.end(false);
             }
         });
 
@@ -76,8 +79,10 @@ class WordGameScreen extends Phaser.Scene{
         {
             scene.timer.remove();
             scene.time.removeEvent(scene.timer);
-            game.scene.remove('WordGameScreen');
+            is_timeout = true;
+            game.scene.stop('WordGameScreen');
             game.scene.start('EndScreen');
+            Client.end(true);
         }
         else{
             scene.timeText.setText(current_time);
