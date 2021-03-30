@@ -94,6 +94,19 @@ const exportedMethods = {
                 });
             });
 
+            socket.on('list', (data) => {
+            console.log('list requset received');
+            rooms.getJoinUsers(data.roomId).then((result) => {
+                if (result) {
+                    socket.emit('list', {result: true, joinusers: result});
+                    console.log('list request is processed');
+                } else {
+                    socket.emit('list', {result: false});
+                    console.log('list request is not precessed');
+                }
+                });
+            });
+
             socket.on('ready', (data) => {
             console.log('ready request received');
             rooms.readyUser(data.roomId, data.readyUser).then((result) => {
@@ -121,6 +134,38 @@ const exportedMethods = {
                     console.log('the room could not start');
                 }
                 });
+            });
+
+            socket.on('end', (data) => {
+            console.log('end request received');
+            if (!data.isTimeOut) {
+                rooms.removeRoom(data.roomId, data.username).then((result) => {
+                    if (result) {
+                        socket.emit('end', {result: true, winner: data.username});
+                        socket.to(`game_of_${data.roomId}`).emit('end', {result: true, winner: data.username});
+                        console.log('end is processed');
+                    } else {
+                        socket.emit('end', {result: false});
+                        console.log('the room could not end');
+                    }
+                });
+            } else {
+                rooms.timeOutUser(data.roomId, data.username).then((result) => {
+                    if (result) {
+                        if (result.allIsOver == false) {
+                            socket.emit('timeout', {result: true});
+                            console.log('timeout is processed');
+                        } else {
+                            socket.emit('end', {result: true, winner: ''});
+                            socket.to(`game_of_${data.roomId}`).emit('end', {result: true, winner: ''});
+                            console.log('end by timeoout');
+                        }
+                    } else {
+                        socket.emit('timeout', {result: false});
+                        console.log('user timeout is not processed');
+                    }
+                });
+            }
             });
         });
     },
