@@ -26,8 +26,8 @@ var gameData = {};
 var is_timeout = false;
 var winner_name = "";
 
-if (!game.device.os.desktop) {
-    game.input.mspointer.stop();
-    game.input.touch.start();
-}
+// if (!game.device.os.desktop) {
+//     game.input.mousePointer.stop();
+//     // game.input.touch.startListeners();
+// }
 game.scene.start('LoginScreen');
