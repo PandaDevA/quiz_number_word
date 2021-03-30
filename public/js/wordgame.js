@@ -49,8 +49,11 @@ class WordGameScreen extends Phaser.Scene{
         this.checkButton.setInteractive().on('pointerdown', () => {
             if(this.resultWord.text == gameData.wordData)
             {
-                game.scene.remove('WordGameScreen');
+                this.timer.remove();
+                this.time.removeEvent(this.timer);
+                game.scene.stop('WordGameScreen');
                 game.scene.start('EndScreen');
+                Client.end(false);
             }
         });
 
@@ -76,8 +79,10 @@ class WordGameScreen extends Phaser.Scene{
         {
             scene.timer.remove();
             scene.time.removeEvent(scene.timer);
-            game.scene.remove('WordGameScreen');
+            is_timeout = true;
+            game.scene.stop('WordGameScreen');
             game.scene.start('EndScreen');
+            Client.end(true);
         }
         else{
             scene.timeText.setText(current_time);

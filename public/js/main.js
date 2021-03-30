@@ -16,16 +16,18 @@ const config = {
         createContainer: true
     },        
     backgroundColor: "#4488AA",
-    scene: [LoginScreen, HomeScreen, ListScreen, RoomScreen, NumberGameScreen, WordGameScreen, EndScreen]
+    scene: [LoginScreen, HomeScreen, ListScreen, RoomScreen, NumberGameScreen, EndScreen, WordGameScreen ]
 };
 
 var game = new Phaser.Game(config);
 var userData = {};
 var roomData = {};
 var gameData = {};
+var is_timeout = false;
+var winner_name = "";
 
-if (!game.device.os.desktop) {
-    game.input.mspointer.stop();
-    game.input.touch.start();
-}
+// if (!game.device.os.desktop) {
+//     game.input.mousePointer.stop();
+//     // game.input.touch.startListeners();
+// }
 game.scene.start('LoginScreen');
