@@ -17,6 +17,7 @@ class WordGameScreen extends Phaser.Scene{
         this.load.image("Heart2", "./images/heart2.png");
         this.load.spritesheet("Number", "./images/number.png", { frameWidth: 188, frameHeight: 176 });
         this.load.image("Refresh", "./images/refresh.png");
+        this.load.image("Check", "./images/check.png");
     }
 
     create() {
@@ -43,7 +44,7 @@ class WordGameScreen extends Phaser.Scene{
             align: 'center',
         });
 
-        let quiz_word = gameData.wordData.split('');
+        let quiz_word = gameData.wordData[cur_word].split('');
         let mix_word = [];
         while (quiz_word.length > 0) {
             let character = '';
@@ -77,16 +78,21 @@ class WordGameScreen extends Phaser.Scene{
                     return;
                 this.resultWord.setText(this.resultWord.text + this.characterTexts[i].text);
                 this.characterImages[i].setAlpha(0.5);
-                this.checkResult();
             });
         }
 
-        this.refreshButton = this.add.image(150,500,'Refresh').setScale(0.3);
+        this.refreshButton = this.add.image(200,500,'Refresh').setScale(0.3);
         this.refreshButton.setInteractive().on('pointerdown', () => {
             this.resultWord.setText('');
             for(let i=0; i<this.characterImages.length; i++)
                 this.characterImages[i].setAlpha(1);
         });
+
+        this.checkButton = this.add.image(100,500,'Check').setScale(0.3);
+        this.checkButton.setInteractive().on('pointerdown', () => {
+            this.checkResult();
+        });
+
         this.timer = this.time.addEvent({
             delay: 1000,
             callback: this.updateTimer,
@@ -98,13 +104,26 @@ class WordGameScreen extends Phaser.Scene{
     }
 
     checkResult(){
-        if(this.resultWord.text == gameData.wordData)
+        if(this.resultWord.text == gameData.wordData[cur_word])
         {
             this.timer.remove();
             this.time.removeEvent(this.timer);
-            game.scene.stop('WordGameScreen');
-            game.scene.start('EndScreen');
-            Client.end(false);
+            if(cur_word == gameData.wordData.length-1)
+            {
+                game.scene.stop('WordGameScreen');
+                game.scene.start('EndScreen');
+                if(game_type == "stage")
+                {
+                    Client.stage_end();
+                }
+                else{
+                    Client.end(false);
+                }
+            }
+            else{
+                cur_word++;
+                this.restart();
+            }
         }
     }
 
@@ -112,12 +131,22 @@ class WordGameScreen extends Phaser.Scene{
         let current_time = Number.parseInt(scene.timeText.text) - 1;
         if(current_time < 0)
         {
-            scene.timer.remove();
-            scene.time.removeEvent(scene.timer);
-            is_timeout = true;
-            game.scene.stop('WordGameScreen');
-            game.scene.start('EndScreen');
-            Client.end(true);
+            if(cur_word == gameData.wordData.length-1)
+            {
+                game.scene.stop('WordGameScreen');
+                game.scene.start('EndScreen');
+                if(game_type == "stage")
+                {
+                    Client.stage_end();
+                }
+                else{
+                    Client.end(false);
+                }
+            }
+            else{
+                cur_word++;
+                this.restart();
+            }
         }
         else{
             scene.timeText.setText(current_time);

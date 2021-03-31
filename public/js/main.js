@@ -10,6 +10,7 @@ var gameData = {};
 var game_type = "";
 var cur_number = 0;
 var cur_word = 0;
+var cur_point = 0;
 
 var is_timeout = false;
 
