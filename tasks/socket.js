@@ -53,15 +53,41 @@ const exportedMethods = {
             });
 
             socket.on('login', (data) => {
-            console.log('login request recevied');
-            users.getUserByName(data.username, data.password).then((result) => {
-                if(result) {
-                    socket.emit('login', {result: result});
-                    console.log(`${data.username} is logged`);
-                } else {
-                    socket.emit('login', {result: false});
-                    console.log(`${data.username} is not logged`);
-                }
+                // console.log('login request recevied');
+                users.getUserByName(data.username, data.password).then((result) => {
+                    if (result) {
+                        socket.emit('login', {result: result});
+                        // console.log(`${data.username} is logged`);
+                    } else {
+                        socket.emit('login', {result: false});
+                        // console.log(`${data.username} is not logged`);
+                    }
+                    });
+            });
+
+            socket.on('stage_start', (data) => {
+                console.log('stage_start request recevied');
+                users.startStage(data.username).then((result) => {
+                    if (result) {
+                        socket.emit('stage_start', {result: true, info: result});
+                        console.log(`${data.username} start stage`);
+                    } else {
+                        socket.emit('stage_start', {result: false});
+                        console.log(`${data.username} failure to start stage`);
+                    }
+                });
+            });
+
+            socket.on('stage_end', (data) => {
+                console.log('stage_end request recevied');
+                users.stopStage(data.username, data.result).then((result) => {
+                    if (result) {
+                        socket.emit('stage_end', {result: true});
+                        console.log(`${data.username} end stage`);
+                    } else {
+                        socket.emit('stage_end', {result: false});
+                        console.log(`${data.username} end failure stage`);
+                    }
                 });
             });
 
