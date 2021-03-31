@@ -39,7 +39,23 @@ class HomeScreen extends Phaser.Scene{
                 align: 'center',
             });
         this.circle = this.add.image(230,100,'Circle').setScale(0.3);
+        this.coinText = this.add.text(230,100, userData.coin, { fixedWidth: 22, fixedHeight: 22 })
+            .setOrigin(0.5,0.5)
+            .setStyle({
+                fontSize: '18px',
+                fontFamily: 'Arial',
+                color: '#eae9d7',
+                align: 'center',
+            });
         this.heart = this.add.image(70,100,'Heart').setScale(0.3);
+        this.heartText = this.add.text(70,100, userData.heart, { fixedWidth: 20, fixedHeight: 20 })
+            .setOrigin(0.5,0.5)
+            .setStyle({
+                fontSize: '18px',
+                fontFamily: 'Arial',
+                color: '#fe7042',
+                align: 'center',
+            });
         this.point = this.add.image(150,180,'Point').setScale(0.3);
         this.points = this.add.text(205,187, userData.point, { fixedWidth: 80, fixedHeight: 36 })
             .setOrigin(0.5,0.5)
@@ -73,5 +89,8 @@ class HomeScreen extends Phaser.Scene{
         // });
     }
     update(){
+        this.coinText.setText(userData.coin);
+        this.heartText.setText(userData.heart);
+        this.points.setText(userData.point);
     }
 }

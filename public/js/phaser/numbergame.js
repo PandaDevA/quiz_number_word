@@ -23,6 +23,7 @@ class NumberGameScreen extends Phaser.Scene{
         this.load.spritesheet("Minus", "./images/sign3.png", { frameWidth: 168, frameHeight: 158 });
         this.load.spritesheet("Divi", "./images/sign4.png", { frameWidth: 169, frameHeight: 158 });
         this.load.image("Refresh", "./images/refresh.png");
+        this.load.image("Check", "./images/check.png");
     }
 
     create() {
@@ -30,7 +31,7 @@ class NumberGameScreen extends Phaser.Scene{
         this.heartImage = this.add.image(242,30,'Heart2').setScale(0.3);
 
         this.targetImage = this.add.image(80,80,'Target').setScale(0.3);
-        this.targetNumber = this.add.text(80,90, gameData.numData.result, { fixedWidth: 150, fixedHeight: 36 })
+        this.targetNumber = this.add.text(80,90, gameData.numData[cur_number].result, { fixedWidth: 150, fixedHeight: 36 })
         .setOrigin(0.5,0.5)
         .setStyle({
             fontSize: '36px',
@@ -51,7 +52,7 @@ class NumberGameScreen extends Phaser.Scene{
         for(let i=0; i<6; i++)
         {
             let numberImage = this.add.image(90 + (i%3)*60, 270 + Math.floor(i/3) * 60,'Number', 0).setScale(0.3);
-            let numberText = this.add.text(90 + (i%3)*60, 270 + Math.floor(i/3) * 60, gameData.numData.array[i], { fixedWidth: 60, fixedHeight: 60 })
+            let numberText = this.add.text(90 + (i%3)*60, 270 + Math.floor(i/3) * 60, gameData.numData[cur_number].array[i], { fixedWidth: 60, fixedHeight: 60 })
             .setOrigin(0.5,0.2)
             .setStyle({
                 fontSize: '24px',
@@ -89,7 +90,6 @@ class NumberGameScreen extends Phaser.Scene{
                         this.numberImages[this.selected_index].setAlpha(0.5).setFrame(0);
                         this.numberImages[i].setFrame(1);;
                         this.selected_index = i;
-                        this.checkResult();
                     }
                     else if(this.selected_operator == 2)
                     {
@@ -97,7 +97,6 @@ class NumberGameScreen extends Phaser.Scene{
                         this.numberImages[this.selected_index].setAlpha(0.5).setFrame(0);
                         this.numberImages[i].setFrame(1);;
                         this.selected_index = i;
-                        this.checkResult();
                     }
                     else if(this.selected_operator == 3)
                     {
@@ -105,7 +104,6 @@ class NumberGameScreen extends Phaser.Scene{
                         this.numberImages[this.selected_index].setAlpha(0.5).setFrame(0);
                         this.numberImages[i].setFrame(1);;
                         this.selected_index = i;
-                        this.checkResult();
                     }
                     else if(this.selected_operator == 4)
                     {
@@ -116,7 +114,6 @@ class NumberGameScreen extends Phaser.Scene{
                         this.numberImages[this.selected_index].setAlpha(0.5).setFrame(0);
                         this.numberImages[i].setFrame(1);
                         this.selected_index = i;
-                        this.checkResult();
                     }
                 }
             });
@@ -182,11 +179,17 @@ class NumberGameScreen extends Phaser.Scene{
             }
         });
 
-        this.refreshButton = this.add.image(150,500,'Refresh').setScale(0.3);
+        this.refreshButton = this.add.image(200,500,'Refresh').setScale(0.3);
         this.refreshButton.setInteractive().on('pointerdown', () => {
             this.refreshNumbers();
             this.refreshOperators();
         });
+
+        this.checkButton = this.add.image(100,500,'Check').setScale(0.3);
+        this.checkButton.setInteractive().on('pointerdown', () => {
+            this.checkResult();
+        });
+
         this.timer = this.time.addEvent({
             delay: 1000,
             callback: this.updateTimer,
@@ -198,12 +201,21 @@ class NumberGameScreen extends Phaser.Scene{
     }
 
     checkResult(){
+        if(this.selected_index == -1)
+            return;
         if(this.numberTexts[this.selected_index].text == this.targetNumber.text)
         {
             this.timer.remove();
             this.time.removeEvent(this.timer);
-            game.scene.stop('NumberGameScreen');
-            game.scene.start('WordGameScreen');
+            if(cur_number == gameData.numData.length-1)
+            {
+                game.scene.stop('NumberGameScreen');
+                game.scene.start('WordGameScreen');
+            }
+            else{
+                cur_number++;
+                this.restart();
+            }
         }
     }
     updateTimer(scene){
@@ -212,8 +224,15 @@ class NumberGameScreen extends Phaser.Scene{
         {
             scene.timer.remove();
             scene.time.removeEvent(scene.timer);
-            game.scene.stop('NumberGameScreen');
-            game.scene.start('WordGameScreen');
+            if(cur_number == gameData.numData.length-1)
+            {
+                game.scene.stop('NumberGameScreen');
+                game.scene.start('WordGameScreen');
+            }
+            else{
+                cur_number++;
+                this.restart();
+            }
         }
         else{
             scene.timeText.setText(current_time);
@@ -224,7 +243,7 @@ class NumberGameScreen extends Phaser.Scene{
         this.selected_index = -1;
         for(let i=0; i<6; i++)
         {
-            this.numberTexts[i].setText(gameData.numData.array[i]);
+            this.numberTexts[i].setText(gameData.numData[cur_number].array[i]);
             this.numberImages[i].setAlpha(1.0);
             this.numberImages[i].setFrame(0);
         }
