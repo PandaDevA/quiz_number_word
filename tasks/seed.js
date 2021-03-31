@@ -7,58 +7,60 @@ const words = data.words;
 
 async function main() {
 
- 
-  const db = await dbConnection();
-  await db.dropDatabase();
 
-  await words.addWord('Rocket');
-  await words.addWord('Computer');
-  await words.addWord('Nation');
-  await words.removeword('Rocket');
+    const db = await dbConnection();
+    // await db.dropDatabase();
 
-  let isAdded = await users.addUser("testuser", "1234");
-  if(isAdded) console.log('user Added');
-  else console.log("user not added");
+    // await words.addWord('Rocket');
+    // await words.addWord('Computer');
+    // await words.addWord('Nation');
+    // await words.removeword('Rocket');
 
-  isAdded = await users.addUser("testuser2", "1234");
-  if(isAdded) console.log('user Added');
-  else console.log("user not added");
+    // let isAdded = await users.addUser("testuser", "1234");
+    // if (isAdded) console.log('user Added');
+    // else console.log("user not added");
 
-  let addedData = await rooms.createRoom('createuser');
-  if(addedData) console.log(`room created: ${JSON.stringify(addedData)}`);
-  else console.log('room not created');
+    await users.startStage('testuser2');
 
-  let result = await rooms.getRooms();
-  if(result) console.log(result);
+    // isAdded = await users.addUser("testuser2", "1234");
+    // if (isAdded) console.log('user Added');
+    // else console.log("user not added");
 
-  result = await rooms.joinRoom(addedData.id, 'joinuser');
-  if(result) console.log(`user joined: ${JSON.stringify(result)}`);
-  else console.log('user is not joined');
-  
-  result = await rooms.getRooms();
-  if(result) console.dir(result, {'maxArrayLength': null, depth:null});
+    // let addedData = await rooms.createRoom('createuser');
+    // if (addedData) console.log(`room created: ${JSON.stringify(addedData)}`);
+    // else console.log('room not created');
 
-  result = await rooms.readyUser(addedData.id, 'joinuser');
-  if(result) console.log(`user id ready: ${JSON.stringify(result)}`);
-  else console.log('user is not ready');
+    // let result = await rooms.getRooms();
+    // if (result) console.log(result);
 
-  result = await rooms.getRooms();
-  if(result) console.dir(result, {'maxArrayLength': null, depth:null});
+    // result = await rooms.joinRoom(addedData.id, 'joinuser');
+    // if (result) console.log(`user joined: ${JSON.stringify(result)}`);
+    // else console.log('user is not joined');
 
-  result = await rooms.startRoom(addedData.id);
-  if(result) console.log(`room started: ${JSON.stringify(result)}`);
-  else console.log('room is not started');
+    // result = await rooms.getRooms();
+    // if (result) console.dir(result, { 'maxArrayLength': null, depth: null });
 
-  result = await rooms.getRooms();
-  if(result) console.log(result);
+    // result = await rooms.readyUser(addedData.id, 'joinuser');
+    // if (result) console.log(`user id ready: ${JSON.stringify(result)}`);
+    // else console.log('user is not ready');
 
-  // result = await rooms.removeRoom(addedData[0].id);
-  // if(result) console.log('room removed');
-  // else console.log('room is not removed');
+    // result = await rooms.getRooms();
+    // if (result) console.dir(result, { 'maxArrayLength': null, depth: null });
 
-  console.log('Done seeding database');
+    // result = await rooms.startRoom(addedData.id);
+    // if (result) console.log(`room started: ${JSON.stringify(result)}`);
+    // else console.log('room is not started');
 
-  await db.serverConfig.close();
+    // result = await rooms.getRooms();
+    // if (result) console.log(result);
+
+    // result = await rooms.removeRoom(addedData[0].id);
+    // if(result) console.log('room removed');
+    // else console.log('room is not removed');
+
+    console.log('Done seeding database');
+
+    await db.serverConfig.close();
 }
 
 main();

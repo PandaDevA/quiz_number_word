@@ -70,8 +70,16 @@ const exportedMethods = {
             return false;
         }
 
+
         const updateduserData = user;
-        updateduserData.isStartStage = true;
+        if (updateduserData.isStartStage) {
+            if (updateduserData.heart == 0) {
+                console.log('heart is already zero');
+                return false;
+            }
+            updateduserData.heart--;
+        } else
+            updateduserData.isStartStage = true;
 
         const updatedInfo = await userCollection.updateOne({ _id: user._id }, { $set: updateduserData });
 
@@ -82,6 +90,35 @@ const exportedMethods = {
 
         return updateduserData;
     },
+
+    async cancelStage(username) {
+        if (!username || username == '') {
+            console.log('ReferenceError: Username is not supplied while cancelStage');
+            return false;
+        }
+
+        const userCollection = await users();
+        const user = await userCollection.findOne({ username: username });
+
+        if (!user) {
+            // console.log(`Error: user "${username}" not exist while getUserByName`);
+            return false;
+        }
+
+        const updateduserData = user;
+        if (!updateduserData.isStartStage) return updateduserData;
+        updateduserData.isStartStage = false;
+
+        const updatedInfo = await userCollection.updateOne({ _id: user._id }, { $set: updateduserData });
+
+        if (updatedInfo.modifiedCount === 0) {
+            console.log('could not update isStartStage successfully');
+            return false;
+        }
+
+        return updateduserData;
+    },
+
 
     async stopStage(username, data) {
         if (!username || !data) {

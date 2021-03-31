@@ -96,6 +96,11 @@ const exportedMethods = {
                 });
             });
 
+            socket.on('stage_cancel', (data) => {
+                console.log('stage_cancel request recevied');
+                users.cancelStage(data.username).then((result) => {});
+            });
+
             socket.on('create', (data) => {
                 console.log('create request recevied');
                 rooms.createRoom(data.username).then((result) => {
