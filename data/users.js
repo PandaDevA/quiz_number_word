@@ -117,61 +117,6 @@ const exportedMethods = {
 
         return updateduserData;
     },
-
-    // async getUserById(id) {
-    //   if (!id) throw 'ReferenceError: You must provide an id to search for';
-    //   if (typeof(id) != 'string' || id.trim() == '') throw TypeError;
-    //   let parsedId;
-    //   try {
-    //     parsedId = ObjectId(id); 
-    //   } catch (error) {
-    //     throw SyntaxError;
-    //   }
-
-    //   const userCollection = await users();
-    //   // userCollection.aggregate([
-    //   //    {
-    //   //       $project: {
-    //   //          user_id: {
-    //   //             $toString: "$_id"
-    //   //          }
-    //   //       }
-    //   //    } ]);
-    //   // const user = await userCollection.findOne({ _id: id }, {_id: 0});
-    //   const user =await userCollection.findOne({_id: parsedId});
-
-    //   if (!user) throw 'user not found';
-    //   let tmpId = user._id;
-    //   user._id = String(tmpId);
-    //   return user;
-    // },
-
-
-    // async removeuser(id) {
-    //   if (!id) throw 'ReferenceError: You must provide an id to search for';
-    //   if (typeof(id) != 'string' || id.trim() == '') throw TypeError;
-
-    //   let parsedId;
-    //   try {
-    //     parsedId = ObjectId(id); 
-    //   } catch (error) {
-    //     throw SyntaxError;
-    //   }
-
-    //   const userCollection = await users();
-    //   let user = null;
-    //   try {
-    //     user = await this.getuserById(id);
-    //   } catch (e) {
-    //     console.log(e);
-    //     return;
-    //   }
-    //   const deletionInfo = await userCollection.removeOne({ _id: parsedId });
-    //   if (deletionInfo.deletedCount === 0) {
-    //     throw `Could not delete user with id of ${id}`;
-    //   }
-    //   return {"userId": id, "deleted": true};
-    // },
 };
 
 module.exports = exportedMethods;
