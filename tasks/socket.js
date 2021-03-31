@@ -69,7 +69,11 @@ const exportedMethods = {
                     if (result) {
                         const numData = puzzle.getNumberData();
                         puzzle.getWordData().then((wordData) => {
-                            socket.emit('stage_start', { result: true, info: result, gameData: { numData: numData, wordData: wordData } });
+                            socket.emit('stage_start', {
+                                result: true,
+                                info: result,
+                                gameData: { numData: [numData], wordData: [wordData] }
+                            });
                         });
                         console.log(`${data.username} start stage`);
                     } else {
