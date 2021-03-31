@@ -50,6 +50,9 @@ class HomeScreen extends Phaser.Scene{
             });
         this.ranking = this.add.image(150,210,'Ranking').setScale(0.3);
         this.stage = this.add.image(150,260,'Stage').setScale(0.3);
+        this.stage.setInteractive().on('pointerdown', () => {
+            Client.stage_start();
+        });
         this.battle = this.add.image(150,330,'Battle').setScale(0.3);
         this.tournament = this.add.image(150,400,'Tournament').setScale(0.3);
         this.tournament.setInteractive().on('pointerdown', () => {

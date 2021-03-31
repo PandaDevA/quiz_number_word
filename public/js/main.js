@@ -3,6 +3,19 @@
  */
 //noinspection JSCheckFunctionSignatures,JSCheckFunctionSignatures,JSCheckFunctionSignatures
 
+var userData = {};
+var roomData = {};
+var gameData = {};
+
+var game_type = "";
+var cur_number = 0;
+var cur_word = 0;
+
+var is_timeout = false;
+
+var winner_name = "";
+
+
 const config = {
     type: Phaser.AUTO,
     scale: {
@@ -20,14 +33,9 @@ const config = {
 };
 
 var game = new Phaser.Game(config);
-var userData = {};
-var roomData = {};
-var gameData = {};
-var is_timeout = false;
-var winner_name = "";
-
 // if (!game.device.os.desktop) {
 //     game.input.mousePointer.stop();
 //     // game.input.touch.startListeners();
 // }
 game.scene.start('LoginScreen');
+

@@ -1,14 +1,3 @@
-/**
- * Created by Jerome on 03-03-17.
- */
-
-var Client = {};
-Client.socket = io.connect();
-
-Client.login = function(username, password){
-    Client.socket.emit('login', {username: username, password: password});
-};
-
 Client.create_room = function(){
     Client.socket.emit('create', {username : userData.username});
 };
@@ -28,22 +17,6 @@ Client.start = function(){
 Client.end = function(isTimeOut){
     Client.socket.emit('end', {isTimeOut : isTimeOut, roomId : roomData.id, username : userData.username});
 };
-
-////////////////////////////////////////////////////////////////////////////
-
-Client.socket.on('login',function(data){
-    if(data.result)
-    {
-        userData = data.result;
-        game.scene.stop('LoginScreen');
-        game.scene.start('HomeScreen');
-        console.log('success');
-    }
-    else
-    {
-        console.log('failed');
-    }
-});
 
 Client.socket.on('create',function(data){
     if(data.result)
