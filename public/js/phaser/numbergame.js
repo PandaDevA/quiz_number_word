@@ -39,7 +39,7 @@ class NumberGameScreen extends Phaser.Scene{
             align: 'center',
         });
         this.timeImage = this.add.image(220,80,'Time').setScale(0.3);
-        this.timeText = this.add.text(220,90, '1', { fixedWidth: 150, fixedHeight: 36 })
+        this.timeText = this.add.text(220,90, '30', { fixedWidth: 150, fixedHeight: 36 })
         .setOrigin(0.5,0.5)
         .setStyle({
             fontSize: '36px',
