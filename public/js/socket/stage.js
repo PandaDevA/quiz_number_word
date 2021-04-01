@@ -7,7 +7,7 @@ Client.stage_cancel = function(){
 };
 
 Client.stage_end = function(isWin){
-    Client.socket.emit('stage_end', {username : userData.username, isWin:isWin, point:cur_point, coin:1});
+    Client.socket.emit('stage_end', {username : userData.username, result:{isWin:isWin, point:cur_point, coin:1}});
 };
 
 Client.socket.on('stage_start',function(data){
