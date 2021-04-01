@@ -48,7 +48,17 @@ const exportedMethods = {
         }
 
         const updatedRoomData = room;
-        updatedRoomData.joinUsers.push({ userName: data.username, point: userInfo.point, isOver: false });
+        let joinusers = updatedRoomData.joinUsers;
+        let idxOfUser = -1;
+        joinusers.map((user, index) => {
+            if(user.userName == data.username) {
+                idxOfUser = index;
+                return;
+            }
+        });
+        
+        if (idxOfUser == -1)
+            updatedRoomData.joinUsers.push({ userName: data.username, point: userInfo.point, isOver: false });
 
         const updatedInfo = await roomCollection.updateOne({ _id: room._id }, { $set: updatedRoomData });
 
