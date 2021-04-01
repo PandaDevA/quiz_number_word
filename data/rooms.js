@@ -109,16 +109,7 @@ const exportedMethods = {
             return false;
         }
 
-        const result = {
-            id: String(updatedRoomData._id),
-            userName: updatedRoomData.userName,
-            joinUsers: updatedRoomData.joinUsers,
-            winUser: updatedRoomData.winUser,
-            winnerPoint: updatedRoomData.winnerPoint,
-            isStarted: updatedRoomData.isStarted,
-            isClosed: updatedRoomData.isClosed,
-        }
-        return result;
+        return true;
     },
 
 
@@ -177,9 +168,7 @@ const exportedMethods = {
             return false;
         }
 
-
-
-        return true;
+        return {result: updatedRoomData, allIsOver: allIsOver};
     },
 
     async timeOutUser(id, username) {

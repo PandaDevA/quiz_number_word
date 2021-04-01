@@ -46,6 +46,21 @@ const exportedMethods = {
         tournamentDateTime.setTime(tournamentDateTime.getTime() + 300000);
         console.log(getDateTimeString(tournamentDateTime));
 
+        try {
+            let numDataList = [], wordDataList = [];
+            for(let i = 0; i < 5; i++) {
+                const numData = puzzle.getNumberData();
+                const wordData = await puzzle.getWordData();
+                numDataList.push(numData);
+                wordDataList.push(wordData);
+            }
+            io.to('game_of_tournament').emit('tournament_start', {
+                gameData: { numData: numDataList, wordData: wordDataList }
+            });
+        } catch (e) {
+            console.log(`Tournament couldn't start: ${e.message}`);
+        }
+
         io.on('connection', socket => {
             console.log('a user connected');
             // if the player doesn't already have an existing session, create a new player
@@ -155,7 +170,6 @@ const exportedMethods = {
                 rooms.leaveTournament(data).then((result) => {
                     if (result) {
                         if (!result.error) {
-                            socket.emit('tournament_out', { result: result });
                             socket.leave('game_of_tournament');
                             socket.to('game_of_tournament').emit('tournament_out', data.username);
                         } else {
@@ -172,30 +186,18 @@ const exportedMethods = {
             socket.on('tournament_end', (data) => {
                 console.log('tournament_end request received');
                     rooms.endTournament(data).then((result) => {
-                        if (result) {
-                            socket.emit('end', { result: true, winner: data.username });
-                            socket.to(`game_of_${data.roomId}`).emit('end', { result: true, winner: data.username });
+                        if (result && result.allIsOver) {
+                            socket.to('game_of_tournament').emit('tournament_end', {
+                                result: true,
+                                winner: result.result.winner,
+                                winnerPoint: result.result.winnerPoint
+                            });
                             console.log('end is processed');
                         } else {
-                            socket.emit('end', { result: false });
+                            // socket.emit('end', { result: false });
                             console.log('the room could not end');
                         }
                     });
-                    // rooms.timeOutUser(data.roomId, data.username).then((result) => {
-                    //     if (result) {
-                    //         if (result.allIsOver == false) {
-                    //             socket.emit('timeout', { result: true });
-                    //             console.log('timeout is processed');
-                    //         } else {
-                    //             socket.emit('end', { result: true, winner: '' });
-                    //             socket.to(`game_of_${data.roomId}`).emit('end', { result: true, winner: '' });
-                    //             console.log('end by timeoout');
-                    //         }
-                    //     } else {
-                    //         socket.emit('timeout', { result: false });
-                    //         console.log('user timeout is not processed');
-                    //     }
-                    // });
             });
 
             socket.on('create', (data) => {
