@@ -31,6 +31,23 @@ const exportedMethods = {
         return user;
     },
 
+    async getUserInfo(username) {
+        if (!username) {
+            // console.log('Error: username is not referred while getUserInfo');
+            return false;
+        }
+
+        const userCollection = await users();
+        const user = await userCollection.findOne({ username: username });
+
+        if (!user) {
+            // console.log(`Error: user "${username}" not exist while getUserInfo`);
+            return false;
+        }
+
+        return user;
+    },
+
     async addUser(username, password) {
         if (username === undefined || password === undefined) {
             // console.log("Failed in AddUser! Username or Password is undefined");
@@ -139,12 +156,10 @@ const exportedMethods = {
 
         if (data.isWin) {
             if (data.point) updateduserData.point += data.point;
-            if (updateduserData.point > 1000) updateduserData.point = 1000;
             if (data.coin) updateduserData.coin += data.coin;
             if (updateduserData.coin > 100) updateduserData.coin = 100;
         } else {
             if (data.point) updateduserData.point += data.point;
-            if (updateduserData.point > 1000) updateduserData.point = 1000;
             if (updateduserData.heart > 0) updateduserData.heart--;
         }
 
@@ -175,7 +190,6 @@ const exportedMethods = {
         const updateduserData = user;
 
         if (data.point) updateduserData.point += data.point;
-        if (updateduserData.point > 1000) updateduserData.point = 1000;
         if (data.coin) updateduserData.coin += data.coin;
         if (updateduserData.coin > 100) updateduserData.coin = 100;
         if (data.heart) updateduserData.heart += data.heart;

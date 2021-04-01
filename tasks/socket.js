@@ -14,6 +14,19 @@ const words = data.words;
 //   red: 0,
 // };
 
+const getDateTimeString = (date) => {
+
+    const pad = (s) => (s < 10 ? '0' + s : s);
+    const dateString = [
+        date.getFullYear(),
+        pad(date.getMonth() + 1),
+        pad(date.getDate()),
+    ].join('-');
+    const timeString = date.toLocaleTimeString();
+
+    return dateString + ' ' + timeString;
+}
+
 
 const exportedMethods = {
     async onTimeInteval() {
@@ -29,8 +42,9 @@ const exportedMethods = {
     },
     async useSocket(io) {
 
-        let result = await users.getAllUsers();
-        console.log(result);
+        let tournamentDateTime = new Date();
+        tournamentDateTime.setTime(tournamentDateTime.getTime() + 300000);
+        console.log(getDateTimeString(tournamentDateTime));
 
         io.on('connection', socket => {
             console.log('a user connected');
@@ -110,6 +124,78 @@ const exportedMethods = {
             socket.on('stage_cancel', (data) => {
                 console.log('stage_cancel request recevied');
                 users.cancelStage(data.username).then((result) => {});
+            });
+
+            socket.on('tournament_in', (data) => {
+                console.log('tournament_in request received');
+                rooms.joinTournament(data).then((result) => {
+                    if (result) {
+                        if (!result.error) {
+                            socket.emit('tournament_in', {
+                                result: result.joinUsers,
+                                time: getDateTimeString(tournamentDateTime),
+                            });
+                            socket.to('game_of_tournament').emit('tournament_in', {
+                                result: {userName: data.username, point: result.newUserPoint}
+                            });
+                            socket.join('game_of_tournament');
+                        } else {
+                            socket.emit('tournament_in', { result: false, error: result.error });
+                            console.log(`${ data.username } couldn 't join tournament`);
+                        }
+                    } else {
+                        socket.emit('tournament_in', { result: false, error: 'ServerInternalError' });
+                        console.log(`${data.username} failure to join tournament`);
+                    }
+                });
+            });
+
+            socket.on('tournament_out', (data) => {
+                console.log('tournament_out request received');
+                rooms.leaveTournament(data).then((result) => {
+                    if (result) {
+                        if (!result.error) {
+                            socket.emit('tournament_out', { result: result });
+                            socket.leave('game_of_tournament');
+                            socket.to('game_of_tournament').emit('tournament_out', data.username);
+                        } else {
+                            socket.emit('tournament_out', { result: false, error: result.error });
+                            console.log(`${ data.username } couldn 't leave tournament`);
+                        }
+                    } else {
+                        socket.emit('tournament_out', { result: false, error: 'ServerInternalError' });
+                        console.log(`${data.username} failure to leave tournament`);
+                    }
+                });
+            });
+
+            socket.on('tournament_end', (data) => {
+                console.log('tournament_end request received');
+                    rooms.endTournament(data).then((result) => {
+                        if (result) {
+                            socket.emit('end', { result: true, winner: data.username });
+                            socket.to(`game_of_${data.roomId}`).emit('end', { result: true, winner: data.username });
+                            console.log('end is processed');
+                        } else {
+                            socket.emit('end', { result: false });
+                            console.log('the room could not end');
+                        }
+                    });
+                    // rooms.timeOutUser(data.roomId, data.username).then((result) => {
+                    //     if (result) {
+                    //         if (result.allIsOver == false) {
+                    //             socket.emit('timeout', { result: true });
+                    //             console.log('timeout is processed');
+                    //         } else {
+                    //             socket.emit('end', { result: true, winner: '' });
+                    //             socket.to(`game_of_${data.roomId}`).emit('end', { result: true, winner: '' });
+                    //             console.log('end by timeoout');
+                    //         }
+                    //     } else {
+                    //         socket.emit('timeout', { result: false });
+                    //         console.log('user timeout is not processed');
+                    //     }
+                    // });
             });
 
             socket.on('create', (data) => {

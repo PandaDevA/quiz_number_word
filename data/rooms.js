@@ -1,344 +1,632 @@
 const mongoCollections = require('../config/mongoCollections');
 const rooms = mongoCollections.rooms;
 let { ObjectId } = require('mongodb');
+const { users } = require('./users');
 
 const exportedMethods = {
 
-  async createRoom(username) {
-    if(username === undefined) {
-      console.log("Failed in createRoom! username is undefined");
-      return false;
-    }
+    async joinTournament(data) {
+        if (!data.username) {
+            console.log('ReferenceError: You must provide username while joniTournament');
+            return false;
+        }
 
-    const roomCollection = await rooms();
+        const userInfo = await users.getUserInfo(data.username);
+        if (!userInfo) return false;
 
-    const newroom = {
-      userName: username,
-      joinUsers: [],
-      winUser: '',
-      isStarted: false,
-      isClosed: false,
-    };
+        if (userInfo.heart == 0 || userInfo.coin < 10) {
+            return { error: 'You need more heart or coin.' };
+        }
 
-    const newInsertInformation = await roomCollection.insertOne(newroom);
-    if (newInsertInformation.insertedCount === 0) {
-      console.log('Could not add room');
-      return false;
-    }
+        const roomCollection = await rooms();
+        const room = await roomCollection.findOne({ userName: 'tournament' });
+        if (!room) {
+            const newroom = {
+                userName: 'tournament',
+                joinUsers: [{ userName: data.username, point: userInfo.point, isOver: false }],
+                winUser: '',
+                winnerPoint: 0,
+                isStarted: false,
+                isClosed: false,
+            };
 
-    const result = newroom;
-    result.id = String(newInsertInformation.insertedId);
+            const newInsertInformation = await roomCollection.insertOne(newroom);
+            if (newInsertInformation.insertedCount === 0) {
+                console.log('Could not create tournamentRoom');
+                return false;
+            }
 
-    return result;
-  },
+            const result = newroom;
+            result.id = String(newInsertInformation.insertedId);
 
-  async joinRoom(id, username) {
-    if (!id || !username) {
-      console.log('ReferenceError: You must provide an roomid and username while joinRoom');
-      return false;
-    }
+            return result;
+        }
 
-    let parsedId;
-    try {
-      parsedId = ObjectId(id); 
-    } catch (error) {
-      console.log(`Syntax Error: id is not valid while joinRoom`);
-      return false;
-    }
+        if (room.isStarted || room.isClosed) {
+            console.log('Tournament is already started or ended');
+            return { error: 'Tournament is already started or ended' };
+        }
 
-    const roomCollection = await rooms();
-    const room =await roomCollection.findOne({_id: parsedId});
-    if (!room) {
-      console.log(`Error: room not exist while joinroom`);
-      return false;
-    }
+        const updatedRoomData = room;
+        updatedRoomData.joinUsers.push({ userName: data.username, point: userInfo.point, isOver: false });
 
-    if (room.isStarted || room.isClosed) {
-      console.log('Room is not prepare status while joinroom');
-      return false;
-    }
+        const updatedInfo = await roomCollection.updateOne({ _id: room._id }, { $set: updatedRoomData });
 
-    const updatedRoomData = room;
-    updatedRoomData.joinUsers.push({userName: username, isReady: false});
+        if (updatedInfo.modifiedCount === 0) {
+            console.log('could not join to the tournament while jointournament');
+            return false;
+        }
 
-    const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
+        const result = {
+            joinUsers: updatedRoomData.joinUsers,
+            newUserPoint: userInfo.point
+        }
+        return result;
+    },
 
-    if (updatedInfo.modifiedCount === 0) {
-      console.log('could not join to the room while joinroom');
-      return false;
-    }
+    async leaveTournament(data) {
+        if (!data.username) {
+            console.log('ReferenceError: You must provide username while leaveTournament');
+            return false;
+        }
 
-    const result = {
-      id: String(updatedRoomData._id),
-      userName: updatedRoomData.userName,
-      joinUsers: updatedRoomData.joinUsers,
-      winUser: updatedRoomData.winUser,
-      isStarted: updatedRoomData.isStarted,
-      isClosed: updatedRoomData.isClosed,
-    }
-    return result;
-  },
+        const userInfo = await users.getUserInfo();
+        if (!userInfo) return false;
 
-  async readyUser(id, username) {
-    if (!id || !username) {
-      console.log('ReferenceError: You must provide an roomid and username while readyuser');
-      return false;
-    }
+        const roomCollection = await rooms();
+        const room = await roomCollection.findOne({ userName: 'tournament' });
+        if (!room) {
+            console.log('Error: tournamentRoom is not exist while leaveTournament');
+            return false;
+        }
 
-    let parsedId;
-    try {
-      parsedId = ObjectId(id); 
-    } catch (error) {
-      console.log(`Syntax Error: id is not valid while readyuser`);
-      return false;
-    }
+        if (room.isStarted) {
+            console.log('Tournament is already started while leaveTournament');
+            return { error: 'Tournament is already started' };
+        }
 
-    const roomCollection = await rooms();
-    const room =await roomCollection.findOne({_id: parsedId});
-    if (!room) {
-      console.log(`Error: room not exist while readyuser`);
-      return false;
-    }
+        const updatedRoomData = room;
+        let joinusers = updatedRoomData.joinUsers;
+        let idxOfUser = -1;
+        joinusers.map((user, index) => {
+            if(user.userName == data.username) {
+                idxOfUser = index;
+                console.log(`user index = ${index}`);
+                return;
+            }
+        });
+        if (idxOfUser == -1) {
+            console.log('The user never in while leaveTournament');
+            return false;
+        }
+        joinusers.splice(idxOfUser, 1);
+        updatedRoomData.joinUsers = joinusers;
 
-    if(room.isClosed || room.isStarted) {
-      console.log('Room is not prepare status while readyuser');
-      return false;
-    }
+        const updatedInfo = await roomCollection.updateOne({ _id: room._id }, { $set: updatedRoomData });
 
-    const updatedRoomData = room;
-    for(let i=0; i<room.joinUsers.length; i++){
-      const element = room.joinUsers[i];
-      if(element.userName == username)
-      {
-        updatedRoomData.joinUsers[i].isReady = true;
-        break;
-      }
-    };
+        if (updatedInfo.modifiedCount === 0) {
+            console.log('could not join to the tournament while leavetournament');
+            return false;
+        }
 
-    const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
+        const result = {
+            id: String(updatedRoomData._id),
+            userName: updatedRoomData.userName,
+            joinUsers: updatedRoomData.joinUsers,
+            winUser: updatedRoomData.winUser,
+            winnerPoint: updatedRoomData.winnerPoint,
+            isStarted: updatedRoomData.isStarted,
+            isClosed: updatedRoomData.isClosed,
+        }
+        return result;
+    },
 
-    if (updatedInfo.modifiedCount === 0) {
-      console.log('could not set ready for joinuser while readyuser');
-      return false;
-    }
 
-    const result = {
-      id: String(updatedRoomData._id),
-      userName: updatedRoomData.userName,
-      joinUsers: updatedRoomData.joinUsers,
-      winUser: updatedRoomData.winUser,
-      isStarted: updatedRoomData.isStarted,
-      isClosed: updatedRoomData.isClosed,
-    }
-    return result;
-  },
+    async endTournament(data) {
+        if (!data.username || !data.isAlive || data.point) {
+            console.log('ReferenceError: You must provide username, isAlive, point while endTournament');
+            return false;
+        };
 
-  async getRooms() {
-    const roomCollection = await rooms();
-    const room = await roomCollection.find().toArray();
+        const roomCollection = await rooms();
+        let room = await roomCollection.findOne({ username: 'tournament' });
+        if (!room) {
+            console.log('the tournamentRoom is not exist');
+            return false;
+        }
 
-    const result = [];
-    room.map((roomdata, index) => {
-      if(1 || !roomdata.isStarted) result.push({
-        id: String(roomdata._id),
-        userName: roomdata.userName,
-        joinUsers: roomdata.joinUsers,
-        winUser: roomdata.winUser,
-        isStarted: roomdata.isStarted,
-        isClosed: roomdata.isClosed,
-      });
-    });
+        if (room.isClosed || !room.isStarted) {
+            console.log('the tournament is never running');
+            return false;
+        }
 
-    return result;
-  },
+        const updatedRoomData = room;
+        let joinusers = updatedRoomData.joinUsers;
+        let idxOfUser = -1;
+        let allIsOver = true;
 
-  async getJoinUsers(id) {
-    if (!id) {
-      console.log('ReferenceError: You must provide an roomid while getJoinUsers');
-      return false;
-    }
+        joinusers.map((user, index) => {
+            if(user.userName == data.username) {
+                idxOfUser = index;
+                joinusers[index].isOver = true;
+                return;
+            } else if (!user.isOver) allIsOver = false;
+        });
+        if (idxOfUser == -1) {
+            console.log('The user never in while leaveTournament');
+            return false;
+        }
+        updatedRoomData.joinUsers = joinusers;
 
-    let parsedId;
-    try {
-      parsedId = ObjectId(id); 
-    } catch (error) {
-      console.log(`Syntax Error: id is not valid while getJoinUsers`);
-      return false;
-    }
+        if(!data.isAlive) {
+            const ref = users.delUserValue(data.username, {heart: 1});
+            // if(!ref) return false;
+        } else if(data.point > updatedRoomData.winnerPoint) {
+            updatedRoomData.winner = data.username;
+            updatedRoomData.winnerPoint = data.point;
+        }
 
-    const roomCollection = await rooms();
-    const room =await roomCollection.findOne({_id: parsedId});
+        if (allIsOver) {
+            updatedRoomData.isClosed = true;
+        }
 
-    if (!room) {
-      console.log(`Error: room not exist while getJoinUsers`);
-      return false;
-    }
+        const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
 
-    if (room.isClosed || room.isStarted) {
-      console.log('The room is closed or already started while getJoinUsers');
-      return false;
-    }
+        if (updatedInfo.modifiedCount === 0) {
+            console.log('could not end the room while endroom');
+            return false;
+        }
 
-    const result = room.joinUsers;
 
-    return result;
-  },
 
-  async startRoom(id) {
-    if (!id) {
-      console.log('ReferenceError: You must provide an roomid while startroom');
-      return false;
-    }
+        return true;
+    },
 
-    let parsedId;
-    try {
-      parsedId = ObjectId(id); 
-    } catch (error) {
-      console.log(`Syntax Error: id is not valid while startroom`);
-      return false;
-    }
+    async timeOutUser(id, username) {
+        if (!id || !username) {
+            console.log('ReferenceError: You must provide an roomid and username while timeoutuser');
+            return false;
+        }
 
-    const roomCollection = await rooms();
-    const room =await roomCollection.findOne({_id: parsedId});
-    if (!room) {
-      console.log(`Error: room not exist while startroom`);
-      return false;
-    }
+        let parsedId;
+        try {
+            parsedId = ObjectId(id);
+        } catch (error) {
+            console.log(`Syntax Error: id is not valid while timeoutuser`);
+            return false;
+        }
 
-    if (room.isClosed || room.isStarted) {
-      console.log('The room is closed or already started while startRoom');
-      return false;
-    }
+        const roomCollection = await rooms();
+        const room = await roomCollection.findOne({ _id: parsedId });
+        if (!room) {
+            console.log(`Error: room not exist while timeoutuser`);
+            return false;
+        }
 
-    let canStart = true;
-    room.joinUsers.map((joinuser, index) => {
-      if(!joinuser.isReady) canStart = false;
-    });
+        if (room.isClosed || !room.isStarted) {
+            console.log('Room is closed or is not started while timeoutuser');
+            return false;
+        }
 
-    if(!canStart) {
-      console.log(`To start room, all join users should be ready while startroom`);
-      return false;
-    }
+        const updatedRoomData = room;
+        const allIsOver = true;
+        for (let i = 0; i < room.joinUsers.length; i++) {
+            const element = room.joinUsers[i];
+            if (element.userName == username) {
+                updatedRoomData.joinUsers[i].isOver = true;
+            } else
+            if (!element.isOver) {
+                allIsOver = false;
+            }
+        };
+        if (allIsOver) {
+            updatedRoomData.isClosed = true;
+            updatedRoomData.winUser = '';
+        }
 
-    const updatedRoomData = room;
-    updatedRoomData.isStarted = true;
+        const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
 
-    const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
+        if (updatedInfo.modifiedCount === 0) {
+            console.log('could not set ready for joinuser while timeoutuser');
+            return false;
+        }
 
-    if (updatedInfo.modifiedCount === 0) {
-      console.log('could not start the room while startroom');
-      return false;
-    }
+        if (allIsOver) {
+            const result = {
+                id: String(updatedRoomData._id),
+                userName: updatedRoomData.userName,
+                joinUsers: updatedRoomData.joinUsers,
+                winUser: updatedRoomData.winUser,
+                isStarted: updatedRoomData.isStarted,
+                isClosed: updatedRoomData.isClosed,
+            }
+            return result;
+        }
 
-    return true;
-  },
+        return { allIsOver: false };
+    },
 
-  async removeRoom(id, winner = '') {
-    if (!id) throw 'ReferenceError: You must provide an id to remove';
-    
-    let parsedId;
-    try {
-      parsedId = ObjectId(id); 
-    } catch (error) {
-      console.log('id is not valid while removeroom');
-      return false;
-    }
+    async createRoom(username) {
+        if (username === undefined) {
+            console.log("Failed in createRoom! username is undefined");
+            return false;
+        }
 
-    const roomCollection = await rooms();
-    let room;
-    try {
-      room =await roomCollection.findOne({_id: parsedId});
-    } catch (e) {
-      console.log('the room of id is not exist');
-      return false;
-    }
+        const roomCollection = await rooms();
 
-    if (room.isClosed || !room.isStarted) { 
-      console.log('the room is not running further more');
-      return false;
-    }
+        const newroom = {
+            userName: username,
+            joinUsers: [],
+            winUser: '',
+            isStarted: false,
+            isClosed: false,
+        };
 
-    // const deletionInfo = await roomCollection.removeOne({ _id: parsedId });
-    // if (deletionInfo.deletedCount === 0) {
-    //   throw `Could not delete room with id of ${id}`;
-    // }
-    const updatedRoomData = room;
-    updatedRoomData.isClosed = true;
-    updatedRoomData.winUser = winner;
+        const newInsertInformation = await roomCollection.insertOne(newroom);
+        if (newInsertInformation.insertedCount === 0) {
+            console.log('Could not add room');
+            return false;
+        }
 
-    const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
+        const result = newroom;
+        result.id = String(newInsertInformation.insertedId);
 
-    if (updatedInfo.modifiedCount === 0) {
-      console.log('could not end the room while endroom');
-      return false;
-    }
+        return result;
+    },
 
-    return true;
-  },
-  
-  async timeOutUser(id, username) {
-    if (!id || !username) {
-      console.log('ReferenceError: You must provide an roomid and username while timeoutuser');
-      return false;
-    }
+    async joinRoom(id, username) {
+        if (!id || !username) {
+            console.log('ReferenceError: You must provide an roomid and username while joinRoom');
+            return false;
+        }
 
-    let parsedId;
-    try {
-      parsedId = ObjectId(id); 
-    } catch (error) {
-      console.log(`Syntax Error: id is not valid while timeoutuser`);
-      return false;
-    }
+        let parsedId;
+        try {
+            parsedId = ObjectId(id);
+        } catch (error) {
+            console.log(`Syntax Error: id is not valid while joinRoom`);
+            return false;
+        }
 
-    const roomCollection = await rooms();
-    const room =await roomCollection.findOne({_id: parsedId});
-    if (!room) {
-      console.log(`Error: room not exist while timeoutuser`);
-      return false;
-    }
+        const roomCollection = await rooms();
+        const room = await roomCollection.findOne({ _id: parsedId });
+        if (!room) {
+            console.log(`Error: room not exist while joinroom`);
+            return false;
+        }
 
-    if(room.isClosed || !room.isStarted) {
-      console.log('Room is closed or is not started while timeoutuser');
-      return false;
-    }
+        if (room.isStarted || room.isClosed) {
+            console.log('Room is not prepare status while joinroom');
+            return false;
+        }
 
-    const updatedRoomData = room;
-    const allIsOver = true;
-    for(let i=0; i<room.joinUsers.length; i++){
-      const element = room.joinUsers[i];
-      if(element.userName == username)
-      {
-        updatedRoomData.joinUsers[i].isOver = true;
-      } else if (!element.isOver) {
-        allIsOver = false;
-      }
-    };
-    if (allIsOver) {
-      updatedRoomData.isClosed = true;
-      updatedRoomData.winUser = '';
-    }
+        const updatedRoomData = room;
+        updatedRoomData.joinUsers.push(username);
 
-    const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
+        const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
 
-    if (updatedInfo.modifiedCount === 0) {
-      console.log('could not set ready for joinuser while timeoutuser');
-      return false;
-    }
+        if (updatedInfo.modifiedCount === 0) {
+            console.log('could not join to the room while joinroom');
+            return false;
+        }
 
-    if (allIsOver) {
-      const result = {
-        id: String(updatedRoomData._id),
-        userName: updatedRoomData.userName,
-        joinUsers: updatedRoomData.joinUsers,
-        winUser: updatedRoomData.winUser,
-        isStarted: updatedRoomData.isStarted,
-        isClosed: updatedRoomData.isClosed,
-      }
-      return result;
-    }
+        const result = {
+            id: String(updatedRoomData._id),
+            userName: updatedRoomData.userName,
+            joinUsers: updatedRoomData.joinUsers,
+            winUser: updatedRoomData.winUser,
+            isStarted: updatedRoomData.isStarted,
+            isClosed: updatedRoomData.isClosed,
+        }
+        return result;
+    },
 
-    return {allIsOver: false};
-  },
+    async joinRoom(id, username) {
+        if (!id || !username) {
+            console.log('ReferenceError: You must provide an roomid and username while joinRoom');
+            return false;
+        }
+
+        let parsedId;
+        try {
+            parsedId = ObjectId(id);
+        } catch (error) {
+            console.log(`Syntax Error: id is not valid while joinRoom`);
+            return false;
+        }
+
+        const roomCollection = await rooms();
+        const room = await roomCollection.findOne({ _id: parsedId });
+        if (!room) {
+            console.log(`Error: room not exist while joinroom`);
+            return false;
+        }
+
+        if (room.isStarted || room.isClosed) {
+            console.log('Room is not prepare status while joinroom');
+            return false;
+        }
+
+        const updatedRoomData = room;
+        updatedRoomData.joinUsers.push({ userName: username, isReady: false });
+
+        const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
+
+        if (updatedInfo.modifiedCount === 0) {
+            console.log('could not join to the room while joinroom');
+            return false;
+        }
+
+        const result = {
+            id: String(updatedRoomData._id),
+            userName: updatedRoomData.userName,
+            joinUsers: updatedRoomData.joinUsers,
+            winUser: updatedRoomData.winUser,
+            isStarted: updatedRoomData.isStarted,
+            isClosed: updatedRoomData.isClosed,
+        }
+        return result;
+    },
+
+    async readyUser(id, username) {
+        if (!id || !username) {
+            console.log('ReferenceError: You must provide an roomid and username while readyuser');
+            return false;
+        }
+
+        let parsedId;
+        try {
+            parsedId = ObjectId(id);
+        } catch (error) {
+            console.log(`Syntax Error: id is not valid while readyuser`);
+            return false;
+        }
+
+        const roomCollection = await rooms();
+        const room = await roomCollection.findOne({ _id: parsedId });
+        if (!room) {
+            console.log(`Error: room not exist while readyuser`);
+            return false;
+        }
+
+        if (room.isClosed || room.isStarted) {
+            console.log('Room is not prepare status while readyuser');
+            return false;
+        }
+
+        const updatedRoomData = room;
+        for (let i = 0; i < room.joinUsers.length; i++) {
+            const element = room.joinUsers[i];
+            if (element.userName == username) {
+                updatedRoomData.joinUsers[i].isReady = true;
+                break;
+            }
+        };
+
+        const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
+
+        if (updatedInfo.modifiedCount === 0) {
+            console.log('could not set ready for joinuser while readyuser');
+            return false;
+        }
+
+        const result = {
+            id: String(updatedRoomData._id),
+            userName: updatedRoomData.userName,
+            joinUsers: updatedRoomData.joinUsers,
+            winUser: updatedRoomData.winUser,
+            isStarted: updatedRoomData.isStarted,
+            isClosed: updatedRoomData.isClosed,
+        }
+        return result;
+    },
+
+    async getRooms() {
+        const roomCollection = await rooms();
+        const room = await roomCollection.find().toArray();
+
+        const result = [];
+        room.map((roomdata, index) => {
+            if (1 || !roomdata.isStarted) result.push({
+                id: String(roomdata._id),
+                userName: roomdata.userName,
+                joinUsers: roomdata.joinUsers,
+                winUser: roomdata.winUser,
+                isStarted: roomdata.isStarted,
+                isClosed: roomdata.isClosed,
+            });
+        });
+
+        return result;
+    },
+
+    async getJoinUsers(id) {
+        if (!id) {
+            console.log('ReferenceError: You must provide an roomid while getJoinUsers');
+            return false;
+        }
+
+        let parsedId;
+        try {
+            parsedId = ObjectId(id);
+        } catch (error) {
+            console.log(`Syntax Error: id is not valid while getJoinUsers`);
+            return false;
+        }
+
+        const roomCollection = await rooms();
+        const room = await roomCollection.findOne({ _id: parsedId });
+
+        if (!room) {
+            console.log(`Error: room not exist while getJoinUsers`);
+            return false;
+        }
+
+        if (room.isClosed || room.isStarted) {
+            console.log('The room is closed or already started while getJoinUsers');
+            return false;
+        }
+
+        const result = room.joinUsers;
+
+        return result;
+    },
+
+    async startRoom(id) {
+        if (!id) {
+            console.log('ReferenceError: You must provide an roomid while startroom');
+            return false;
+        }
+
+        let parsedId;
+        try {
+            parsedId = ObjectId(id);
+        } catch (error) {
+            console.log(`Syntax Error: id is not valid while startroom`);
+            return false;
+        }
+
+        const roomCollection = await rooms();
+        const room = await roomCollection.findOne({ _id: parsedId });
+        if (!room) {
+            console.log(`Error: room not exist while startroom`);
+            return false;
+        }
+
+        if (room.isClosed || room.isStarted) {
+            console.log('The room is closed or already started while startRoom');
+            return false;
+        }
+
+        let canStart = true;
+        room.joinUsers.map((joinuser, index) => {
+            if (!joinuser.isReady) canStart = false;
+        });
+
+        if (!canStart) {
+            console.log(`To start room, all join users should be ready while startroom`);
+            return false;
+        }
+
+        const updatedRoomData = room;
+        updatedRoomData.isStarted = true;
+
+        const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
+
+        if (updatedInfo.modifiedCount === 0) {
+            console.log('could not start the room while startroom');
+            return false;
+        }
+
+        return true;
+    },
+
+    async removeRoom(id, winner = '') {
+        if (!id) throw 'ReferenceError: You must provide an id to remove';
+
+        let parsedId;
+        try {
+            parsedId = ObjectId(id);
+        } catch (error) {
+            console.log('id is not valid while removeroom');
+            return false;
+        }
+
+        const roomCollection = await rooms();
+        let room;
+        try {
+            room = await roomCollection.findOne({ _id: parsedId });
+        } catch (e) {
+            console.log('the room of id is not exist');
+            return false;
+        }
+
+        if (room.isClosed || !room.isStarted) {
+            console.log('the room is not running further more');
+            return false;
+        }
+
+        // const deletionInfo = await roomCollection.removeOne({ _id: parsedId });
+        // if (deletionInfo.deletedCount === 0) {
+        //   throw `Could not delete room with id of ${id}`;
+        // }
+        const updatedRoomData = room;
+        updatedRoomData.isClosed = true;
+        updatedRoomData.winUser = winner;
+
+        const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
+
+        if (updatedInfo.modifiedCount === 0) {
+            console.log('could not end the room while endroom');
+            return false;
+        }
+
+        return true;
+    },
+
+    async timeOutUser(id, username) {
+        if (!id || !username) {
+            console.log('ReferenceError: You must provide an roomid and username while timeoutuser');
+            return false;
+        }
+
+        let parsedId;
+        try {
+            parsedId = ObjectId(id);
+        } catch (error) {
+            console.log(`Syntax Error: id is not valid while timeoutuser`);
+            return false;
+        }
+
+        const roomCollection = await rooms();
+        const room = await roomCollection.findOne({ _id: parsedId });
+        if (!room) {
+            console.log(`Error: room not exist while timeoutuser`);
+            return false;
+        }
+
+        if (room.isClosed || !room.isStarted) {
+            console.log('Room is closed or is not started while timeoutuser');
+            return false;
+        }
+
+        const updatedRoomData = room;
+        let allIsOver = true;
+        for (let i = 0; i < room.joinUsers.length; i++) {
+            const element = room.joinUsers[i];
+            if (element.userName == username) {
+                updatedRoomData.joinUsers[i].isOver = true;
+            } else
+            if (!element.isOver) {
+                allIsOver = false;
+            }
+        };
+        if (allIsOver) {
+            updatedRoomData.isClosed = true;
+            updatedRoomData.winUser = '';
+        }
+
+        const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
+
+        if (updatedInfo.modifiedCount === 0) {
+            console.log('could not set ready for joinuser while timeoutuser');
+            return false;
+        }
+
+        if (allIsOver) {
+            const result = {
+                id: String(updatedRoomData._id),
+                userName: updatedRoomData.userName,
+                joinUsers: updatedRoomData.joinUsers,
+                winUser: updatedRoomData.winUser,
+                isStarted: updatedRoomData.isStarted,
+                isClosed: updatedRoomData.isClosed,
+            }
+            return result;
+        }
+
+        return { allIsOver: false };
+    },
 
 };
 
