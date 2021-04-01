@@ -21,7 +21,7 @@ Client.socket.on('stage_start',function(data){
             cur_word = 0;
             cur_point = 0;
             game.scene.stop('HomeScreen');
-            game.scene.start('NumberGameScene');
+            game.scene.start('NumberGameScreen');
         }
         else
             Client.stage_cancel();

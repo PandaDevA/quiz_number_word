@@ -203,19 +203,36 @@ class NumberGameScreen extends Phaser.Scene{
     checkResult(){
         if(this.selected_index == -1)
             return;
-        if(this.numberTexts[this.selected_index].text == this.targetNumber.text)
+        let bPass = false;
+        let target = Number.parseInt(this.targetNumber.text);
+        let result = Number.parseInt(this.numberTexts[this.selected_index].text);
+        if(target == result)
         {
-            this.timer.remove();
-            this.time.removeEvent(this.timer);
-            if(cur_number == gameData.numData.length-1)
-            {
-                game.scene.stop('NumberGameScreen');
-                game.scene.start('WordGameScreen');
-            }
-            else{
-                cur_number++;
-                this.restart();
-            }
+            bPass = true;
+            cur_point += 10 + Number.parseInt(this.timeText);
+        }
+        else if(Math.abs(target-result) == 1)
+        {
+            bPass = true;
+            cur_point += 5;
+        }
+
+        this.timer.remove();
+        this.time.removeEvent(this.timer);
+        if(!bPass)
+        {
+            game.scene.stop('NumberGameScreen');
+            game.scene.start('EndScreen');
+            if(game_type == "stage")
+                Client.stage_end(false);
+        }
+        else if(cur_number == gameData.numData.length-1){
+            game.scene.stop('NumberGameScreen');
+            game.scene.start('WordGameScreen');
+        }
+        else{
+            cur_number++;
+            this.restart();
         }
     }
     updateTimer(scene){
@@ -224,15 +241,10 @@ class NumberGameScreen extends Phaser.Scene{
         {
             scene.timer.remove();
             scene.time.removeEvent(scene.timer);
-            if(cur_number == gameData.numData.length-1)
-            {
-                game.scene.stop('NumberGameScreen');
-                game.scene.start('WordGameScreen');
-            }
-            else{
-                cur_number++;
-                this.restart();
-            }
+            game.scene.stop('NumberGameScreen');
+            game.scene.start('EndScreen');
+            if(game_type == "stage")
+                Client.stage_end(false);
         }
         else{
             scene.timeText.setText(current_time);

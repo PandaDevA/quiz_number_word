@@ -104,26 +104,36 @@ class WordGameScreen extends Phaser.Scene{
     }
 
     checkResult(){
+        let bPass = false;
         if(this.resultWord.text == gameData.wordData[cur_word])
         {
-            this.timer.remove();
-            this.time.removeEvent(this.timer);
-            if(cur_word == gameData.wordData.length-1)
+            bPass = true;
+            cur_point += 15 + Number.parseInt(this.timeText);
+        }
+        
+        this.timer.remove();
+        this.time.removeEvent(this.timer);
+        if(!bPass){
+            game.scene.stop('WordGameScreen');
+            game.scene.start('EndScreen');
+            if(game_type == "stage")
+                Client.stage_end(false);
+        }
+        else if(cur_word == gameData.wordData.length-1)
+        {
+            game.scene.stop('WordGameScreen');
+            game.scene.start('EndScreen');
+            if(game_type == "stage")
             {
-                game.scene.stop('WordGameScreen');
-                game.scene.start('EndScreen');
-                if(game_type == "stage")
-                {
-                    Client.stage_end();
-                }
-                else{
-                    Client.end(false);
-                }
+                Client.stage_end(true);
             }
             else{
-                cur_word++;
-                this.restart();
+                Client.end(false);
             }
+        }
+        else{
+            cur_word++;
+            this.restart();
         }
     }
 
@@ -131,21 +141,16 @@ class WordGameScreen extends Phaser.Scene{
         let current_time = Number.parseInt(scene.timeText.text) - 1;
         if(current_time < 0)
         {
-            if(cur_word == gameData.wordData.length-1)
+            scene.timer.remove();
+            scene.time.removeEvent(scene.timer);
+            game.scene.stop('WordGameScreen');
+            game.scene.start('EndScreen');
+            if(game_type == "stage")
             {
-                game.scene.stop('WordGameScreen');
-                game.scene.start('EndScreen');
-                if(game_type == "stage")
-                {
-                    Client.stage_end();
-                }
-                else{
-                    Client.end(false);
-                }
+                Client.stage_end(false);
             }
             else{
-                cur_word++;
-                this.restart();
+                Client.end(false);
             }
         }
         else{
