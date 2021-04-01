@@ -1,7 +1,7 @@
 const mongoCollections = require('../config/mongoCollections');
 const rooms = mongoCollections.rooms;
 let { ObjectId } = require('mongodb');
-const { users } = require('./users');
+const users = require('./users');
 
 const exportedMethods = {
 

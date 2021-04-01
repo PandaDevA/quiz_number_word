@@ -124,7 +124,7 @@ const exportedMethods = {
             });
 
             socket.on('stage_end', (data) => {
-                console.log('stage_end request recevied');
+                console.log('stage_end request recevied : ', data);
                 users.stopStage(data.username, data.result).then((result) => {
                     if (result) {
                         socket.emit('stage_end', { result: true, info: result });

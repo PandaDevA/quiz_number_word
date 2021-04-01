@@ -61,7 +61,7 @@ const exportedMethods = {
             password: password,
             point: 1000,
             heart: 3,
-            coin: 0,
+            coin: 50,
             isStartStage: false,
         };
 
@@ -138,6 +138,7 @@ const exportedMethods = {
 
 
     async stopStage(username, data) {
+        console.log(username);
         if (!username || !data) {
             console.log('ReferenceError: Username is not supplied while endStage');
             return false;
