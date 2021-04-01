@@ -56,9 +56,18 @@ const exportedMethods = {
                 return;
             }
         });
-        
-        if (idxOfUser == -1)
-            updatedRoomData.joinUsers.push({ userName: data.username, point: userInfo.point, isOver: false });
+
+        let result = {
+            joinUsers: updatedRoomData.joinUsers,
+            newUserPoint: userInfo.point
+        }
+
+        if (idxOfUser != -1) {
+            console.log(`${data.username} is already in while jointournament`);
+            return result;
+        }
+        updatedRoomData.joinUsers.push({ userName: data.username, point: userInfo.point, isOver: false });
+        result.joinUsers = updatedRoomData.joinUsers;
 
         const updatedInfo = await roomCollection.updateOne({ _id: room._id }, { $set: updatedRoomData });
 
@@ -67,10 +76,6 @@ const exportedMethods = {
             return false;
         }
 
-        const result = {
-            joinUsers: updatedRoomData.joinUsers,
-            newUserPoint: userInfo.point
-        }
         return result;
     },
 
@@ -291,7 +296,7 @@ const exportedMethods = {
         const room = await roomCollection.findOne({ _id: parsedId });
         if (!room) {
             console.log(`Error: room not exist while joinroom`);
-            return false;
+            return {error: 'Error: invite user has canceled.'};
         }
 
         if (room.isStarted || room.isClosed) {
@@ -320,54 +325,7 @@ const exportedMethods = {
         return result;
     },
 
-    async joinRoom(id, username) {
-        if (!id || !username) {
-            console.log('ReferenceError: You must provide an roomid and username while joinRoom');
-            return false;
-        }
-
-        let parsedId;
-        try {
-            parsedId = ObjectId(id);
-        } catch (error) {
-            console.log(`Syntax Error: id is not valid while joinRoom`);
-            return false;
-        }
-
-        const roomCollection = await rooms();
-        const room = await roomCollection.findOne({ _id: parsedId });
-        if (!room) {
-            console.log(`Error: room not exist while joinroom`);
-            return false;
-        }
-
-        if (room.isStarted || room.isClosed) {
-            console.log('Room is not prepare status while joinroom');
-            return false;
-        }
-
-        const updatedRoomData = room;
-        updatedRoomData.joinUsers.push({ userName: username, isReady: false });
-
-        const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
-
-        if (updatedInfo.modifiedCount === 0) {
-            console.log('could not join to the room while joinroom');
-            return false;
-        }
-
-        const result = {
-            id: String(updatedRoomData._id),
-            userName: updatedRoomData.userName,
-            joinUsers: updatedRoomData.joinUsers,
-            winUser: updatedRoomData.winUser,
-            isStarted: updatedRoomData.isStarted,
-            isClosed: updatedRoomData.isClosed,
-        }
-        return result;
-    },
-
-    async readyUser(id, username) {
+    async rejectRoom(id, username) {
         if (!id || !username) {
             console.log('ReferenceError: You must provide an roomid and username while readyuser');
             return false;
@@ -494,16 +452,6 @@ const exportedMethods = {
 
         if (room.isClosed || room.isStarted) {
             console.log('The room is closed or already started while startRoom');
-            return false;
-        }
-
-        let canStart = true;
-        room.joinUsers.map((joinuser, index) => {
-            if (!joinuser.isReady) canStart = false;
-        });
-
-        if (!canStart) {
-            console.log(`To start room, all join users should be ready while startroom`);
             return false;
         }
 

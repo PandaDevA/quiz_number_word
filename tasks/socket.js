@@ -27,6 +27,16 @@ const getDateTimeString = (date) => {
     return dateString + ' ' + timeString;
 }
 
+ const getMultiRandomData = async () => {
+    let numDataList = [], wordDataList = [];
+    for(let i = 0; i < 5; i++) {
+        const numData = puzzle.getNumberData();
+        const wordData = await puzzle.getWordData();
+        numDataList.push(numData);
+        wordDataList.push(wordData);
+    }
+    return { numDataList, wordDataList };
+};
 
 const exportedMethods = {
     async onTimeInteval() {
@@ -47,15 +57,10 @@ const exportedMethods = {
         console.log(getDateTimeString(tournamentDateTime));
         const timeNumber = setTimeout(() => {
             try {
-                let numDataList = [], wordDataList = [];
-                for(let i = 0; i < 5; i++) {
-                    const numData = puzzle.getNumberData();
-                    const wordData = await puzzle.getWordData();
-                    numDataList.push(numData);
-                    wordDataList.push(wordData);
-                }
-                io.to('game_of_tournament').emit('tournament_start', {
-                    gameData: { numData: numDataList, wordData: wordDataList }
+                getMultiRandomData().then(({numDataList, wordDataList}) => {
+                    io.to('game_of_tournament').emit('tournament_start', {
+                        gameData: { numData: numDataList, wordData: wordDataList }
+                    });
                 });
             } catch (e) {
                 console.log(`Tournament couldn't start: ${e.message}`);
@@ -95,6 +100,7 @@ const exportedMethods = {
                 // console.log('login request recevied');
                 users.getUserByName(data.username, data.password).then((result) => {
                     if (result) {
+                        players[data.username] = socket.id;
                         socket.emit('login', { result: result });
                         // console.log(`${data.username} is logged`);
                     } else {
@@ -203,36 +209,94 @@ const exportedMethods = {
 
             socket.on('invite_request', (data) => {
                 console.log('invite_request is received');
+                if (players.keys().indexOf(data.inviteuser) == -1) {
+                    console.log('invite user is not connected.');
+                    socket.emit('invite_request', {result: false, to: data.inviteuser});
+                } else {
+                    rooms.createRoom(data.username).then((result) => {
+                        if (result) {
+                            console.log('invite_request is sent.');
+                            socket.join(`game_of_${result.id}`);
+                            socket.emit('invite_request', {result: result, to: data.inviteuser});
+                            socket.to(players[data.inviteuser]).emit('invite_request', {result: result, from: data.username});
+                        } else {
+                            socket.emit('invite_request', { result: false, to: data.inviteuser });
+                            console.log(`invite_request request of ${data.username} is failed`);
+                        }
+                    });
+                }
             });
 
-            socket.on('create', (data) => {
-                console.log('create request recevied');
-                rooms.createRoom(data.username).then((result) => {
+            socket.on('invite_accept', (data) => {
+                console.log('invite_accept request recevied');
+                rooms.joinRoom(data.roomId, data.invitedUser).then((result) => {
                     if (result) {
-                        socket.join(`game_of_${result.id}`);
-                        socket.emit('create', { result: result });
-                        socket.broadcast.emit('create', { result: result });
-                        console.log(`created room is ${data.username}: ${result}`);
-                    } else {
-                        socket.emit('create', { result: false });
-                        console.log(`create request of ${data.username} is failed`);
-                    }
-                });
-            });
-
-            socket.on('join', (data) => {
-                console.log('join request recevied');
-                rooms.joinRoom(data.roomId, data.joinUser).then((result) => {
-                    if (result) {
+                        if (result.error) {
+                            socket.emit('invite_accept', { result: false, error: result.error });
+                            console.log(`invite_accept request of ${data.invitedUser} is failed`);
+                        }
                         socket.join(`game_of_${data.roomId}`);
-                        socket.emit('join', { result: result });
-                        socket.to(`game_of_${data.roomId}`).emit('join', { result: result });
+
+                        rooms.startRoom(data.roomId).then((result) => {
+                            if (result) {
+                                getMultiRandomData().then(({numDataList, wordDataList}) => {                                        
+                                    socket.emit('invite_accept', { result: true, gameData: { numData: numDataList, wordData: wordDataList } });
+                                    socket.to(`game_of_${data.roomId}`).emit('invite_accept', { result: true, gameData: { numData: numDataList, wordData: wordDataList } });
+                                });
+                            } else {
+                                socket.emit('invite_accept', { result: false });
+                                console.log('the room could not start');
+                            }
+                        });
                     } else {
-                        socket.emit('join', { result: false });
-                        console.log(`join request of ${data.joinUser} is failed`);
+                        socket.emit('invite_accept', { result: false });
+                        console.log(`invite_accept request of ${data.invitedUser} is failed`);
                     }
                 });
             });
+
+            socket.on('invite_reject', (data) => {
+                console.log('invite_reject request received');
+                rooms.rejectRoom(data.roomId).then((result) => {
+                    if (result) {
+                        socket.emit('ready', { result: result });
+                        socket.to(`game_of_${data.roomId}`).emit('ready', { result: result });
+                    } else {
+                        socket.emit('ready', { result: false });
+                        console.log(`ready request of ${data.readyUser} is failed`);
+                    }
+                });
+            });
+
+
+            // socket.on('create', (data) => {
+            //     console.log('create request recevied');
+            //     rooms.createRoom(data.username).then((result) => {
+            //         if (result) {
+            //             socket.join(`game_of_${result.id}`);
+            //             socket.emit('create', { result: result });
+            //             socket.broadcast.emit('create', { result: result });
+            //             console.log(`created room is ${data.username}: ${result}`);
+            //         } else {
+            //             socket.emit('create', { result: false });
+            //             console.log(`create request of ${data.username} is failed`);
+            //         }
+            //     });
+            // });
+
+            // socket.on('join', (data) => {
+            //     console.log('join request recevied');
+            //     rooms.joinRoom(data.roomId, data.joinUser).then((result) => {
+            //         if (result) {
+            //             socket.join(`game_of_${data.roomId}`);
+            //             socket.emit('join', { result: result });
+            //             socket.to(`game_of_${data.roomId}`).emit('join', { result: result });
+            //         } else {
+            //             socket.emit('join', { result: false });
+            //             console.log(`join request of ${data.joinUser} is failed`);
+            //         }
+            //     });
+            // });
 
             socket.on('list', (data) => {
                 console.log('list requset received');
@@ -260,21 +324,21 @@ const exportedMethods = {
                 });
             });
 
-            socket.on('start', (data) => {
-                console.log('start request received');
-                rooms.startRoom(data.roomId).then((result) => {
-                    if (result) {
-                        const numData = puzzle.getNumberData();
-                        puzzle.getWordData().then((wordData) => {
-                            socket.to(`game_of_${data.roomId}`).emit('start', { result: true, gameData: { numData: numData, wordData: wordData } });
-                            socket.emit('start', { result: true, gameData: { numData: numData, wordData: wordData } });
-                        });
-                    } else {
-                        socket.emit('start', { result: false });
-                        console.log('the room could not start');
-                    }
-                });
-            });
+            // socket.on('start', (data) => {
+            //     console.log('start request received');
+            //     rooms.startRoom(data.roomId).then((result) => {
+            //         if (result) {
+            //             const numData = puzzle.getNumberData();
+            //             puzzle.getWordData().then((wordData) => {
+            //                 socket.to(`game_of_${data.roomId}`).emit('start', { result: true, gameData: { numData: numData, wordData: wordData } });
+            //                 socket.emit('start', { result: true, gameData: { numData: numData, wordData: wordData } });
+            //             });
+            //         } else {
+            //             socket.emit('start', { result: false });
+            //             console.log('the room could not start');
+            //         }
+            //     });
+            // });
 
             socket.on('end', (data) => {
                 console.log('end request received');
