@@ -200,6 +200,10 @@ const exportedMethods = {
                     });
             });
 
+            socket.on('invite_request', (data) => {
+                
+            });
+
             socket.on('create', (data) => {
                 console.log('create request recevied');
                 rooms.createRoom(data.username).then((result) => {
