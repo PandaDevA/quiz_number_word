@@ -30,7 +30,7 @@ const config = {
         createContainer: true
     },        
     backgroundColor: "#4488AA",
-    scene: [LoginScreen, HomeScreen, ListScreen, RoomScreen, NumberGameScreen, EndScreen, WordGameScreen ]
+    scene: [LoginScreen, HomeScreen, ListScreen, RoomScreen, NumberGameScreen, EndScreen, WordGameScreen, BattleScreen ]
 };
 
 var game = new Phaser.Game(config);

@@ -70,6 +70,10 @@ class HomeScreen extends Phaser.Scene{
             Client.stage_start();
         });
         this.battle = this.add.image(150,330,'Battle').setScale(0.3);
+        this.battle.setInteractive().on('pointerdown', () => {
+            game.scene.stop('HomeScreen');
+            game.scene.start('BattleScreen');
+        });
         this.tournament = this.add.image(150,400,'Tournament').setScale(0.3);
         this.tournament.setInteractive().on('pointerdown', () => {
             game.scene.stop('HomeScreen');
