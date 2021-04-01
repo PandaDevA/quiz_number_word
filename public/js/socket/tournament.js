@@ -1,37 +1,29 @@
-Client.create_room = function(){
-    Client.socket.emit('create', {username : userData.username});
+Client.tournament_in = function(){
+    Client.socket.emit('tournament_start', {username : userData.username});
 };
 
-Client.join_room = function(room_id){
-    Client.socket.emit('join', {joinUser : userData.username, roomId : room_id});
+Client.tournament_out = function(){
+    Client.socket.emit('tournament_out', {username : userData.username});
 };
 
-Client.ready = function(){
-    Client.socket.emit('ready', {readyUser : userData.username, roomId : roomData.id});
+Client.tournament_end = function(isAlive){
+    Client.socket.emit('tournament_end', {isAlive : isAlive, username : userData.username, point: cur_point});
 };
 
-Client.start = function(){
-    Client.socket.emit('start', {roomId : roomData.id});
-};
-
-Client.end = function(isTimeOut){
-    Client.socket.emit('end', {isTimeOut : isTimeOut, roomId : roomData.id, username : userData.username});
-};
-
-Client.socket.on('create',function(data){
+Client.socket.on('tournament_in',function(data){
     if(data.result)
     {
         if(data.result.userName == userData.username)
         {
-            roomData = data.result;
-            game.scene.stop('ListScreen');
-            game.scene.start('RoomScreen');
+            tournamentData = data.result;
+            game.scene.stop('HomeScreen');
+            game.scene.start('TournamentScreen');
         }
         else{
-            if(game.scene.isActive('ListScreen'))
+            if(game.scene.isActive('TournamentScreen'))
             {
-                let scene = game.scene.getScene('ListScreen');
-                scene.add_item(data.result);
+                let scene = game.scene.getScene('TournamentScreen');
+                scene.add_user(data.result);
             }
         }
         console.log('success');
@@ -42,10 +34,10 @@ Client.socket.on('create',function(data){
     }
 });
 
-Client.socket.on('join',function(data){
+Client.socket.on('tournament_out',function(data){
     if(data.result)
     {
-        roomData = data.result;
+        tournamentData = data.result;
         if(game.scene.isActive('RoomScreen'))
         {
             game.scene.getScene('RoomScreen').update();
@@ -63,20 +55,7 @@ Client.socket.on('join',function(data){
     }
 });
 
-Client.socket.on('ready',function(data){
-    if(data.result)
-    {
-        roomData = data.result;
-        game.scene.getScene('RoomScreen').update();
-        console.log('success');
-    }
-    else
-    {
-        console.log('failed');
-    }
-});
-
-Client.socket.on('start',function(data){
+Client.socket.on('tournament_start',function(data){
     if(data.result)
     {
         gameData = data.gameData;
@@ -90,7 +69,7 @@ Client.socket.on('start',function(data){
     }
 });
 
-Client.socket.on('end',function(data){
+Client.socket.on('tournament_end',function(data){
     if(data.result)
     {
         winner_name = data.winner;

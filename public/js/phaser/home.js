@@ -81,6 +81,10 @@ class HomeScreen extends Phaser.Scene{
         });
         this.dailyGame = this.add.image(80,500,'DailyGame').setScale(0.3);
         this.passionFlower = this.add.image(220,500,'PassionFlower').setScale(0.3);
+        this.passionFlower.setInteractive().on('pointerdown', () => {
+            game.scene.stop('HomeScreen');
+            game.scene.start('PassionScreen');
+        });
         // this.userName = this.add.text(100, 100, 'testuser', { fixedWidth: 150, fixedHeight: 36 });
         // this.password = this.add.text(100, 200, '123', { fixedWidth: 150, fixedHeight: 36 });
     
