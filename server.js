@@ -37,7 +37,7 @@ socketSrc.useSocket(io).then(() => {
     });
     number = setInterval(() => {
         socketSrc.onTimeInteval();
-    }, 30 * 1000);//60 * 
+    }, 30 * 60 * 1000);// 
 
     process.on('SIGTERM', shutDown);
     process.on('SIGINT', shutDown);

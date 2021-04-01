@@ -4,7 +4,7 @@ const users = data.users;
 const rooms = data.rooms;
 const words = data.words;
 
-// const players = {};
+const players = {};
 // const star = {
 //   x: Math.floor(Math.random() * 700) + 50,
 //   y: Math.floor(Math.random() * 500) + 50,
@@ -45,21 +45,22 @@ const exportedMethods = {
         let tournamentDateTime = new Date();
         tournamentDateTime.setTime(tournamentDateTime.getTime() + 300000);
         console.log(getDateTimeString(tournamentDateTime));
-
-        try {
-            let numDataList = [], wordDataList = [];
-            for(let i = 0; i < 5; i++) {
-                const numData = puzzle.getNumberData();
-                const wordData = await puzzle.getWordData();
-                numDataList.push(numData);
-                wordDataList.push(wordData);
+        const timeNumber = setTimeout(() => {
+            try {
+                let numDataList = [], wordDataList = [];
+                for(let i = 0; i < 5; i++) {
+                    const numData = puzzle.getNumberData();
+                    const wordData = await puzzle.getWordData();
+                    numDataList.push(numData);
+                    wordDataList.push(wordData);
+                }
+                io.to('game_of_tournament').emit('tournament_start', {
+                    gameData: { numData: numDataList, wordData: wordDataList }
+                });
+            } catch (e) {
+                console.log(`Tournament couldn't start: ${e.message}`);
             }
-            io.to('game_of_tournament').emit('tournament_start', {
-                gameData: { numData: numDataList, wordData: wordDataList }
-            });
-        } catch (e) {
-            console.log(`Tournament couldn't start: ${e.message}`);
-        }
+        }, 30000);
 
         io.on('connection', socket => {
             console.log('a user connected');
@@ -201,7 +202,7 @@ const exportedMethods = {
             });
 
             socket.on('invite_request', (data) => {
-                
+                console.log('invite_request is received');
             });
 
             socket.on('create', (data) => {
