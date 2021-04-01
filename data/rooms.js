@@ -325,9 +325,9 @@ const exportedMethods = {
         return result;
     },
 
-    async rejectRoom(id, username) {
-        if (!id || !username) {
-            console.log('ReferenceError: You must provide an roomid and username while readyuser');
+    async rejectRoom(id) {
+        if (!id) {
+            console.log('ReferenceError: You must provide an id to reject');
             return false;
         }
 
@@ -335,47 +335,68 @@ const exportedMethods = {
         try {
             parsedId = ObjectId(id);
         } catch (error) {
-            console.log(`Syntax Error: id is not valid while readyuser`);
+            console.log('id is not valid while rejectroom');
             return false;
         }
 
         const roomCollection = await rooms();
-        const room = await roomCollection.findOne({ _id: parsedId });
-        if (!room) {
-            console.log(`Error: room not exist while readyuser`);
+        let room;
+        try {
+            room = await roomCollection.findOne({ _id: parsedId });
+        } catch (e) {
+            console.log('the room of id is not exist');
+            return true;
+        }
+
+        if (room.isStarted) {
+            console.log('the room is already running');
             return false;
         }
 
-        if (room.isClosed || room.isStarted) {
-            console.log('Room is not prepare status while readyuser');
+        const deletionInfo = await roomCollection.removeOne({ _id: parsedId });
+        if (deletionInfo.deletedCount === 0) {
+            console.log('could not end the room while rejectroom');
             return false;
         }
 
-        const updatedRoomData = room;
-        for (let i = 0; i < room.joinUsers.length; i++) {
-            const element = room.joinUsers[i];
-            if (element.userName == username) {
-                updatedRoomData.joinUsers[i].isReady = true;
-                break;
-            }
-        };
+        return true;
+    },
 
-        const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
-
-        if (updatedInfo.modifiedCount === 0) {
-            console.log('could not set ready for joinuser while readyuser');
+    async cancelRoom(id) {
+        if (!id) {
+            console.log('ReferenceError: You must provide an id to cancel');
             return false;
         }
 
-        const result = {
-            id: String(updatedRoomData._id),
-            userName: updatedRoomData.userName,
-            joinUsers: updatedRoomData.joinUsers,
-            winUser: updatedRoomData.winUser,
-            isStarted: updatedRoomData.isStarted,
-            isClosed: updatedRoomData.isClosed,
+        let parsedId;
+        try {
+            parsedId = ObjectId(id);
+        } catch (error) {
+            console.log('id is not valid while cancelroom');
+            return false;
         }
-        return result;
+
+        const roomCollection = await rooms();
+        let room;
+        try {
+            room = await roomCollection.findOne({ _id: parsedId });
+        } catch (e) {
+            console.log('the room of id is not exist');
+            return true;
+        }
+
+        if (room.isStarted) {
+            console.log('the room is already running');
+            return false;
+        }
+
+        const deletionInfo = await roomCollection.removeOne({ _id: parsedId });
+        if (deletionInfo.deletedCount === 0) {
+            console.log('could not end the room while cancelroom');
+            return false;
+        }
+
+        return true;
     },
 
     async getRooms() {

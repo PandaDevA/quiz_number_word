@@ -259,11 +259,24 @@ const exportedMethods = {
                 console.log('invite_reject request received');
                 rooms.rejectRoom(data.roomId).then((result) => {
                     if (result) {
-                        socket.emit('ready', { result: result });
-                        socket.to(`game_of_${data.roomId}`).emit('ready', { result: result });
+                        socket.emit('invite_reject', { result: true });
+                        socket.to(`game_of_${data.roomId}`).emit('invite_reject', { result: true });
                     } else {
-                        socket.emit('ready', { result: false });
-                        console.log(`ready request of ${data.readyUser} is failed`);
+                        socket.emit('invite_reject', { result: false });
+                        console.log(`invite_reject request of ${data.invitedUser} is failed`);
+                    }
+                });
+            });
+
+            socket.on('invite_cancel', (data) => {
+                console.log('invite_cancel request received');
+                rooms.cancelRoom(data.roomId).then((result) => {
+                    if (result) {
+                        socket.emit('invite_cancel', { result: true });
+                        socket.to(`game_of_${data.roomId}`).emit('invite_cancel', { result: true });
+                    } else {
+                        socket.emit('invite_cancel', { result: false });
+                        console.log(`invite_cancel request of ${data.inviteUser} is failed`);
                     }
                 });
             });
