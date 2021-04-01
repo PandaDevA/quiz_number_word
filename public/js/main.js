@@ -4,7 +4,7 @@
 //noinspection JSCheckFunctionSignatures,JSCheckFunctionSignatures,JSCheckFunctionSignatures
 
 var userData = {};
-var roomData = {};
+var tournamentData = {};
 var gameData = {};
 
 var game_type = "";
@@ -30,7 +30,7 @@ const config = {
         createContainer: true
     },        
     backgroundColor: "#4488AA",
-    scene: [LoginScreen, HomeScreen, ListScreen, RoomScreen, NumberGameScreen, EndScreen, WordGameScreen ]
+    scene: [LoginScreen, HomeScreen, TournamentScreen, NumberGameScreen, EndScreen, WordGameScreen, BattleScreen, PassionScreen ]
 };
 
 var game = new Phaser.Game(config);

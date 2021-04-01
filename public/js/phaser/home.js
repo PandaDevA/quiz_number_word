@@ -70,6 +70,10 @@ class HomeScreen extends Phaser.Scene{
             Client.stage_start();
         });
         this.battle = this.add.image(150,330,'Battle').setScale(0.3);
+        this.battle.setInteractive().on('pointerdown', () => {
+            game.scene.stop('HomeScreen');
+            game.scene.start('BattleScreen');
+        });
         this.tournament = this.add.image(150,400,'Tournament').setScale(0.3);
         this.tournament.setInteractive().on('pointerdown', () => {
             game.scene.stop('HomeScreen');
@@ -77,6 +81,10 @@ class HomeScreen extends Phaser.Scene{
         });
         this.dailyGame = this.add.image(80,500,'DailyGame').setScale(0.3);
         this.passionFlower = this.add.image(220,500,'PassionFlower').setScale(0.3);
+        this.passionFlower.setInteractive().on('pointerdown', () => {
+            game.scene.stop('HomeScreen');
+            game.scene.start('PassionScreen');
+        });
         // this.userName = this.add.text(100, 100, 'testuser', { fixedWidth: 150, fixedHeight: 36 });
         // this.password = this.add.text(100, 200, '123', { fixedWidth: 150, fixedHeight: 36 });
     
