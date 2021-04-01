@@ -16,6 +16,17 @@ const words = data.words;
 
 
 const exportedMethods = {
+    async onTimeInteval() {
+        let result = await users.getAllUsers();
+        if (result)
+            result.map((user, index) => {
+                if (user.heart < 3) {
+                    const info = users.addUserValue(user.username, { heart: 1 });
+                    if (!info) console.log('Error occured whild addHeart');
+                }
+            });
+        console.log('Hearts supplied.');
+    },
     async useSocket(io) {
 
         let result = await users.getAllUsers();
