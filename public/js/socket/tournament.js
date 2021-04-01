@@ -1,5 +1,5 @@
 Client.tournament_in = function(){
-    Client.socket.emit('tournament_start', {username : userData.username});
+    Client.socket.emit('tournament_in', {username : userData.username});
 };
 
 Client.tournament_out = function(){
@@ -73,16 +73,11 @@ Client.socket.on('tournament_end',function(data){
     if(data.result)
     {
         winner_name = data.winner;
+        userData = data.userData;
         if(game.scene.isActive('EndScreen'))
             game.scene.getScene('EndScreen').updateResult();
-        else if(game.scene.isActive('WordGameScreen')){
-            game.scene.stop('WordGameScreen');
-            game.scene.start('EndScreen');
-        }
-        else if(game.scene.isActive('NumberGameScreen')){
-            game.scene.stop('NumberGameScreen');
-            game.scene.start('EndScreen');
-        }
+        else if(game.scene.isActive('HomeScreen'))
+            game.scene.getScene('HomeScreen').update();
         console.log(data);
     }
     else

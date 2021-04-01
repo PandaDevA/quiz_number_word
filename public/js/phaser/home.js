@@ -76,8 +76,7 @@ class HomeScreen extends Phaser.Scene{
         });
         this.tournament = this.add.image(150,400,'Tournament').setScale(0.3);
         this.tournament.setInteractive().on('pointerdown', () => {
-            game.scene.stop('HomeScreen');
-            game.scene.start('ListScreen');
+            Client.tournament_in();
         });
         this.dailyGame = this.add.image(80,500,'DailyGame').setScale(0.3);
         this.passionFlower = this.add.image(220,500,'PassionFlower').setScale(0.3);
