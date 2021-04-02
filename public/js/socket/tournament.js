@@ -13,9 +13,10 @@ Client.tournament_end = function(isAlive){
 Client.socket.on('tournament_in',function(data){
     if(data.result)
     {
-        if(data.result.userName == userData.username)
+        if(data.time)
         {
             tournamentData = data.result;
+            tournamentTime = data.time;
             game.scene.stop('HomeScreen');
             game.scene.start('TournamentScreen');
         }
