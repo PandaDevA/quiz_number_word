@@ -55,7 +55,7 @@ const exportedMethods = {
 
         let tournamentDateTime = new Date();
         tournamentDateTime.setTime(tournamentDateTime.getTime() + 30000);
-        console.log(getDateTimeString(tournamentDateTime));
+        // console.log(getDateTimeString(tournamentDateTime));
         const timeNumber = setTimeout(() => {
             try {
                 getMultiRandomData().then(({numDataList, wordDataList}) => {
