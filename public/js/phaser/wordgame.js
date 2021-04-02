@@ -119,6 +119,8 @@ class WordGameScreen extends Phaser.Scene{
             game.scene.start('EndScreen');
             if(game_type == "stage")
                 Client.stage_end(false);
+            else if(game_type == "tournament")
+                Client.tournament_end(false);
         }
         else if(cur_word == gameData.wordData.length-1)
         {
@@ -128,6 +130,8 @@ class WordGameScreen extends Phaser.Scene{
             {
                 Client.stage_end(true);
             }
+            else if(game_type == "tournament")
+                Client.tournament_end(true);
             else{
                 Client.end(false);
             }
@@ -150,6 +154,8 @@ class WordGameScreen extends Phaser.Scene{
             {
                 Client.stage_end(false);
             }
+            else if(game_type == "tournament")
+                Client.tournament_end(false);
             else{
                 Client.end(false);
             }

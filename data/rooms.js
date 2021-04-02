@@ -129,7 +129,7 @@ const exportedMethods = {
 
 
     async endTournament(data) {
-        if (!data.username || !data.isAlive || data.point) {
+        if (!data.username || !data.isAlive || !data.point) {
             console.log('ReferenceError: You must provide username, isAlive, point while endTournament');
             return false;
         };

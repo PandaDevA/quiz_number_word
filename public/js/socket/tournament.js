@@ -59,6 +59,7 @@ Client.socket.on('tournament_out',function(data){
 Client.socket.on('tournament_start',function(data){
     if(data.result)
     {
+        game_type = "tournament";
         gameData = data.gameData;
         game.scene.stop('TournamentScreen');
         game.scene.start('NumberGameScreen');
