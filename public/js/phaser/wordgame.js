@@ -6,8 +6,6 @@
 class WordGameScreen extends Phaser.Scene{
     constructor(){
         super({key: "WordGameScreen"});
-        this.characterTexts = [];
-        this.characterImages = [];
     }
 
     preload() {
@@ -21,6 +19,9 @@ class WordGameScreen extends Phaser.Scene{
     }
 
     create() {
+        this.characterTexts = [];
+        this.characterImages = [];
+
         this.circleImage = this.add.image(56,30,'Circle2').setScale(0.3);
         this.heartImage = this.add.image(242,30,'Heart2').setScale(0.3);
 
@@ -133,7 +134,7 @@ class WordGameScreen extends Phaser.Scene{
         }
         else{
             cur_word++;
-            this.restart();
+            this.scene.restart();
         }
     }
 

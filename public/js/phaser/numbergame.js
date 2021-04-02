@@ -6,10 +6,6 @@
 class NumberGameScreen extends Phaser.Scene{
     constructor(){
         super({key: "NumberGameScreen"});
-        this.numberTexts = [];
-        this.numberImages = [];
-        this.selected_index = -1;
-        this.selected_operator = -1;
     }
 
     preload() {
@@ -27,6 +23,11 @@ class NumberGameScreen extends Phaser.Scene{
     }
 
     create() {
+        this.numberTexts = [];
+        this.numberImages = [];
+        this.selected_index = -1;
+        this.selected_operator = -1;
+
         this.circleImage = this.add.image(56,30,'Circle2').setScale(0.3);
         this.heartImage = this.add.image(242,30,'Heart2').setScale(0.3);
 
@@ -232,7 +233,7 @@ class NumberGameScreen extends Phaser.Scene{
         }
         else{
             cur_number++;
-            this.restart();
+            this.scene.restart();
         }
     }
     updateTimer(scene){

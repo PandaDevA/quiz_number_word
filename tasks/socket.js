@@ -30,7 +30,7 @@ const getDateTimeString = (date) => {
 
  const getMultiRandomData = async () => {
     let numDataList = [], wordDataList = [];
-    for(let i = 0; i < 5; i++) {
+    for(let i = 0; i < 1; i++) {
         const numData = puzzle.getNumberData();
         const wordData = await puzzle.getWordData();
         numDataList.push(numData);

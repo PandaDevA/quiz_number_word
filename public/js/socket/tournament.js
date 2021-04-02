@@ -60,7 +60,7 @@ Client.socket.on('tournament_start',function(data){
     if(data.result)
     {
         gameData = data.gameData;
-        game.scene.stop('RoomScreen');
+        game.scene.stop('TournamentScreen');
         game.scene.start('NumberGameScreen');
         console.log(data);
     }
