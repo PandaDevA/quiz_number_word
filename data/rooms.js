@@ -153,6 +153,34 @@ const exportedMethods = {
 
         return true;
     },
+    
+    async openTournament() {
+
+        const roomCollection = await rooms();
+        let room = await roomCollection.findOne({ userName: 'tournament' });
+        if (!room) {
+            console.log('the tournamentRoom is not exist');
+            return false;
+        }
+
+        if (!room.isClosed) {
+            console.log('the tournament is ready');
+            return false;
+        }
+
+        const updatedRoomData = room;
+        updatedRoomData.isClosed = false;   
+        updatedRoomData.isStarted = false;
+
+        const updatedInfo = await roomCollection.updateOne({ _id: room._id }, { $set: updatedRoomData });
+
+        if (updatedInfo.modifiedCount === 0) {
+            console.log('could not end the room while openroom');
+            return false;
+        }
+
+        return true;
+    },
 
     async endTournament(data) {
         console.log(data);
@@ -169,7 +197,7 @@ const exportedMethods = {
         }
 
         if (room.isClosed || !room.isStarted) {
-            console.log('the tournament is never running');
+            console.log('the tournament is never running', room.isClosed, room.isStarted);
             return false;
         }
 

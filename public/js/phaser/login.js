@@ -56,6 +56,12 @@ class LoginScreen extends Phaser.Scene{
             console.log('login_request');
             Client.login(this.userName.text, this.password.text);
         });
+
+        this.registerButton = this.add.image(150,500,'Login').setScale(0.3);
+        this.registerButton.setInteractive().on('pointerdown', () => {
+            game.scene.stop('LoginScreen');
+            game.scene.start('RegisterScreen');
+        });
     }
     update(){
     }
