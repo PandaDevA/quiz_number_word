@@ -213,15 +213,16 @@ const exportedMethods = {
                     console.log('invite user is not connected.');
                     socket.emit('invite_request', {result: false, to: data.inviteuser});
                 } else {
-                    rooms.createRoom(data.username).then((result) => {
+                    rooms.createRoom(data.waituser).then((result) => {
                         if (result) {
                             console.log('invite_request is sent.');
                             socket.join(`game_of_${result.id}`);
                             socket.emit('invite_request', {result: result, to: data.inviteuser});
-                            socket.to(players[data.inviteuser]).emit('invite_request', {result: result, from: data.username});
+                            if(players[data.inviteuser])
+                                socket.to(players[data.inviteuser]).emit('invite_request', {result: result, from: data.waituser});
                         } else {
                             socket.emit('invite_request', { result: false, to: data.inviteuser });
-                            console.log(`invite_request request of ${data.username} is failed`);
+                            console.log(`invite_request request of ${data.waituser} is failed`);
                         }
                     });
                 }
@@ -229,11 +230,11 @@ const exportedMethods = {
 
             socket.on('invite_accept', (data) => {
                 console.log('invite_accept request recevied');
-                rooms.joinRoom(data.roomId, data.invitedUser).then((result) => {
+                rooms.joinRoom(data.roomId, data.inviteuser).then((result) => {
                     if (result) {
                         if (result.error) {
                             socket.emit('invite_accept', { result: false, error: result.error });
-                            console.log(`invite_accept request of ${data.invitedUser} is failed`);
+                            console.log(`invite_accept request of ${data.inviteuser} is failed`);
                         }
                         socket.join(`game_of_${data.roomId}`);
 
@@ -250,7 +251,7 @@ const exportedMethods = {
                         });
                     } else {
                         socket.emit('invite_accept', { result: false });
-                        console.log(`invite_accept request of ${data.invitedUser} is failed`);
+                        console.log(`invite_accept request of ${data.inviteuser} is failed`);
                     }
                 });
             });
@@ -261,9 +262,11 @@ const exportedMethods = {
                     if (result) {
                         socket.emit('invite_reject', { result: true });
                         socket.to(`game_of_${data.roomId}`).emit('invite_reject', { result: true });
+                        if(players[data.waituser])
+                            socket.to(players[data.waituser]).leave(`game_of_${data.roomId}`);
                     } else {
                         socket.emit('invite_reject', { result: false });
-                        console.log(`invite_reject request of ${data.invitedUser} is failed`);
+                        console.log(`invite_reject request of ${data.inviteuser} is failed`);
                     }
                 });
             });
@@ -274,9 +277,13 @@ const exportedMethods = {
                     if (result) {
                         socket.emit('invite_cancel', { result: true });
                         socket.to(`game_of_${data.roomId}`).emit('invite_cancel', { result: true });
+                        if(players[data.waituser])
+                            socket.to(players[data.waituser]).leave(`game_of_${data.roomId}`);
+                        if(players[data.inviteuser])
+                            socket.to(players[data.inviteuser]).leave(`game_of_${data.roomId}`);
                     } else {
                         socket.emit('invite_cancel', { result: false });
-                        console.log(`invite_cancel request of ${data.inviteUser} is failed`);
+                        console.log(`invite_cancel request of ${data.waituser} is failed`);
                     }
                 });
             });
