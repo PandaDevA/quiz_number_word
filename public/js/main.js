@@ -5,6 +5,7 @@
 
 var userData = {};
 var tournamentData = {};
+var tournamentTime = "";
 var gameData = {};
 
 var game_type = "";
@@ -26,11 +27,11 @@ const config = {
         width: 300,
         height: 600,
     },
+    backgroundColor: "#4488AA",
+    scene: [LoginScreen, HomeScreen,TournamentScreen, NumberGameScreen, EndScreen, WordGameScreen, BattleScreen, PassionScreen ],
     dom: {
         createContainer: true
-    },        
-    backgroundColor: "#4488AA",
-    scene: [LoginScreen, HomeScreen, TournamentScreen, NumberGameScreen, EndScreen, WordGameScreen, BattleScreen, PassionScreen ]
+    },
 };
 
 var game = new Phaser.Game(config);

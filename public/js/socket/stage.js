@@ -38,12 +38,12 @@ Client.socket.on('stage_end',function(data){
     {
         if(game.scene.isActive('HomeScreen'))
         {
-            userData = data.userData;
+            userData = data.info;
             game.scene.getScene('HomeScreen').update();
         }
         else
         {
-            userData = data.userData;
+            userData = data.info;
         }
         console.log(data);
     }
