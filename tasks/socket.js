@@ -5,6 +5,7 @@ const rooms = data.rooms;
 const words = data.words;
 
 const players = {};
+const randomPlayers = {};
 // const star = {
 //   x: Math.floor(Math.random() * 700) + 50,
 //   y: Math.floor(Math.random() * 500) + 50,
@@ -59,6 +60,7 @@ const exportedMethods = {
             try {
                 getMultiRandomData().then(({numDataList, wordDataList}) => {
                     io.to('game_of_tournament').emit('tournament_start', {
+                        result: true,
                         gameData: { numData: numDataList, wordData: wordDataList }
                     });
                 });
@@ -287,6 +289,24 @@ const exportedMethods = {
                     }
                 });
             });
+
+            socket.on('random_request', (data) => {
+                console.log('random_request is received');
+                rooms.createRandomRoom(data.randomuser).then((result) => {
+                    if (result) {
+                        randomPlayers[data.randomuser] = socket.id;
+                        console.log('random_request is sent.');
+                        socket.join(`game_of_${result.id}`);
+                        socket.emit('random_request', {result: result, from: data.randomuser});
+                        // if(players[data.randomuser])
+                            // socket.to(players[data.randomuser]).emit('random_request', {result: result, from: data.randomuser});
+                    } else {
+                        socket.emit('random_request', { result: false, to: data.randomuser });
+                        console.log(`random_request request of ${data.randomuser} is failed`);
+                    }
+                });
+            });
+
 
 
             // socket.on('create', (data) => {
