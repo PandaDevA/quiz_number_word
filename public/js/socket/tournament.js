@@ -61,6 +61,9 @@ Client.socket.on('tournament_start',function(data){
     {
         game_type = "tournament";
         gameData = data.gameData;
+        cur_number = 0;
+        cur_word = 0;
+        cur_point = 0;
         game.scene.stop('TournamentScreen');
         game.scene.start('NumberGameScreen');
         console.log(data);

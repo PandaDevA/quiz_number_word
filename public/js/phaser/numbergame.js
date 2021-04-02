@@ -210,7 +210,7 @@ class NumberGameScreen extends Phaser.Scene{
         if(target == result)
         {
             bPass = true;
-            cur_point += 10 + Number.parseInt(this.timeText);
+            cur_point += 10 + Number.parseInt(this.timeText.text);
         }
         else if(Math.abs(target-result) == 1)
         {

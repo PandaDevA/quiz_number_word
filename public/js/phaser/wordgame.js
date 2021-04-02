@@ -109,7 +109,7 @@ class WordGameScreen extends Phaser.Scene{
         if(this.resultWord.text == gameData.wordData[cur_word])
         {
             bPass = true;
-            cur_point += 15 + Number.parseInt(this.timeText);
+            cur_point += 15 + Number.parseInt(this.timeText.text);
         }
         
         this.timer.remove();

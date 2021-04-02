@@ -127,15 +127,42 @@ const exportedMethods = {
         return true;
     },
 
+    async startTournament() {
+
+        const roomCollection = await rooms();
+        let room = await roomCollection.findOne({ userName: 'tournament' });
+        if (!room) {
+            console.log('the tournamentRoom is not exist');
+            return false;
+        }
+
+        if (room.isClosed || room.isStarted) {
+            console.log('the tournament is already running');
+            return false;
+        }
+
+        const updatedRoomData = room;
+        updatedRoomData.isStarted = true;
+
+        const updatedInfo = await roomCollection.updateOne({ _id: room._id }, { $set: updatedRoomData });
+
+        if (updatedInfo.modifiedCount === 0) {
+            console.log('could not end the room while endroom');
+            return false;
+        }
+
+        return true;
+    },
 
     async endTournament(data) {
-        if (!data.username || !data.isAlive || !data.point) {
+        console.log(data);
+        if (!data.username || data.isAlive === undefined || data.point === undefined) {
             console.log('ReferenceError: You must provide username, isAlive, point while endTournament');
             return false;
         };
 
         const roomCollection = await rooms();
-        let room = await roomCollection.findOne({ username: 'tournament' });
+        let room = await roomCollection.findOne({ userName: 'tournament' });
         if (!room) {
             console.log('the tournamentRoom is not exist');
             return false;
@@ -176,7 +203,7 @@ const exportedMethods = {
             updatedRoomData.isClosed = true;
         }
 
-        const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
+        const updatedInfo = await roomCollection.updateOne({ _id: room._id }, { $set: updatedRoomData });
 
         if (updatedInfo.modifiedCount === 0) {
             console.log('could not end the room while endroom');
