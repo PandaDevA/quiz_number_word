@@ -53,7 +53,7 @@ const exportedMethods = {
     async useSocket(io) {
 
         let tournamentDateTime = new Date();
-        tournamentDateTime.setTime(tournamentDateTime.getTime() + 300000);
+        tournamentDateTime.setTime(tournamentDateTime.getTime() + 30000);
         console.log(getDateTimeString(tournamentDateTime));
         const timeNumber = setTimeout(() => {
             try {
