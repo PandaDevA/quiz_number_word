@@ -56,18 +56,23 @@ const exportedMethods = {
         let tournamentDateTime = new Date();
         tournamentDateTime.setTime(tournamentDateTime.getTime() + 30000);
         // console.log(getDateTimeString(tournamentDateTime));
-        const timeNumber = setTimeout(() => {
-            try {
-                getMultiRandomData().then(({numDataList, wordDataList}) => {
-                    io.to('game_of_tournament').emit('tournament_start', {
-                        result: true,
-                        gameData: { numData: numDataList, wordData: wordDataList }
+        rooms.openTournament().then(() => {
+            const timeNumber = setTimeout(() => {
+                try {
+                    rooms.startTournament().then((result) => {
+                        if(result)
+                        getMultiRandomData().then(({numDataList, wordDataList}) => {
+                            io.to('game_of_tournament').emit('tournament_start', {
+                                result: true,
+                                gameData: { numData: numDataList, wordData: wordDataList }
+                            });
+                        });
                     });
-                });
-            } catch (e) {
-                console.log(`Tournament couldn't start: ${e.message}`);
-            }
-        }, 30000);
+                } catch (e) {
+                    console.log(`Tournament couldn't start: ${e.message}`);
+                }
+            }, 30000);
+        });
 
         io.on('connection', socket => {
             console.log('a user connected');
@@ -196,6 +201,11 @@ const exportedMethods = {
                 console.log('tournament_end request received');
                     rooms.endTournament(data).then((result) => {
                         if (result && result.allIsOver) {
+                            socket.emit('tournament_end', {
+                                result: true,
+                                winner: result.result.winner,
+                                winnerPoint: result.result.winnerPoint
+                            });
                             socket.to('game_of_tournament').emit('tournament_end', {
                                 result: true,
                                 winner: result.result.winner,
