@@ -27,7 +27,7 @@ const config = {
         width: 300,
         height: 600,
     },
-    backgroundColor: "#4488AA",
+    transparent: true,
     scene: [LoginScreen, HomeScreen,TournamentScreen, NumberGameScreen, EndScreen, WordGameScreen, BattleScreen, PassionScreen ],
     dom: {
         createContainer: true
