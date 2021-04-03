@@ -6,14 +6,6 @@ const words = data.words;
 
 const players = {};
 const randomPlayers = {};
-// const star = {
-//   x: Math.floor(Math.random() * 700) + 50,
-//   y: Math.floor(Math.random() * 500) + 50,
-// };
-// const scores = {
-//   blue: 0,
-//   red: 0,
-// };
 
 const getDateTimeString = (date) => {
 
@@ -40,17 +32,19 @@ const getDateTimeString = (date) => {
 };
 
 const exportedMethods = {
-    async onTimeInteval() {
+    async onTimeInteval(io) {
         let result = await users.getAllUsers();
         if (result)
             result.map((user, index) => {
                 if (user.heart < 3) {
                     const info = users.addUserValue(user.username, { heart: 1 });
                     if (!info) console.log('Error occured whild addHeart');
+                    else io.emit('update_userdata', info);
                 }
             });
         console.log('Hearts supplied.');
     },
+
     async useSocket(io) {
 
         let tournamentDateTime = new Date();
@@ -146,6 +140,7 @@ const exportedMethods = {
                     if (result) {
                         socket.emit('stage_end', { result: true, info: result });
                         console.log(`${data.username} end stage`);
+                        if(!data.result.isWin) socket.emit('update_userdata', result);
                     } else {
                         socket.emit('stage_end', { result: false });
                         console.log(`${data.username} end failure stage`);
@@ -210,8 +205,9 @@ const exportedMethods = {
                                     winner: result.result.winner,
                                     winnerPoint: result.result.winnerPoint
                                 });
-                            console.log('All users are ended');
-                        }// else {
+                                socket.emit('update_userdata', result.userInfo);
+                                console.log('All users are ended');
+                            }// else {
                                 // socket.emit('tournament_end', {
                                     // result: true,
                                     // winner: result.result.winner,
@@ -253,6 +249,8 @@ const exportedMethods = {
                     if (result) {
                         if (result.error) {
                             socket.emit('invite_accept', { result: false, error: result.error });
+                            if(players[data.waituser])
+                                socket.to(players[data.waituser]).leave(`game_of_${data.roomId}`);
                             console.log(`invite_accept request of ${data.inviteuser} is failed`);
                         }
                         socket.join(`game_of_${data.roomId}`);
@@ -260,16 +258,22 @@ const exportedMethods = {
                         rooms.startRoom(data.roomId).then((result) => {
                             if (result) {
                                 getMultiRandomData().then(({numDataList, wordDataList}) => {                                        
-                                    socket.emit('invite_accept', { result: true, gameData: { numData: numDataList, wordData: wordDataList } });
-                                    socket.to(`game_of_${data.roomId}`).emit('invite_accept', { result: true, gameData: { numData: numDataList, wordData: wordDataList } });
+                                    socket.emit('battle_start', { result: data.roomId, gameData: { numData: numDataList, wordData: wordDataList } });
+                                    socket.to(`game_of_${data.roomId}`).emit('invite_accept', { result: data.roomId, gameData: { numData: numDataList, wordData: wordDataList } });
                                 });
                             } else {
                                 socket.emit('invite_accept', { result: false });
+                                if(players[data.waituser])
+                                    socket.to(players[data.waituser]).leave(`game_of_${data.roomId}`);
+                                if(players[data.inviteuser])
+                                    socket.to(players[data.inviteuser]).leave(`game_of_${data.roomId}`);
                                 console.log('the room could not start');
                             }
                         });
                     } else {
                         socket.emit('invite_accept', { result: false });
+                        if(players[data.waituser])
+                            socket.to(players[data.waituser]).leave(`game_of_${data.roomId}`);
                         console.log(`invite_accept request of ${data.inviteuser} is failed`);
                     }
                 });
@@ -279,12 +283,12 @@ const exportedMethods = {
                 console.log('invite_reject request received');
                 rooms.rejectRoom(data.roomId).then((result) => {
                     if (result) {
-                        socket.emit('invite_reject', { result: true });
+                        // socket.emit('invite_reject', { result: true });
                         socket.to(`game_of_${data.roomId}`).emit('invite_reject', { result: true });
                         if(players[data.waituser])
                             socket.to(players[data.waituser]).leave(`game_of_${data.roomId}`);
                     } else {
-                        socket.emit('invite_reject', { result: false });
+                        // socket.emit('invite_reject', { result: false });
                         console.log(`invite_reject request of ${data.inviteuser} is failed`);
                     }
                 });
@@ -294,14 +298,14 @@ const exportedMethods = {
                 console.log('invite_cancel request received');
                 rooms.cancelRoom(data.roomId).then((result) => {
                     if (result) {
-                        socket.emit('invite_cancel', { result: true });
+                        // socket.emit('invite_cancel', { result: true });
                         socket.to(`game_of_${data.roomId}`).emit('invite_cancel', { result: true });
                         if(players[data.waituser])
                             socket.to(players[data.waituser]).leave(`game_of_${data.roomId}`);
-                        if(players[data.inviteuser])
-                            socket.to(players[data.inviteuser]).leave(`game_of_${data.roomId}`);
+                        // if(players[data.inviteuser])
+                        //     socket.to(players[data.inviteuser]).leave(`game_of_${data.roomId}`);
                     } else {
-                        socket.emit('invite_cancel', { result: false });
+                        // socket.emit('invite_cancel', { result: false });
                         console.log(`invite_cancel request of ${data.waituser} is failed`);
                     }
                 });
@@ -309,17 +313,18 @@ const exportedMethods = {
 
             socket.on('random_request', (data) => {
                 console.log('random_request is received');
-                rooms.createRandomRoom(data.randomuser).then((result) => {
+                rooms.createRandomRoom(data.username).then((result) => {
                     if (result) {
-                        randomPlayers[data.randomuser] = socket.id;
+                        randomPlayers[data.username].socketId = socket.id;
+                        randomPlayers[data.username].isPlaying = false;
                         console.log('random_request is sent.');
                         socket.join(`game_of_${result.id}`);
-                        socket.emit('random_request', {result: result, from: data.randomuser});
-                        // if(players[data.randomuser])
-                            // socket.to(players[data.randomuser]).emit('random_request', {result: result, from: data.randomuser});
+                        socket.emit('random_request', {result: true, from: data.username});
+                        // if(players[data.username])
+                            // socket.to(players[data.username]).emit('random_request', {result: result, from: data.username});
                     } else {
-                        socket.emit('random_request', { result: false, to: data.randomuser });
-                        console.log(`random_request request of ${data.randomuser} is failed`);
+                        socket.emit('random_request', { result: false, to: data.username });
+                        console.log(`random_request request of ${data.username} is failed`);
                     }
                 });
             });

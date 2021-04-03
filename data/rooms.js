@@ -221,8 +221,9 @@ const exportedMethods = {
         }
         updatedRoomData.joinUsers = joinusers;
 
+        let ref_user;
         if(!data.isAlive) {
-            const ref = users.delUserValue(data.username, {heart: 1});
+            ref_user = users.delUserValue(data.username, {heart: 1});
             // if(!ref) return false;
         } else if(data.point > updatedRoomData.winnerPoint) {
             updatedRoomData.winner = data.username;
@@ -240,7 +241,7 @@ const exportedMethods = {
             return false;
         }
 
-        return {result: updatedRoomData, allIsOver: allIsOver};
+        return {result: updatedRoomData, allIsOver: allIsOver, userInfo: ref_user};
     },
 
     async timeOutUser(id, username) {

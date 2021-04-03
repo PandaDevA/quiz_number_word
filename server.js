@@ -36,7 +36,7 @@ socketSrc.useSocket(io).then(() => {
         console.log(`Listening on ${server.address().port}`);
     });
     number = setInterval(() => {
-        socketSrc.onTimeInteval();
+        socketSrc.onTimeInteval(io);
     }, 30 * 60 * 1000);// 
 
     process.on('SIGTERM', shutDown);
