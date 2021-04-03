@@ -24,7 +24,7 @@ const exportedMethods = {
             const newroom = {
                 userName: 'tournament',
                 joinUsers: [{ userName: data.username, point: userInfo.point, isOver: false }],
-                winUser: '',
+                winner: '',
                 winnerPoint: 0,
                 isStarted: false,
                 isClosed: false,
@@ -36,8 +36,10 @@ const exportedMethods = {
                 return false;
             }
 
-            const result = newroom;
-            result.id = String(newInsertInformation.insertedId);
+            const result = {
+                joinUsers: newroom.joinUsers,
+                newUserPoint: userInfo.point
+            }
 
             return result;
         }
@@ -73,7 +75,7 @@ const exportedMethods = {
 
         if (updatedInfo.modifiedCount === 0) {
             console.log('could not join to the tournament while jointournament');
-            return false;
+            // return false;
         }
 
         return result;
@@ -106,7 +108,7 @@ const exportedMethods = {
         joinusers.map((user, index) => {
             if(user.userName == data.username) {
                 idxOfUser = index;
-                console.log(`user index = ${index}`);
+                // console.log(`user index = ${index}`);
                 return;
             }
         });
@@ -120,7 +122,7 @@ const exportedMethods = {
         const updatedInfo = await roomCollection.updateOne({ _id: room._id }, { $set: updatedRoomData });
 
         if (updatedInfo.modifiedCount === 0) {
-            console.log('could not join to the tournament while leavetournament');
+            console.log('could not leave to the tournament while leavetournament');
             return false;
         }
 
@@ -144,12 +146,18 @@ const exportedMethods = {
         const updatedRoomData = room;
         updatedRoomData.isStarted = true;
 
+        if (room.joinUsers.length == 0) {
+            console.log('no one joined the tournament. it counld not start any more');
+            updatedRoomData.isClosed = true;
+        }
+
         const updatedInfo = await roomCollection.updateOne({ _id: room._id }, { $set: updatedRoomData });
 
         if (updatedInfo.modifiedCount === 0) {
-            console.log('could not end the room while endroom');
-            return false;
+            console.log('could not start the room while startroom');
+            // return false;
         }
+        if (room.joinUsers.length == 0) return false;
 
         return true;
     },
@@ -163,11 +171,6 @@ const exportedMethods = {
             return false;
         }
 
-        if (!room.isClosed) {
-            console.log('the tournament is ready');
-            return false;
-        }
-
         const updatedRoomData = room;
         updatedRoomData.isClosed = false;   
         updatedRoomData.isStarted = false;
@@ -176,14 +179,13 @@ const exportedMethods = {
 
         if (updatedInfo.modifiedCount === 0) {
             console.log('could not end the room while openroom');
-            return false;
+            // return false;
         }
 
         return true;
     },
 
     async endTournament(data) {
-        console.log(data);
         if (!data.username || data.isAlive === undefined || data.point === undefined) {
             console.log('ReferenceError: You must provide username, isAlive, point while endTournament');
             return false;
@@ -197,7 +199,7 @@ const exportedMethods = {
         }
 
         if (room.isClosed || !room.isStarted) {
-            console.log('the tournament is never running', room.isClosed, room.isStarted);
+            console.log('the tournament is never running');
             return false;
         }
 

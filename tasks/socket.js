@@ -61,12 +61,15 @@ const exportedMethods = {
                 try {
                     rooms.startTournament().then((result) => {
                         if(result)
-                        getMultiRandomData().then(({numDataList, wordDataList}) => {
-                            io.to('game_of_tournament').emit('tournament_start', {
-                                result: true,
-                                gameData: { numData: numDataList, wordData: wordDataList }
+                            getMultiRandomData().then(({numDataList, wordDataList}) => {
+                                io.to('game_of_tournament').emit('tournament_start', {
+                                    result: true,
+                                    gameData: { numData: numDataList, wordData: wordDataList }
+                                });
                             });
-                        });
+                        else {
+                            console.log("Tournament automatically closed because it's not ready yet");
+                        }
                     });
                 } catch (e) {
                     console.log(`Tournament couldn't start: ${e.message}`);
@@ -170,10 +173,10 @@ const exportedMethods = {
                             socket.join('game_of_tournament');
                         } else {
                             socket.emit('tournament_in', { result: false, error: result.error });
-                            console.log(`${ data.username } couldn 't join tournament`);
+                            console.log(`${ data.username } couldn 't join tournament because ${result.error}`);
                         }
                     } else {
-                        socket.emit('tournament_in', { result: false, error: 'ServerInternalError' });
+                        socket.emit('tournament_in', { result: false, error: 'Error occured while join in tournament' });
                         console.log(`${data.username} failure to join tournament`);
                     }
                 });
@@ -200,20 +203,24 @@ const exportedMethods = {
             socket.on('tournament_end', (data) => {
                 console.log('tournament_end request received');
                     rooms.endTournament(data).then((result) => {
-                        if (result && result.allIsOver) {
-                            socket.emit('tournament_end', {
-                                result: true,
-                                winner: result.result.winner,
-                                winnerPoint: result.result.winnerPoint
-                            });
-                            socket.to('game_of_tournament').emit('tournament_end', {
-                                result: true,
-                                winner: result.result.winner,
-                                winnerPoint: result.result.winnerPoint
-                            });
+                        if (result) {
+                            if(result.allIsOver) {
+                                socket.to('game_of_tournament').emit('tournament_end', {
+                                    result: true,
+                                    winner: result.result.winner,
+                                    winnerPoint: result.result.winnerPoint
+                                });
+                            console.log('All users are ended');
+                        }// else {
+                                // socket.emit('tournament_end', {
+                                    // result: true,
+                                    // winner: result.result.winner,
+                                    // winnerPoint: result.result.winnerPoint
+                                // });
+                            // }
                             console.log('end is processed');
                         } else {
-                            // socket.emit('end', { result: false });
+                            // socket.emit('tournament_end', { result: false });
                             console.log('the room could not end');
                         }
                     });
