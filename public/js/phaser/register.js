@@ -27,12 +27,10 @@ class RegisterScreen extends Phaser.Scene{
     }
 
     create() {
-        this.userAvatar = this.add.image(150,100,'UserAvatar').setScale(0.3);
-
         // Create button
-        var button = this.add.rectangle(400, 300, 500, 500, 0x4e342e).setStrokeStyle(2, 0x7b5e57);
+        var button = this.add.rectangle(150, 100, 120, 120, 0x4e342e).setStrokeStyle(2, 0x7b5e57);
         // Create canvas   
-        var canvas = this.add.rexCanvas(400, 300, 300, 300).fill('black');
+        var canvas = this.add.rexCanvas(150, 100, 120, 120).fill('black');
         canvas.fitTo = (function (parent) {
             var newSize = FitTo(this, parent, true);
             this.setDisplaySize(newSize.width, newSize.height);

@@ -2,86 +2,88 @@ Client.invite_request = function(friend_name){
     Client.socket.emit('invite_request', {inviteuser : friend_name, waituser : userData.username});
 };
 
-Client.invite_accept = function(friend_name){
-    Client.socket.emit('invite_accept', {inviteuser : friend_name, waituser : userData.username});
+Client.invite_accept = function(){
+    Client.socket.emit('invite_accept', {room_id : room_id, inviteuser : invite_name});
 };
 
-Client.invite_reject = function(friend_name){
-    Client.socket.emit('invite_reject', {inviteuser : friend_name, waituser : userData.username});
+Client.invite_reject = function(){
+    Client.socket.emit('invite_reject', {room_id : room_id, inviteuser : invite_name});
+    room_id = "";
+    invite_name = "";
 };
 
-Client.invite_cancel = function(friend_name){
-    Client.socket.emit('invite_cancel', {inviteuser : friend_name, waituser : userData.username});
+Client.invite_cancel = function(){
+    Client.socket.emit('invite_cancel', {room_id : room_id, inviteuser : invite_name});
+    room_id = "";
+    invite_name = "";
 };
+
+Client.battle_end = function(isAlive){
+    Client.socket.emit('tournament_end', {room_id: room_id, isAlive : isAlive, username : userData.username, point: cur_point});
+};
+
+Client.random_request = function(){
+    Client.socket.emit('random_request', {username : userData.username});
+};
+
+Client.random_cancel = function(){
+    Client.socket.emit('random_cancel', {username : userData.username});
+};
+
 
 Client.socket.on('invite_request',function(data){
     if(data.result)
     {
-        if(data.time)
+        if(data.from)
         {
-            tournamentData = data.result;
-            tournamentTime = data.time;
-            game.scene.stop('HomeScreen');
-            game.scene.start('TournamentScreen');
-        }
-        else{
-            if(game.scene.isActive('TournamentScreen'))
+            room_id = data.result.id;
+            invite_name = data.from;
+            if(game.scene.isActive('BattleScreen'))
             {
-                let scene = game.scene.getScene('TournamentScreen');
-                scene.add_user(data.result);
+                let scene = game.scene.getScene('BattleScreen');
+                scene.invite_request();
             }
         }
-        console.log('success');
+        else if(data.to)
+        {
+            room_id = data.result.id;
+            invite_name = data.to;
+        }
     }
     else
     {
-        console.log('failed');
+        if(!data.from)
+        {
+            if(game.scene.isAcive('BattleScreen'))
+            {
+                game.scene.getScene('BattleScreen').invite_request_failed();
+            }
+        }
     }
 });
 
 Client.socket.on('invite_accept',function(data){
-    if(data.result)
+    if(data.result == false)
     {
-        if(data.time)
+        room_id = "";
+        invite_name = "";
+        if(game.scene.isAcive('BattleScreen'))
         {
-            tournamentData = data.result;
-            tournamentTime = data.time;
-            game.scene.stop('HomeScreen');
-            game.scene.start('TournamentScreen');
+            game.scene.getScene('BattleScreen').invite_request_failed();
         }
-        else{
-            if(game.scene.isActive('TournamentScreen'))
-            {
-                let scene = game.scene.getScene('TournamentScreen');
-                scene.add_user(data.result);
-            }
-        }
-        console.log('success');
-    }
-    else
-    {
-        console.log('failed');
+        console.log(data.error);
     }
 });
 
 Client.socket.on('invite_reject',function(data){
     if(data.result)
     {
-        if(data.time)
+        room_id = "";
+        invite_name = "";
+        if(game.scene.isAcive('BattleScreen'))
         {
-            tournamentData = data.result;
-            tournamentTime = data.time;
-            game.scene.stop('HomeScreen');
-            game.scene.start('TournamentScreen');
+            game.scene.getScene('BattleScreen').invite_request_failed();
         }
-        else{
-            if(game.scene.isActive('TournamentScreen'))
-            {
-                let scene = game.scene.getScene('TournamentScreen');
-                scene.add_user(data.result);
-            }
-        }
-        console.log('success');
     }
     else
     {
@@ -90,26 +92,59 @@ Client.socket.on('invite_reject',function(data){
 });
 
 Client.socket.on('invite_cancel',function(data){
+    console.log(data);
+});
+
+Client.socket.on('battle_start',function(data){
     if(data.result)
     {
-        if(data.time)
-        {
-            tournamentData = data.result;
-            tournamentTime = data.time;
+        room_id = data.room_id;
+        game_type = "battle";
+        gameData = data.gameData;
+        cur_number = 0;
+        cur_word = 0;
+        cur_point = 0;
+        if(game.scene.isAcive('BattleScreen'))
+            game.scene.stop('BattleScreen');
+        if(game.scene.isAcive('HomwScreen'))
             game.scene.stop('HomeScreen');
-            game.scene.start('TournamentScreen');
-        }
-        else{
-            if(game.scene.isActive('TournamentScreen'))
-            {
-                let scene = game.scene.getScene('TournamentScreen');
-                scene.add_user(data.result);
-            }
-        }
-        console.log('success');
+        game.scene.start('NumberGameScreen');
+        console.log(data);
     }
     else
     {
         console.log('failed');
+    }
+});
+
+Client.socket.on('battle_end',function(data){
+    if(data.result)
+    {
+        winner_name = data.winner;
+        winner_point = data.winner_point;
+        if(game.scene.isActive('EndScreen'))
+            game.scene.getScene('EndScreen').updateResult();
+        else if(game.scene.isActive('HomeScreen'))
+            game.scene.getScene('HomeScreen').update();
+        console.log(data);
+    }
+    else
+    {
+        console.log('failed');
+    }
+});
+
+Client.socket.on('random_request',function(data){
+    if(data.result)
+    {
+        if(game.scene.isActive('BattleScreen'))
+        {
+            let scene = game.scene.getScene('BattleScreen');
+            scene.ramdom_request();
+        }
+    }
+    else
+    {
+        console.log(data);
     }
 });

@@ -81,8 +81,8 @@ Client.socket.on('tournament_end',function(data){
         winner_point = data.winner_point;
         if(game.scene.isActive('EndScreen'))
             game.scene.getScene('EndScreen').updateResult();
-        // else if(game.scene.isActive('HomeScreen'))
-        //     game.scene.getScene('HomeScreen').update();
+        else if(game.scene.isActive('HomeScreen'))
+            game.scene.getScene('HomeScreen').update();
         console.log(data);
     }
     else

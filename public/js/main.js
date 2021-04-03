@@ -17,6 +17,8 @@ var is_timeout = false;
 
 var winner_name = "";
 
+var invite_name = "";
+var room_id = "";
 
 const config = {
     type: Phaser.AUTO,

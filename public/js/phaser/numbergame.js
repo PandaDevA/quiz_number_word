@@ -228,6 +228,8 @@ class NumberGameScreen extends Phaser.Scene{
                 Client.stage_end(false);
             else if(game_type == "tournament")
                 Client.tournament_end(false);
+            else if(game_type == "battle")
+                Client.battle_end(false);
         }
         else if(cur_number == gameData.numData.length-1){
             game.scene.stop('NumberGameScreen');
@@ -250,7 +252,8 @@ class NumberGameScreen extends Phaser.Scene{
                 Client.stage_end(false);
             else if(game_type == "tournament")
                 Client.tournament_end(false);
-
+            else if(game_type == "battle")
+                Client.battle_end(false);
         }
         else{
             scene.timeText.setText(current_time);

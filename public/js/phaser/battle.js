@@ -66,10 +66,43 @@ class BattleScreen extends Phaser.Scene{
         });
 
         this.random_cancel_Button = this.add.image(200,400,'Cancel', 0).setScale(0.2);
-        this.random_cancel_Button.setInteractive().on('pointerdown', () => {
-            Client.random_cancel();
-        });
+        this.random_cancel_Button.setInteractive(false);
     }
     update(){
+    }
+
+    invite_request(){
+        this.userName.setText(invite_name);
+        this.inviteButton.setFrame(1);
+        this.inviteButton.setInteractive().on('pointerdown', () => {
+            Client.invite_accept();
+        });
+        this.invite_cancel_Button.setFrame(1);
+        this.invite_cancel_Button.setInteractive().on('pointerdown', () => {
+            Client.invite_reject();
+        });
+    }
+
+    invite_request_failed(){
+        this.inviteButton.setFrame(0);
+        this.inviteButton.setInteractive().on('pointerdown', () => {
+            Client.invite_request(this.userName.text);
+        });
+        this.invite_cancel_Button.setFrame(0);
+        this.invite_cancel_Button.setInteractive().on('pointerdown', () => {
+            Client.invite_cancel();
+        });
+    }
+
+    random_request(){
+        this.randomButton.setFrame(1);
+        this.randomButton.setInteractive(false);
+        this.random_cancel_Button.setInteractive().on('pointerdown', () => {
+            Client.random_cancel();
+            this.randomButton.setFrame(0);
+            this.randomButton.setInteractive().on('pointerdown', () => {
+                Client.random_request();
+            });
+        });
     }
 }
