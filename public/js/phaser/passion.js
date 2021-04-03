@@ -12,9 +12,9 @@ class PassionScreen extends Phaser.Scene{
     } 
 
     preload() {
-        this.load.image("Passion", "./images/passion_flower.png");
+        this.load.image("Passion", "./images/passion_board.png");
         this.load.image("Create", "./images/create.png");
-        this.load.image("Indicator", "./images/heart1.png");
+        this.load.image("Indicator", "./images/passion_picker.png");
     }
 
     create() {
