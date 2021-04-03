@@ -311,21 +311,35 @@ const exportedMethods = {
                 });
             });
 
-            socket.on('random_request', (data) => {
+            socket.on('random_request', async(data) => {
                 console.log('random_request is received');
                 let isMatch = false;
-                for (const username in randomPlayers) { 
+                for (const username in randomPlayers) {
+                    if(username == data.username) continue;
                     if(!isMatch && randomPlayers[username].isWaiting) {
+                        console.log('ok1');
                         //join to randomPlayers[user].socketId;
-                        randomPlayers[username].isWaiting = false;
-                        isMatch = true;
-                    } 
+                        const result = await rooms.joinRoom(randomPlayers[username].roomId, data.username);
+                        console.log('ok2');
+                        if(result && !result.error) {
+                            randomPlayers[username].isWaiting = false;
+                            isMatch = true;
+
+                            socket.join(`game_of_${randomPlayers[username].roomId}`);
+
+                            getMultiRandomData().then(({numDataList, wordDataList}) => {                                        
+                                socket.to(`game_of_${randomPlayers[username].roomId}`)
+                                    .emit('battle_start', { result: data.roomId, gameData: { numData: numDataList, wordData: wordDataList } });
+                            });
+                        }
+                    }
                 }
-                console.log(randomPlayers)
-                if(!isMatch && !randomPlayers[data.username])
+                console.log(randomPlayers);
+                if(isMatch) return;
+                if(!randomPlayers[data.username])
                     rooms.createRoom(data.username).then((result) => {
                         if (result) {
-                            randomPlayers[data.username] = { socketId: socket.id, isWaiting: true};
+                            randomPlayers[data.username] = { socketId: socket.id, roomId: result.id, isWaiting: true};
                             console.log('random_request is sent.');
                             console.log(randomPlayers);
                             socket.join(`game_of_${result.id}`);
@@ -341,15 +355,14 @@ const exportedMethods = {
                 console.log('random_cancel is received');
                 rooms.cancelRoom(data.roomId).then((result) => {
                     if (result) {
-                        // randomPlayers[data.username].socketId = socket.id;
-                        // randomPlayers[data.username].isPlaying = false;
-                        // console.log('random_cancel is sent.');
-                        // console.log(randomPlayers);
-                        // socket.join(`game_of_${result.id}`);
+                        randomPlayers[data.username] = undefined;
+                        console.log('random_cancel is sent.');
+                        console.log(randomPlayers);
+                        socket.leave(`game_of_${result.id}`);
                         // socket.emit('random_cancel', {result: true});
                     } else {
                         // socket.emit('random_cancel', { result: false });
-                        // console.log(`random_cancel request of ${data.username} is failed`);
+                        console.log(`random_cancel request of ${data.username} is failed`);
                     }
                 });
             });
