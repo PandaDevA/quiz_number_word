@@ -496,34 +496,6 @@ const exportedMethods = {
         return true;
     },
 
-    async createRandomRoom(username) {
-        if (username === undefined) {
-            console.log("Failed in createRoom! username is undefined");
-            return false;
-        }
-
-        const roomCollection = await rooms();
-
-        const newroom = {
-            userName: username,
-            joinUsers: [],
-            winUser: '',
-            isStarted: false,
-            isClosed: false,
-        };
-
-        const newInsertInformation = await roomCollection.insertOne(newroom);
-        if (newInsertInformation.insertedCount === 0) {
-            console.log('Could not add room');
-            return false;
-        }
-
-        const result = newroom;
-        result.id = String(newInsertInformation.insertedId);
-
-        return result;
-    },
-
     // async getRooms() {
     //     const roomCollection = await rooms();
     //     const room = await roomCollection.find().toArray();

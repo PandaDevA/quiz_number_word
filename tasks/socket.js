@@ -313,21 +313,46 @@ const exportedMethods = {
 
             socket.on('random_request', (data) => {
                 console.log('random_request is received');
-                rooms.createRandomRoom(data.username).then((result) => {
+                let isMatch = false;
+                randomPlayers.keys().map((user, index) => {
+                    if(!isMatch && randomPlayers[user].isWaiting) {
+                        //join to randomPlayers[user].socketId;
+                        randomPlayers[user].isWaiting = false;
+                        isMatch = true;
+                    }
+                });
+                if(!isMatch)
+                    rooms.createRoom(data.username).then((result) => {
+                        if (result) {
+                            randomPlayers[data.username].socketId = socket.id;
+                            randomPlayers[data.username].isWaiting = true;
+                            console.log('random_request is sent.');
+                            console.log(randomPlayers);
+                            socket.join(`game_of_${result.id}`);
+                            socket.emit('random_request', {result: result.id});
+                        } else {
+                            socket.emit('random_request', { result: false });
+                            console.log(`random_request request of ${data.username} is failed`);
+                        }
+                    });
+            });
+
+            socket.on('random_cancel', (data) => {
+                console.log('random_cancel is received');
+                rooms.cancelRoom(data.roomId).then((result) => {
                     if (result) {
-                        randomPlayers[data.username].socketId = socket.id;
-                        randomPlayers[data.username].isPlaying = false;
-                        console.log('random_request is sent.');
-                        console.log(randomPlayers);
-                        socket.join(`game_of_${result.id}`);
-                        socket.emit('random_request', {result: true});
+                        // randomPlayers[data.username].socketId = socket.id;
+                        // randomPlayers[data.username].isPlaying = false;
+                        // console.log('random_cancel is sent.');
+                        // console.log(randomPlayers);
+                        // socket.join(`game_of_${result.id}`);
+                        // socket.emit('random_cancel', {result: true});
                     } else {
-                        socket.emit('random_request', { result: false });
-                        console.log(`random_request request of ${data.username} is failed`);
+                        // socket.emit('random_cancel', { result: false });
+                        // console.log(`random_cancel request of ${data.username} is failed`);
                     }
                 });
             });
-
 
 
             // socket.on('create', (data) => {
@@ -359,31 +384,31 @@ const exportedMethods = {
             //     });
             // });
 
-            socket.on('list', (data) => {
-                console.log('list requset received');
-                rooms.getJoinUsers(data.roomId).then((result) => {
-                    if (result) {
-                        socket.emit('list', { result: true, joinusers: result });
-                        console.log('list request is processed');
-                    } else {
-                        socket.emit('list', { result: false });
-                        console.log('list request is not precessed');
-                    }
-                });
-            });
+            // socket.on('list', (data) => {
+            //     console.log('list requset received');
+            //     rooms.getJoinUsers(data.roomId).then((result) => {
+            //         if (result) {
+            //             socket.emit('list', { result: true, joinusers: result });
+            //             console.log('list request is processed');
+            //         } else {
+            //             socket.emit('list', { result: false });
+            //             console.log('list request is not precessed');
+            //         }
+            //     });
+            // });
 
-            socket.on('ready', (data) => {
-                console.log('ready request received');
-                rooms.readyUser(data.roomId, data.readyUser).then((result) => {
-                    if (result) {
-                        socket.emit('ready', { result: result });
-                        socket.to(`game_of_${data.roomId}`).emit('ready', { result: result });
-                    } else {
-                        socket.emit('ready', { result: false });
-                        console.log(`ready request of ${data.readyUser} is failed`);
-                    }
-                });
-            });
+            // socket.on('ready', (data) => {
+            //     console.log('ready request received');
+            //     rooms.readyUser(data.roomId, data.readyUser).then((result) => {
+            //         if (result) {
+            //             socket.emit('ready', { result: result });
+            //             socket.to(`game_of_${data.roomId}`).emit('ready', { result: result });
+            //         } else {
+            //             socket.emit('ready', { result: false });
+            //             console.log(`ready request of ${data.readyUser} is failed`);
+            //         }
+            //     });
+            // });
 
             // socket.on('start', (data) => {
             //     console.log('start request received');
@@ -401,37 +426,37 @@ const exportedMethods = {
             //     });
             // });
 
-            socket.on('end', (data) => {
-                console.log('end request received');
-                if (!data.isTimeOut) {
-                    rooms.removeRoom(data.roomId, data.username).then((result) => {
-                        if (result) {
-                            socket.emit('end', { result: true, winner: data.username });
-                            socket.to(`game_of_${data.roomId}`).emit('end', { result: true, winner: data.username });
-                            console.log('end is processed');
-                        } else {
-                            socket.emit('end', { result: false });
-                            console.log('the room could not end');
-                        }
-                    });
-                } else {
-                    rooms.timeOutUser(data.roomId, data.username).then((result) => {
-                        if (result) {
-                            if (result.allIsOver == false) {
-                                socket.emit('timeout', { result: true });
-                                console.log('timeout is processed');
-                            } else {
-                                socket.emit('end', { result: true, winner: '' });
-                                socket.to(`game_of_${data.roomId}`).emit('end', { result: true, winner: '' });
-                                console.log('end by timeoout');
-                            }
-                        } else {
-                            socket.emit('timeout', { result: false });
-                            console.log('user timeout is not processed');
-                        }
-                    });
-                }
-            });
+            // socket.on('end', (data) => {
+            //     console.log('end request received');
+            //     if (!data.isTimeOut) {
+            //         rooms.removeRoom(data.roomId, data.username).then((result) => {
+            //             if (result) {
+            //                 socket.emit('end', { result: true, winner: data.username });
+            //                 socket.to(`game_of_${data.roomId}`).emit('end', { result: true, winner: data.username });
+            //                 console.log('end is processed');
+            //             } else {
+            //                 socket.emit('end', { result: false });
+            //                 console.log('the room could not end');
+            //             }
+            //         });
+            //     } else {
+            //         rooms.timeOutUser(data.roomId, data.username).then((result) => {
+            //             if (result) {
+            //                 if (result.allIsOver == false) {
+            //                     socket.emit('timeout', { result: true });
+            //                     console.log('timeout is processed');
+            //                 } else {
+            //                     socket.emit('end', { result: true, winner: '' });
+            //                     socket.to(`game_of_${data.roomId}`).emit('end', { result: true, winner: '' });
+            //                     console.log('end by timeoout');
+            //                 }
+            //             } else {
+            //                 socket.emit('timeout', { result: false });
+            //                 console.log('user timeout is not processed');
+            //             }
+            //         });
+            //     }
+            // });
         });
     },
 };
