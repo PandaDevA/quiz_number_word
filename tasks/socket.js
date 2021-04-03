@@ -318,12 +318,11 @@ const exportedMethods = {
                         randomPlayers[data.username].socketId = socket.id;
                         randomPlayers[data.username].isPlaying = false;
                         console.log('random_request is sent.');
+                        console.log(randomPlayers);
                         socket.join(`game_of_${result.id}`);
-                        socket.emit('random_request', {result: true, from: data.username});
-                        // if(players[data.username])
-                            // socket.to(players[data.username]).emit('random_request', {result: result, from: data.username});
+                        socket.emit('random_request', {result: true});
                     } else {
-                        socket.emit('random_request', { result: false, to: data.username });
+                        socket.emit('random_request', { result: false });
                         console.log(`random_request request of ${data.username} is failed`);
                     }
                 });
