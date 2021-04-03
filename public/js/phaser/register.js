@@ -20,8 +20,9 @@ class RegisterScreen extends Phaser.Scene{
         this.load.plugin('rexfilechooserplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexfilechooserplugin.min.js', true);
 
 
-        this.load.image("Create", "./images/create.png");
+        this.load.image("Register", "./images/register.png");
         this.load.image("UserName", "./images/username.png");
+        this.load.image("Email", "./images/email.png");
         this.load.image("Password", "./images/password.png");
         this.load.image("UserAvatar", "./images/avatar.png");
     }
@@ -64,6 +65,15 @@ class RegisterScreen extends Phaser.Scene{
         })
         .setOrigin(0,0.5);
 
+        this.emailImage = this.add.image(150,250,'Email').setScale(0.3);
+        this.email = this.add.text(155, 250, '1234', { fixedWidth: 150, fixedHeight: 18 })
+        .setStyle({
+            fontSize: '18px',
+            fontFamily: 'Arial',
+            color: '#000000',
+        })
+        .setOrigin(0,0.5);
+
         this.passwordImage = this.add.image(150,300,'Password').setScale(0.3);
         this.password = this.add.text(155, 300, '1234', { fixedWidth: 150, fixedHeight: 18 })
         .setStyle({
@@ -77,11 +87,15 @@ class RegisterScreen extends Phaser.Scene{
             this.rexUI.edit(this.userName)
         });
 
+        this.email.setInteractive().on('pointerdown', () => {
+            this.rexUI.edit(this.email)
+        });
+
         this.password.setInteractive().on('pointerdown', () => {
             this.rexUI.edit(this.password)
         });
 
-        this.RegisterButton = this.add.image(150,400,'Create').setScale(0.3);
+        this.RegisterButton = this.add.image(150,400,'Register').setScale(0.3);
         this.RegisterButton.setInteractive().on('pointerdown', () => {
         });
     }

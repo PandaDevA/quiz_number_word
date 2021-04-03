@@ -18,6 +18,7 @@ class LoginScreen extends Phaser.Scene{
         this.load.plugin('rextexteditplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rextexteditplugin.min.js', true);
         this.load.image("Logo", "./images/logo.png");
         this.load.image("Login", "./images/login.png");
+        this.load.image("Register", "./images/register.png");
         this.load.image("UserName", "./images/username.png");
         this.load.image("Password", "./images/password.png");
     }
@@ -57,7 +58,7 @@ class LoginScreen extends Phaser.Scene{
             Client.login(this.userName.text, this.password.text);
         });
 
-        this.registerButton = this.add.image(150,500,'Login').setScale(0.3);
+        this.registerButton = this.add.image(150,500,'Register').setScale(0.3);
         this.registerButton.setInteractive().on('pointerdown', () => {
             game.scene.stop('LoginScreen');
             game.scene.start('RegisterScreen');

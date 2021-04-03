@@ -19,12 +19,12 @@ class PassionScreen extends Phaser.Scene{
 
     create() {
         this.result = this.add.text(150,20,'');
-        this.indicator = this.add.image(150,100,'Indicator').setScale(0.1);
 
-        this.passion_flower = this.add.image(150,300,'Passion');
+        this.passion_flower = this.add.image(150,200,'Passion');
         let angle = Number.parseInt(Math.random()*360);
         this.angle = angle;
         this.passion_flower.setAngle(angle);
+        this.indicator = this.add.image(150,300,'Indicator');
 
         this.stopButton = this.add.image(100,500,'Create', 0).setScale(0.2);
         this.stopButton.setInteractive().on('pointerdown', () => {
@@ -52,7 +52,7 @@ class PassionScreen extends Phaser.Scene{
         {
             scene.timer.remove();
             scene.time.removeEvent(scene.timer);
-            scene.result.setText(8-Number.parseInt(scene.angle/45));
+            scene.result.setText((12-Number.parseInt(scene.angle/45))%8);
         }
         scene.angle = scene.angle + scene.angle_speed;
         if(scene.angle>360)
