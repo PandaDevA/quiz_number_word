@@ -140,7 +140,7 @@ Client.socket.on('random_request',function(data){
         if(game.scene.isActive('BattleScreen'))
         {
             let scene = game.scene.getScene('BattleScreen');
-            scene.ramdom_request();
+            scene.random_request();
         }
     }
     else
