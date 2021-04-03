@@ -177,10 +177,10 @@ const exportedMethods = {
 
         const updatedInfo = await roomCollection.updateOne({ _id: room._id }, { $set: updatedRoomData });
 
-        if (updatedInfo.modifiedCount === 0) {
-            console.log('could not end the room while openroom');
+        // if (updatedInfo.modifiedCount === 0) {
+            // console.log('could not end the room while openroom');
             // return false;
-        }
+        // }
 
         return true;
     },

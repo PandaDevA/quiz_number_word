@@ -314,20 +314,20 @@ const exportedMethods = {
             socket.on('random_request', (data) => {
                 console.log('random_request is received');
                 let isMatch = false;
-                randomPlayers.keys().map((user, index) => {
-                    if(!isMatch && randomPlayers[user].isWaiting) {
+                for (const username in randomPlayers) {  
+                    console.log(randomPlayers)
+                    if(!isMatch && randomPlayers[username].isWaiting) {
                         //join to randomPlayers[user].socketId;
-                        randomPlayers[user].isWaiting = false;
+                        randomPlayers[username].isWaiting = false;
                         isMatch = true;
                     }
-                });
-                if(!isMatch)
+                }
+                if(!isMatch && !randomPlayers[data.username] || !isMatch && !randomPlayers[data.username].isWaiting)
                     rooms.createRoom(data.username).then((result) => {
                         if (result) {
-                            randomPlayers[data.username].socketId = socket.id;
-                            randomPlayers[data.username].isWaiting = true;
+                            randomPlayers[data.username] = { socketId: socket.id, isWaiting: true};
                             console.log('random_request is sent.');
-                            console.log(randomPlayers);
+                            // console.log(randomPlayers);
                             socket.join(`game_of_${result.id}`);
                             socket.emit('random_request', {result: result.id});
                         } else {
