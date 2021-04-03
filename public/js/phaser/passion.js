@@ -6,14 +6,16 @@
 class PassionScreen extends Phaser.Scene{
     constructor(){
         super({key: "PassionScreen"});
-        this.angle_speed = 20;
+        this.angle_speed = 0.05;
         this.angle = 0.0;
         this.bStop = false;
+        this.bTurn = false;
     } 
 
     preload() {
         this.load.image("Passion", "./images/passion_board.png");
-        this.load.image("Create", "./images/create.png");
+        this.load.image("Turn", "./images/turn.png");
+        this.load.image("Stop", "./images/stop.png");
         this.load.image("Indicator", "./images/passion_picker.png");
     }
 
@@ -26,28 +28,48 @@ class PassionScreen extends Phaser.Scene{
         this.passion_flower.setAngle(angle);
         this.indicator = this.add.image(150,300,'Indicator');
 
-        this.stopButton = this.add.image(100,500,'Create', 0).setScale(0.2);
-        this.stopButton.setInteractive().on('pointerdown', () => {
-            this.stop();
+        this.turnButton = this.add.image(100,500,'Turn', 0).setScale(0.2);
+        this.turnButton.setInteractive().on('pointerdown', () => {
+            this.turn();
         });
 
+        this.stopButton = this.add.image(200,500,'Stop', 0).setScale(0.2).setAlpha(0.5);
+        this.stopButton.disableInteractive();        
+    }
+    update(){
+    }
+
+    turn(){
+        this.turnButton.disableInteractive().setAlpha(0.5);
+        this.bTurn = true;
         this.timer = this.time.addEvent({
             delay: 50,
             callback: this.updateTimer,
             args: [this],
             loop: true
         });
-
-    }
-    update(){
     }
 
     stop(){
         this.bStop = true;
     }
     updateTimer(scene){
+        if(scene.bTurn)
+        {
+            scene.angle_speed *= 1.05;
+        }
         if(scene.bStop)
             scene.angle_speed /= 1.05;
+
+        if(scene.angle_speed >= 20)
+        {
+            scene.bTurn = false;
+            scene.stopButton.setInteractive().setAlpha(1.0).on('pointerdown', () => {
+                scene.stop();
+                scene.stopButton.disableInteractive().setAlpha(0.5);
+            });
+        }
+
         if(scene.angle_speed <= 0.05)
         {
             scene.timer.remove();
