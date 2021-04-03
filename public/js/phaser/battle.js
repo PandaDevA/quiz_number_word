@@ -15,11 +15,10 @@ class BattleScreen extends Phaser.Scene{
             sceneKey: 'rexUI'
         });
 
-        this.load.plugin('rextexteditplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rextexteditplugin.min.js', true);
+        // this.load.plugin('rextexteditplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rextexteditplugin.min.js', true);
         this.load.spritesheet("Invite", "./images/invite.png", { frameWidth: 493, frameHeight: 146 });
         this.load.spritesheet("Cancel", "./images/cancel.png", { frameWidth: 493, frameHeight: 146 });
         this.load.image("Random", "./images/random.png");
-        this.load.image("UserName", "./images/username.png");
     }
 
     create() {
@@ -66,7 +65,7 @@ class BattleScreen extends Phaser.Scene{
         });
 
         this.random_cancel_Button = this.add.image(200,400,'Cancel', 0).setScale(0.2);
-        this.random_cancel_Button.setInteractive(false);
+        this.random_cancel_Button.disableInteractive();
     }
     update(){
     }
@@ -96,7 +95,7 @@ class BattleScreen extends Phaser.Scene{
 
     random_request(){
         this.randomButton.setFrame(1);
-        this.randomButton.setInteractive(false);
+        this.randomButton.disableInteractive();
         this.random_cancel_Button.setInteractive().on('pointerdown', () => {
             Client.random_cancel();
             this.randomButton.setFrame(0);
