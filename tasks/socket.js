@@ -344,7 +344,14 @@ const exportedMethods = {
 
             socket.on('invite_request', (data) => {
                 console.log('invite_request is received');
-                if (players.keys().indexOf(data.inviteuser) == -1) {
+                let isOnline = false;
+                for(user in players) {
+                    if(user == data.inviteuser) {
+                        isOnline = true;
+                        break;
+                    }                    
+                }
+                if (!isOnline) {
                     console.log('invite user is not connected.');
                     socket.emit('invite_request', {result: false, to: data.inviteuser});
                 } else {
@@ -369,31 +376,35 @@ const exportedMethods = {
                     if (result) {
                         if (result.error) {
                             socket.emit('invite_accept', { result: false, error: result.error });
-                            if(players[data.waituser])
+                            if(players[data.waituser]) {
                                 socket.to(players[data.waituser]).leave(`game_of_${data.roomId}`);
+                                socket.to(players[data.waituser]).emit('invite_accept', { result: false, error: result.error });
+                            }
                             console.log(`invite_accept request of ${data.inviteuser} is failed`);
                         }
-                        socket.join(`game_of_${data.roomId}`);
 
                         rooms.startRoom(data.roomId).then((result) => {
                             if (result) {
+                                socket.join(`game_of_${data.roomId}`);
                                 getMultiRandomData().then(({numDataList, wordDataList}) => {                                        
                                     socket.emit('battle_start', { result: data.roomId, gameData: { numData: numDataList, wordData: wordDataList } });
-                                    socket.to(`game_of_${data.roomId}`).emit('invite_accept', { result: data.roomId, gameData: { numData: numDataList, wordData: wordDataList } });
+                                    socket.to(`game_of_${data.roomId}`).emit('battle_start', { result: data.roomId, gameData: { numData: numDataList, wordData: wordDataList } });
                                 });
                             } else {
                                 socket.emit('invite_accept', { result: false });
-                                if(players[data.waituser])
+                                if(players[data.waituser]) {
                                     socket.to(players[data.waituser]).leave(`game_of_${data.roomId}`);
-                                if(players[data.inviteuser])
-                                    socket.to(players[data.inviteuser]).leave(`game_of_${data.roomId}`);
+                                    socket.to(players[data.waituser]).emit('invite_accept', { result: false, error: result.error });
+                                }
                                 console.log('the room could not start');
                             }
                         });
                     } else {
                         socket.emit('invite_accept', { result: false });
-                        if(players[data.waituser])
+                        if(players[data.waituser]) {
                             socket.to(players[data.waituser]).leave(`game_of_${data.roomId}`);
+                            socket.to(players[data.waituser]).emit('invite_accept', { result: false });
+                        }
                         console.log(`invite_accept request of ${data.inviteuser} is failed`);
                     }
                 });
@@ -405,8 +416,10 @@ const exportedMethods = {
                     if (result) {
                         // socket.emit('invite_reject', { result: true });
                         socket.to(`game_of_${data.roomId}`).emit('invite_reject', { result: true });
-                        if(players[data.waituser])
+                        if(players[data.waituser]) {
                             socket.to(players[data.waituser]).leave(`game_of_${data.roomId}`);
+                            socket.to(players[data.waituser]).emit('invite_reject', { result: true });
+                        }
                     } else {
                         // socket.emit('invite_reject', { result: false });
                         console.log(`invite_reject request of ${data.inviteuser} is failed`);
@@ -419,9 +432,8 @@ const exportedMethods = {
                 rooms.cancelRoom(data.roomId).then((result) => {
                     if (result) {
                         // socket.emit('invite_cancel', { result: true });
-                        socket.to(`game_of_${data.roomId}`).emit('invite_cancel', { result: true });
-                        if(players[data.waituser])
-                            socket.to(players[data.waituser]).leave(`game_of_${data.roomId}`);
+                        // socket.to(`game_of_${data.roomId}`).emit('invite_cancel', { result: true });
+                        socket.leave(`game_of_${data.roomId}`);
                         // if(players[data.inviteuser])
                         //     socket.to(players[data.inviteuser]).leave(`game_of_${data.roomId}`);
                     } else {
@@ -495,7 +507,7 @@ const exportedMethods = {
 
             socket.on('battle_end', (data) => {
                 console.log('battle_end is received');
-                console.log(randomPlayers);
+                // console.log(randomPlayers);
                 rooms.endRoom(data).then((result) => {
                     if (result) {
                         if(result.allIsOver) {
@@ -515,6 +527,7 @@ const exportedMethods = {
                             if(players[createuser]) socket.to(players[createuser]).leave(`game_of_${data.roomId}`);
                             if(players[joinuser]) socket.to(players[joinuser]).leave(`game_of_${data.roomId}`);
                             randomPlayers[createuser] = undefined;
+                            rooms.rejectRoom(data.roomId);
                             console.log('All users are ended');
                         }
                         console.log('end is processed');

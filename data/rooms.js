@@ -375,16 +375,10 @@ const exportedMethods = {
             return false;
         }
 
-        const result = {
-            id: String(updatedRoomData._id),
-            userName: updatedRoomData.userName,
-            joinUsers: updatedRoomData.joinUsers,
-            winner: updatedRoomData.winner,
-            winnerPoint: updatedRoomData.winnerPoint,
-            isOver: updatedRoomData.isOver,
-            isStarted: updatedRoomData.isStarted,
-            isClosed: updatedRoomData.isClosed,
-        }
+        let result = updatedRoomData;
+
+        result.id = String(parsedId);
+
         return result;
     },
 
@@ -450,7 +444,7 @@ const exportedMethods = {
             return true;
         }
 
-        if (room.isStarted) {
+        if (room.isStarted && !room.isClosed) {
             console.log('the room is already running');
             return false;
         }
