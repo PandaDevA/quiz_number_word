@@ -364,7 +364,7 @@ const exportedMethods = {
         }
 
         const updatedRoomData = room;
-        updatedRoomData.joinUsers.push(username);
+        updatedRoomData.joinUsers.push({userName: username, isOver: false});
 
         const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
 
@@ -505,7 +505,7 @@ const exportedMethods = {
         };
 
         try {
-            parsedId = ObjectId(id);
+            parsedId = ObjectId(data.roomId);
         } catch (error) {
             console.log('id is not valid while endRoom');
             return false;

@@ -133,7 +133,7 @@ class WordGameScreen extends Phaser.Scene{
             else if(game_type == "tournament")
                 Client.tournament_end(true);
             else if(game_type == "battle")
-                Client.battle_end(false);
+                Client.battle_end(true);
         }
         else{
             cur_word++;

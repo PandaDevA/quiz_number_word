@@ -9,11 +9,11 @@ class EndScreen extends Phaser.Scene{
     }
 
     preload() {
-        this.load.image("Home", "./images/Home.png");
+        this.load.image("Back", "./images/back.png");
     }
 
     create() {
-        this.homeButton = this.add.image(150,400,'Home').setScale(0.3);
+        this.homeButton = this.add.image(150,400,'Back').setScale(0.3);
         this.homeButton.setInteractive().on('pointerdown', () => {
             game.scene.stop('EndScreen');
             game.scene.start('HomeScreen');
