@@ -48,8 +48,8 @@ const exportedMethods = {
         return user;
     },
 
-    async addUser(username, password) {
-        if (username === undefined || password === undefined) {
+    async addUser(data) {
+        if (data.username === undefined || data.password === undefined || data.email === undefined) {
             // console.log("Failed in AddUser! Username or Password is undefined");
             return false;
         }
@@ -57,13 +57,18 @@ const exportedMethods = {
         const userCollection = await users();
 
         const newuser = {
-            username: username,
-            password: password,
+            username: data.username,
+            password: data.password,
+            email: data.email,
+            avatar: '',
             point: 1000,
             heart: 3,
             coin: 50,
             isStartStage: false,
         };
+        if(data.avatar) {
+            newuser.avatar = data.avatar;
+        }
 
         const newInsertInformation = await userCollection.insertOne(newuser);
         if (newInsertInformation.insertedCount === 0) {

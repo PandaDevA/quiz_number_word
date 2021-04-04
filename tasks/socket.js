@@ -211,6 +211,23 @@ const exportedMethods = {
                 }
             });
 
+            socket.on('register', async(data) => {
+                console.log('register request is received');
+                if(!data.username) {
+                    console.log('username is not supplied while register');
+                }
+                users.getUserInfo(data.username).then((result) => {
+                    if(result) {
+                        console.log(`${data.username} is already registered while register`);
+                        socket.emit('register', {result: false, error: `${data.username} is already registered`});
+                    } else {
+                        users.addUser(data).then((result) => {
+
+                        });
+                    }
+                });
+            });
+
             socket.on('stage_start', (data) => {
                 console.log('stage_start request recevied');
                 users.startStage(data.username).then((result) => {
@@ -416,6 +433,7 @@ const exportedMethods = {
 
             socket.on('random_request', async(data) => {
                 console.log('random_request is received');
+                if(!data.username)return;
                 let isMatch = false;
                 for (const username in randomPlayers) {
                     if(username == data.username || !randomPlayers[username]) continue;
@@ -438,14 +456,14 @@ const exportedMethods = {
                         }
                     }
                 }
-                console.log(randomPlayers);
+                // console.log(randomPlayers);
                 if(isMatch) return;
                 if(!randomPlayers[data.username])
                     rooms.createRoom(data.username).then((result) => {
                         if (result) {
                             randomPlayers[data.username] = { socketId: socket.id, roomId: result.id, isWaiting: true, joinUser: ''};
                             console.log('random_request is sent.');
-                            console.log(randomPlayers);
+                            // console.log(randomPlayers);
                             socket.join(`game_of_${result.id}`);
                             socket.emit('random_request', {result: result.id});
                             if (socket.handshake.session.game_exists) socket.handshake.session.player_status = 'random_wait';
@@ -458,7 +476,7 @@ const exportedMethods = {
 
             socket.on('random_cancel', (data) => {
                 console.log('random_cancel is received');
-                if(data.roomId)
+                if(data.roomId && data.username)
                     rooms.cancelRoom(data.roomId).then((result) => {
                         if (result) {
                             randomPlayers[data.username] = undefined;

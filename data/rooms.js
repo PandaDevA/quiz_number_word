@@ -88,7 +88,7 @@ const exportedMethods = {
             return false;
         }
 
-        const userInfo = await users.getUserInfo();
+        const userInfo = await users.getUserInfo(data.username);
         if (!userInfo) return false;
 
         const roomCollection = await rooms();
