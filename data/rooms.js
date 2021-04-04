@@ -123,8 +123,8 @@ const exportedMethods = {
         const updatedInfo = await roomCollection.updateOne({ _id: room._id }, { $set: updatedRoomData });
 
         if (updatedInfo.modifiedCount === 0) {
-            console.log('could not leave to the tournament while leavetournament');
-            return false;
+            console.log('Warning: the tournament is not updated while leavetournament');
+            // return false;
         }
 
         return true;
@@ -155,7 +155,7 @@ const exportedMethods = {
         const updatedInfo = await roomCollection.updateOne({ _id: room._id }, { $set: updatedRoomData });
 
         if (updatedInfo.modifiedCount === 0) {
-            console.log('could not start the room while startroom');
+            console.log('Warning: the tournament is not updated while starttournament');
             // return false;
         }
         if (room.joinUsers.length == 0) return false;
@@ -178,10 +178,10 @@ const exportedMethods = {
 
         const updatedInfo = await roomCollection.updateOne({ _id: room._id }, { $set: updatedRoomData });
 
-        // if (updatedInfo.modifiedCount === 0) {
-            // console.log('could not end the room while openroom');
+        if (updatedInfo.modifiedCount === 0) {
+            console.log('Warning: the tournament is not updated while opentournament');
             // return false;
-        // }
+        }
 
         return true;
     },
@@ -238,76 +238,76 @@ const exportedMethods = {
         const updatedInfo = await roomCollection.updateOne({ _id: room._id }, { $set: updatedRoomData });
 
         if (updatedInfo.modifiedCount === 0) {
-            console.log('could not end the room while endroom');
-            return false;
+            console.log('Warning: the tournament is not updated while endtournament');
+            // return false;
         }
 
         return {result: updatedRoomData, allIsOver: allIsOver, userInfo: ref_user};
     },
 
-    async timeOutUser(id, username) {
-        if (!id || !username) {
-            console.log('ReferenceError: You must provide an roomid and username while timeoutuser');
-            return false;
-        }
+    // async timeOutUser(id, username) {
+    //     if (!id || !username) {
+    //         console.log('ReferenceError: You must provide an roomid and username while timeoutuser');
+    //         return false;
+    //     }
 
-        let parsedId;
-        try {
-            parsedId = ObjectId(id);
-        } catch (error) {
-            console.log(`Syntax Error: id is not valid while timeoutuser`);
-            return false;
-        }
+    //     let parsedId;
+    //     try {
+    //         parsedId = ObjectId(id);
+    //     } catch (error) {
+    //         console.log(`Syntax Error: id is not valid while timeoutuser`);
+    //         return false;
+    //     }
 
-        const roomCollection = await rooms();
-        const room = await roomCollection.findOne({ _id: parsedId });
-        if (!room) {
-            console.log(`Error: room not exist while timeoutuser`);
-            return false;
-        }
+    //     const roomCollection = await rooms();
+    //     const room = await roomCollection.findOne({ _id: parsedId });
+    //     if (!room) {
+    //         console.log(`Error: room not exist while timeoutuser`);
+    //         return false;
+    //     }
 
-        if (room.isClosed || !room.isStarted) {
-            console.log('Room is closed or is not started while timeoutuser');
-            return false;
-        }
+    //     if (room.isClosed || !room.isStarted) {
+    //         console.log('Room is closed or is not started while timeoutuser');
+    //         return false;
+    //     }
 
-        const updatedRoomData = room;
-        const allIsOver = true;
-        for (let i = 0; i < room.joinUsers.length; i++) {
-            const element = room.joinUsers[i];
-            if (element.userName == username) {
-                updatedRoomData.joinUsers[i].isOver = true;
-            } else
-            if (!element.isOver) {
-                allIsOver = false;
-            }
-        };
-        if (allIsOver) {
-            updatedRoomData.isClosed = true;
-            updatedRoomData.winner = '';
-        }
+    //     const updatedRoomData = room;
+    //     const allIsOver = true;
+    //     for (let i = 0; i < room.joinUsers.length; i++) {
+    //         const element = room.joinUsers[i];
+    //         if (element.userName == username) {
+    //             updatedRoomData.joinUsers[i].isOver = true;
+    //         } else
+    //         if (!element.isOver) {
+    //             allIsOver = false;
+    //         }
+    //     };
+    //     if (allIsOver) {
+    //         updatedRoomData.isClosed = true;
+    //         updatedRoomData.winner = '';
+    //     }
 
-        const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
+    //     const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
 
-        if (updatedInfo.modifiedCount === 0) {
-            console.log('could not set ready for joinuser while timeoutuser');
-            return false;
-        }
+    //     if (updatedInfo.modifiedCount === 0) {
+    //         console.log('could not set ready for joinuser while timeoutuser');
+    //         return false;
+    //     }
 
-        if (allIsOver) {
-            const result = {
-                id: String(updatedRoomData._id),
-                userName: updatedRoomData.userName,
-                joinUsers: updatedRoomData.joinUsers,
-                winner: updatedRoomData.winner,
-                isStarted: updatedRoomData.isStarted,
-                isClosed: updatedRoomData.isClosed,
-            }
-            return result;
-        }
+    //     if (allIsOver) {
+    //         const result = {
+    //             id: String(updatedRoomData._id),
+    //             userName: updatedRoomData.userName,
+    //             joinUsers: updatedRoomData.joinUsers,
+    //             winner: updatedRoomData.winner,
+    //             isStarted: updatedRoomData.isStarted,
+    //             isClosed: updatedRoomData.isClosed,
+    //         }
+    //         return result;
+    //     }
 
-        return { allIsOver: false };
-    },
+    //     return { allIsOver: false };
+    // },
 
     async createRoom(username) {
         if (username === undefined) {
@@ -371,8 +371,8 @@ const exportedMethods = {
         const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
 
         if (updatedInfo.modifiedCount === 0) {
-            console.log('could not join to the room while joinroom');
-            return false;
+            console.log('Warning: the room is not updated while joinroom');
+            // return false;
         }
 
         let result = updatedRoomData;
@@ -414,8 +414,8 @@ const exportedMethods = {
         const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
 
         if (updatedInfo.modifiedCount === 0) {
-            console.log('could not start the room while startroom');
-            return false;
+            console.log('Warning: the room is not updated while startroom');
+            // return false;
         }
 
         return true;
@@ -476,6 +476,7 @@ const exportedMethods = {
         let room;
         try {
             room = await roomCollection.findOne({ _id: parsedId });
+            if(!room) return false;
         } catch (e) {
             console.log('the room of id is not exist');
             return true;
@@ -556,8 +557,8 @@ const exportedMethods = {
         const updatedInfo = await roomCollection.updateOne({ _id: room._id }, { $set: updatedRoomData });
 
         if (updatedInfo.modifiedCount === 0) {
-            console.log('could not end the room while endRoom');
-            return false;
+            console.log('Warning: the room is not updated while endRoom');
+            // return false;
         }
 
         return {result: updatedRoomData, allIsOver: allIsOver, userInfo: ref_user};
