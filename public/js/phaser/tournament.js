@@ -14,10 +14,19 @@ class TournamentScreen extends Phaser.Scene{
             url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
             sceneKey: 'rexUI'
         });
+        this.load.image("Back", "./images/back.png");
     }
 
     create() {
-        this.tournament = this.add.text(150, 50, 'Tournament', { fixedHeight: 32 })
+        this.BackButton = this.add.image(50,50,'Back').setScale(0.2);
+        this.BackButton.setInteractive().on('pointerdown', () => {
+            Client.tournament_out();
+            game.domContainer.style.display = 'block';
+            game.scene.stop('TournamentScreen');
+            game.scene.start('HomeScreen');
+        });
+
+        this.tournament = this.add.text(150, 100, 'Tournament', { fixedHeight: 32 })
         .setStyle({
             fontSize: '32px',
             fontFamily: 'Arial',
@@ -26,9 +35,9 @@ class TournamentScreen extends Phaser.Scene{
 
         this.user_list = this.rexUI.add.scrollablePanel({
             x: 150,
-            y: 400,
+            y: 325,
             width: 200,
-            height: 150,
+            height: 250,
 
             scrollMode: 0,
 
@@ -83,7 +92,7 @@ class TournamentScreen extends Phaser.Scene{
         this.user_list.layout();
         this.user_list.setSliderEnable(true);
         this.user_list.setScrollerEnable(true);
-        game.domContainer.style.display = 'none'
+        game.domContainer.style.display = 'none';
     }
     update(){
     }

@@ -19,7 +19,7 @@ class RegisterScreen extends Phaser.Scene{
         this.load.plugin('rexcanvasplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexcanvasplugin.min.js', true);
         this.load.plugin('rexfilechooserplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexfilechooserplugin.min.js', true);
 
-
+        this.load.image("Back", "./images/back.png");
         this.load.image("Register", "./images/register.png");
         this.load.image("UserName", "./images/username.png");
         this.load.image("Email", "./images/email.png");
@@ -28,10 +28,16 @@ class RegisterScreen extends Phaser.Scene{
     }
 
     create() {
+        this.BackButton = this.add.image(50,50,'Back').setScale(0.2);
+        this.BackButton.setInteractive().on('pointerdown', () => {
+            game.scene.stop('RegisterScreen');
+            game.scene.start('LoginScreen');
+        });
+
         // Create button
-        var button = this.add.rectangle(150, 100, 120, 120, 0x4e342e).setStrokeStyle(2, 0x7b5e57);
+        var button = this.add.rectangle(150, 150, 120, 120, 0x4e342e).setStrokeStyle(2, 0x7b5e57);
         // Create canvas   
-        var canvas = this.add.rexCanvas(150, 100, 120, 120).fill('black');
+        var canvas = this.add.rexCanvas(150, 150, 120, 120).fill('black');
         canvas.fitTo = (function (parent) {
             var newSize = FitTo(this, parent, true);
             this.setDisplaySize(newSize.width, newSize.height);
@@ -56,8 +62,8 @@ class RegisterScreen extends Phaser.Scene{
                 })
         })
         
-        this.userNameImage = this.add.image(150,200,'UserName').setScale(0.3);
-        this.userName = this.add.text(155, 200, 'testuser', { fixedWidth: 150, fixedHeight: 18 })
+        this.userNameImage = this.add.image(150,250,'UserName').setScale(0.3);
+        this.userName = this.add.text(155, 250, 'testuser', { fixedWidth: 150, fixedHeight: 18 })
         .setStyle({
             fontSize: '18px',
             fontFamily: 'Arial',
@@ -65,8 +71,8 @@ class RegisterScreen extends Phaser.Scene{
         })
         .setOrigin(0,0.5);
 
-        this.emailImage = this.add.image(150,250,'Email').setScale(0.3);
-        this.email = this.add.text(155, 250, '1234', { fixedWidth: 150, fixedHeight: 18 })
+        this.emailImage = this.add.image(150,300,'Email').setScale(0.3);
+        this.email = this.add.text(155, 300, '1234', { fixedWidth: 150, fixedHeight: 18 })
         .setStyle({
             fontSize: '18px',
             fontFamily: 'Arial',
@@ -74,8 +80,8 @@ class RegisterScreen extends Phaser.Scene{
         })
         .setOrigin(0,0.5);
 
-        this.passwordImage = this.add.image(150,300,'Password').setScale(0.3);
-        this.password = this.add.text(155, 300, '1234', { fixedWidth: 150, fixedHeight: 18 })
+        this.passwordImage = this.add.image(150,350,'Password').setScale(0.3);
+        this.password = this.add.text(155, 350, '1234', { fixedWidth: 150, fixedHeight: 18 })
         .setStyle({
             fontSize: '18px',
             fontFamily: 'Arial',
@@ -95,7 +101,7 @@ class RegisterScreen extends Phaser.Scene{
             this.rexUI.edit(this.password)
         });
 
-        this.RegisterButton = this.add.image(150,400,'Register').setScale(0.3);
+        this.RegisterButton = this.add.image(150,450,'Register').setScale(0.3);
         this.RegisterButton.setInteractive().on('pointerdown', () => {
         });
     }
