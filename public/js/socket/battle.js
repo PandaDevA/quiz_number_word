@@ -19,7 +19,7 @@ Client.invite_cancel = function(){
 };
 
 Client.battle_end = function(isAlive){
-    Client.socket.emit('tournament_end', {room_id: room_id, isAlive : isAlive, username : userData.username, point: cur_point});
+    Client.socket.emit('battle_end', {room_id: room_id, isAlive : isAlive, username : userData.username, point: cur_point});
 };
 
 Client.random_request = function(){
