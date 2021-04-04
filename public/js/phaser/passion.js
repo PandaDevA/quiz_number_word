@@ -17,9 +17,16 @@ class PassionScreen extends Phaser.Scene{
         this.load.image("Turn", "./images/turn.png");
         this.load.image("Stop", "./images/stop.png");
         this.load.image("Indicator", "./images/passion_picker.png");
+        this.load.image("Back", "./images/back.png");
     }
 
     create() {
+        this.BackButton = this.add.image(50,50,'Back').setScale(0.2);
+        this.BackButton.setInteractive().on('pointerdown', () => {
+            game.scene.stop('PassionScreen');
+            game.scene.start('HomeScreen');
+        });
+
         this.result = this.add.text(150,20,'');
 
         this.passion_flower = this.add.image(150,200,'Passion');

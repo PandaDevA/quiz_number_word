@@ -3,23 +3,23 @@ Client.invite_request = function(friend_name){
 };
 
 Client.invite_accept = function(){
-    Client.socket.emit('invite_accept', {room_id : room_id, inviteuser : invite_name});
+    Client.socket.emit('invite_accept', {roomId : room_id, inviteuser : invite_name});
 };
 
 Client.invite_reject = function(){
-    Client.socket.emit('invite_reject', {room_id : room_id, inviteuser : invite_name});
+    Client.socket.emit('invite_reject', {roomId : room_id, inviteuser : invite_name});
     room_id = "";
     invite_name = "";
 };
 
 Client.invite_cancel = function(){
-    Client.socket.emit('invite_cancel', {room_id : room_id, inviteuser : invite_name});
+    Client.socket.emit('invite_cancel', {roomId : room_id, inviteuser : invite_name});
     room_id = "";
     invite_name = "";
 };
 
 Client.battle_end = function(isAlive){
-    Client.socket.emit('battle_end', {room_id: room_id, isAlive : isAlive, username : userData.username, point: cur_point});
+    Client.socket.emit('battle_end', {roomId: room_id, isAlive : isAlive, username : userData.username, point: cur_point});
 };
 
 Client.random_request = function(){
