@@ -62,10 +62,12 @@ class BattleScreen extends Phaser.Scene{
         });
 
         this.invite_cancel_Button = this.add.image(200,280,'Cancel', 0).setScale(0.2);
-        this.invite_cancel_Button.setInteractive().on('pointerdown', () => {
+        this.invite_cancel_Button.on('pointerdown', () => {
             Client.invite_cancel();
             this.invite_request_failed();
         });
+        this.invite_cancel_Button.disableInteractive();
+        this.invite_cancel_Button.setAlpha(0.5);
 
 
         this.random_battle = this.add.text(150, 350, 'Random Battle', { fixedHeight: 32 })
@@ -82,6 +84,7 @@ class BattleScreen extends Phaser.Scene{
 
         this.random_cancel_Button = this.add.image(200,450,'Cancel', 0).setScale(0.2);
         this.random_cancel_Button.disableInteractive();
+        this.random_cancel_Button.setAlpha(0.5);
     }
     update(){
     }

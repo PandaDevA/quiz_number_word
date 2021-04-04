@@ -26,10 +26,19 @@ class HomeScreen extends Phaser.Scene{
         // });
 
         // this.load.plugin('rextexteditplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rextexteditplugin.min.js', true);
+        if(userData.avatar != "")
+        {
+            this.textures.addBase64('user_avatar', userData.avatar);
+        }
     }
 
     create() {
-        this.userAvatar = this.add.image(150,100,'UserAvatar').setScale(0.3);
+        if(userData.avatar == ""){
+            this.userAvatar = this.add.image(150,100,'UserAvatar').setScale(0.3);   
+        }
+        else{
+            this.userAvatar = this.add.image(150,100,'user_avatar');
+        }
         this.userName = this.add.text(150,160, userData.username, { fixedWidth: 150, fixedHeight: 36 })
             .setOrigin(0.5,0.5)
             .setStyle({

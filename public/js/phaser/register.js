@@ -6,6 +6,7 @@
 class RegisterScreen extends Phaser.Scene{
     constructor(){
         super({key: "RegisterScreen"});
+        this.avatar = "";
     }
 
     preload() {
@@ -43,6 +44,7 @@ class RegisterScreen extends Phaser.Scene{
             this.setDisplaySize(newSize.width, newSize.height);
         }).bind(canvas)
 
+        var self = this;
         // Create a transparent file chooser
         this.add.rexFileChooser({
             accept: 'image/*'
@@ -51,10 +53,19 @@ class RegisterScreen extends Phaser.Scene{
         .on('change', function (gameObject) {
             var files = gameObject.files;
             if (files.length === 0) {
+                self.avatar = "";
                 return;
             }
 
             var url = URL.createObjectURL(files[0]);
+            var reader = new FileReader();
+            reader.readAsDataURL(files[0]);
+            reader.onload = function () {
+                self.avatar = reader.result;
+            };
+            reader.onerror = function (error) {
+                console.log('Error: ', error);
+            };
             canvas.loadFromURLPromise(url)
                 .then(function () {
                     URL.revokeObjectURL(url);
@@ -72,7 +83,7 @@ class RegisterScreen extends Phaser.Scene{
         .setOrigin(0,0.5);
 
         this.emailImage = this.add.image(150,300,'Email').setScale(0.3);
-        this.email = this.add.text(155, 300, '1234', { fixedWidth: 150, fixedHeight: 18 })
+        this.email = this.add.text(155, 300, '1234', { fixedWidth: 100, fixedHeight: 18 })
         .setStyle({
             fontSize: '18px',
             fontFamily: 'Arial',
@@ -103,6 +114,7 @@ class RegisterScreen extends Phaser.Scene{
 
         this.RegisterButton = this.add.image(150,450,'Register').setScale(0.3);
         this.RegisterButton.setInteractive().on('pointerdown', () => {
+            Client.register(this.userName.text, this.email.text, this.password.text, this.avatar);
         });
     }
     update(){

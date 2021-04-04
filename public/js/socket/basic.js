@@ -10,6 +10,10 @@ Client.login = function(username, password){
 };
 
 
+Client.register = function(username, email, password, avatar){
+    Client.socket.emit('register', {username: username, email: email, password: password, avatar: avatar});
+};
+
 
 ////////////////////////////////////////////////////////////////////////////
 
