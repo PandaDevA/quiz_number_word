@@ -433,6 +433,7 @@ const exportedMethods = {
 
             socket.on('random_request', async(data) => {
                 console.log('random_request is received');
+                console.log(randomPlayers);
                 if(!data.username)return;
                 let isMatch = false;
                 for (const username in randomPlayers) {
@@ -494,6 +495,7 @@ const exportedMethods = {
 
             socket.on('battle_end', (data) => {
                 console.log('battle_end is received');
+                console.log(randomPlayers);
                 rooms.endRoom(data).then((result) => {
                     if (result) {
                         if(result.allIsOver) {
