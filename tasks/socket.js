@@ -329,9 +329,9 @@ const exportedMethods = {
                             socket.join(`game_of_${randomPlayers[username].roomId}`);
 
                             getMultiRandomData().then(({numDataList, wordDataList}) => { 
-                                socket.emit('battle_start', { result: data.roomId, gameData: { numData: numDataList, wordData: wordDataList } });
+                                socket.emit('battle_start', { result: randomPlayers[username].roomId, gameData: { numData: numDataList, wordData: wordDataList } });
                                 socket.to(`game_of_${randomPlayers[username].roomId}`)
-                                    .emit('battle_start', { result: data.roomId, gameData: { numData: numDataList, wordData: wordDataList } });
+                                    .emit('battle_start', { result: randomPlayers[username].roomId, gameData: { numData: numDataList, wordData: wordDataList } });
                             });
                         }
                     }

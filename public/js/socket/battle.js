@@ -98,15 +98,15 @@ Client.socket.on('invite_cancel',function(data){
 Client.socket.on('battle_start',function(data){
     if(data.result)
     {
-        room_id = data.room_id;
+        room_id = data.result;
         game_type = "battle";
         gameData = data.gameData;
         cur_number = 0;
         cur_word = 0;
         cur_point = 0;
-        if(game.scene.isAcive('BattleScreen'))
+        if(game.scene.isActive('BattleScreen'))
             game.scene.stop('BattleScreen');
-        if(game.scene.isAcive('HomwScreen'))
+        if(game.scene.isActive('HomwScreen'))
             game.scene.stop('HomeScreen');
         game.scene.start('NumberGameScreen');
         console.log(data);

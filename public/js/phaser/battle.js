@@ -94,11 +94,9 @@ class BattleScreen extends Phaser.Scene{
     }
 
     random_request(){
-        this.randomButton.setFrame(1);
         this.randomButton.disableInteractive();
         this.random_cancel_Button.setInteractive().on('pointerdown', () => {
             Client.random_cancel();
-            this.randomButton.setFrame(0);
             this.randomButton.setInteractive().on('pointerdown', () => {
                 Client.random_request();
             });
