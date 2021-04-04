@@ -92,94 +92,94 @@ const exportedMethods = {
                 // remove this player from our players object
                 if (socket.handshake.session.game_exists) {
                     const username = socket.handshake.session.username;
-                    // switch(socket.handshake.session.player_status) {
-                    //     case 'tournament_in':
-                    //         //tournament end
-                    //         rooms.endTournament({username: username, isAlive: false, point: 0}).then((result) => {
-                    //             if (result) {
-                    //                 if(result.allIsOver) {
-                    //                     socket.to('game_of_tournament').emit('tournament_end', {
-                    //                         result: true,
-                    //                         winner: result.result.winner,
-                    //                         winnerPoint: result.result.winnerPoint
-                    //                     });
-                    //                 }
-                    //             } else {
-                    //                 rooms.leaveTournament({username: username});
-                    //                 socket.leave('game_of_tournament');
-                    //                 socket.emit('tournament_out', username);
-                    //                 socket.to('game_of_tournament').emit('tournament_out', username);
-                    //             }
-                    //         });
-                    //         break;
-                    //     case 'stage_start':
-                    //         //stage end
-                    //         users.stopStage(username, {isWin: false, point: 0});
-                    //         break;
-                    //     case 'random_wait':
-                    //         //random end
-                    //         if(randomPlayers[username] && randomPlayers[username].joinUsers == '')
-                    //             rooms.cancelRoom(randomPlayers[username].roomId).then((result) => {
-                    //                 if (result) {
-                    //                     socket.leave(`game_of_${result.id}`);
-                    //                 }
-                    //                 randomPlayers[username] = undefined;
-                    //             });
-                    //         else {
-                    //             rooms.endRoom({roomId: randomPlayers[username].roomId, username: username, isAlive: false, point: 0}).then((result) => {
-                    //                 if (result) {
-                    //                     if(result.allIsOver) {
-                    //                         socket.to(`game_of_${randomPlayers[username].roomId}`).emit('battle_end', {
-                    //                             result: true,
-                    //                             winner: result.result.winner,
-                    //                             winnerPoint: result.result.winnerPoint
-                    //                         });
-                    //                         if(players[randomPlayers[username].joinUser]) socket.to(players[randomPlayers[username].joinUser]).leave(`game_of_${randomPlayers[username].roomId}`);
-                    //                         socket.leave(`game_of_${randomPlayers[username].roomId}`);
-                    //                         randomPlayers[username] = undefined;
-                    //                     } else {
-                    //                         socket.leave(`game_of_${randomPlayers[username].roomId}`);
-                    //                     }
-                    //                 } else {
-                    //                     socket.leave(`game_of_${randomPlayers[username].roomId}`);
-                    //                 }
-                    //             });
-                    //         }
-                    //         break;
-                    //     case 'random_start':
-                    //         //random end
-                    //         let createUser = '';
-                    //         for (const user in randomPlayers) {
-                    //             if(user == username || !randomPlayers[user]) continue;
-                    //             if(randomPlayers[user].joinUser == username) {createUser = user;break;}
-                    //         }
-                    //         if(createUser == '')break;
-                    //         rooms.endRoom({roomId: randomPlayers[createUser].roomId, username: username, isAlive: false, point: 0}).then((result) => {
-                    //             if (result) {
-                    //                 if(result.allIsOver) {
-                    //                     socket.to(`game_of_${randomPlayers[createUser].roomId}`).emit('battle_end', {
-                    //                         result: true,
-                    //                         winner: result.result.winner,
-                    //                         winnerPoint: result.result.winnerPoint
-                    //                     });
-                    //                     if(players[createUser]) socket.to(players[createUser]).leave(`game_of_${randomPlayers[createUser].roomId}`);
-                    //                     socket.leave(`game_of_${randomPlayers[createUser].roomId}`);
-                    //                     randomPlayers[createUser] = undefined;
-                    //                 } else {
-                    //                     socket.leave(`game_of_${randomPlayers[createUser].roomId}`);
-                    //                 }
-                    //             } else {
-                    //                 socket.leave(`game_of_${randomPlayers[createUser].roomId}`);
-                    //             }
-                    //         });
-                    //         break;
-                    // }
+                    switch(socket.handshake.session.player_status) {
+                        case 'tournament_in':
+                            //tournament end
+                            rooms.endTournament({username: username, isAlive: false, point: 0}).then((result) => {
+                                if (result) {
+                                    if(result.allIsOver) {
+                                        socket.to('game_of_tournament').emit('tournament_end', {
+                                            result: true,
+                                            winner: result.result.winner,
+                                            winnerPoint: result.result.winnerPoint
+                                        });
+                                    }
+                                } else {
+                                    rooms.leaveTournament({username: username});
+                                    socket.leave('game_of_tournament');
+                                    socket.emit('tournament_out', username);
+                                    socket.to('game_of_tournament').emit('tournament_out', username);
+                                }
+                            });
+                            break;
+                        case 'stage_start':
+                            //stage end
+                            users.stopStage(username, {isWin: false, point: 0});
+                            break;
+                        case 'random_wait':
+                            //random end
+                            if(randomPlayers[username] && randomPlayers[username].joinUsers == '')
+                                rooms.cancelRoom(randomPlayers[username].roomId).then((result) => {
+                                    if (result) {
+                                        socket.leave(`game_of_${result.id}`);
+                                    }
+                                    randomPlayers[username] = undefined;
+                                });
+                            else {
+                                rooms.endRoom({roomId: randomPlayers[username].roomId, username: username, isAlive: false, point: 0}).then((result) => {
+                                    if (result) {
+                                        if(result.allIsOver) {
+                                            socket.to(`game_of_${randomPlayers[username].roomId}`).emit('battle_end', {
+                                                result: true,
+                                                winner: result.result.winner,
+                                                winnerPoint: result.result.winnerPoint
+                                            });
+                                            if(players[randomPlayers[username].joinUser]) socket.to(players[randomPlayers[username].joinUser]).leave(`game_of_${randomPlayers[username].roomId}`);
+                                            socket.leave(`game_of_${randomPlayers[username].roomId}`);
+                                            randomPlayers[username] = undefined;
+                                        } else {
+                                            socket.leave(`game_of_${randomPlayers[username].roomId}`);
+                                        }
+                                    } else {
+                                        socket.leave(`game_of_${randomPlayers[username].roomId}`);
+                                    }
+                                });
+                            }
+                            break;
+                        case 'random_start':
+                            //random end
+                            let createUser = '';
+                            for (const user in randomPlayers) {
+                                if(user == username || !randomPlayers[user]) continue;
+                                if(randomPlayers[user].joinUser == username) {createUser = user;break;}
+                            }
+                            if(createUser == '')break;
+                            rooms.endRoom({roomId: randomPlayers[createUser].roomId, username: username, isAlive: false, point: 0}).then((result) => {
+                                if (result) {
+                                    if(result.allIsOver) {
+                                        socket.to(`game_of_${randomPlayers[createUser].roomId}`).emit('battle_end', {
+                                            result: true,
+                                            winner: result.result.winner,
+                                            winnerPoint: result.result.winnerPoint
+                                        });
+                                        if(players[createUser]) socket.to(players[createUser]).leave(`game_of_${randomPlayers[createUser].roomId}`);
+                                        socket.leave(`game_of_${randomPlayers[createUser].roomId}`);
+                                        randomPlayers[createUser] = undefined;
+                                    } else {
+                                        socket.leave(`game_of_${randomPlayers[createUser].roomId}`);
+                                    }
+                                } else {
+                                    socket.leave(`game_of_${randomPlayers[createUser].roomId}`);
+                                }
+                            });
+                            break;
+                    }
                     //daily end
                     //invite end
                     players[username] = undefined;
                     socket.handshake.session.game_exists = false;
                     // console.log(players);
-                    // console.log(randomPlayers);
+                    console.log(randomPlayers);
                     // console.log(socket.handshake.session);
                     socket.handshake.session.save();
                 }
@@ -479,6 +479,11 @@ const exportedMethods = {
                 rooms.endRoom(data).then((result) => {
                     if (result) {
                         if(result.allIsOver) {
+                            socket.emit('battle_end', {
+                                result: true,
+                                winner: result.result.winner,
+                                winnerPoint: result.result.winnerPoint
+                            });
                             socket.to(`game_of_${data.roomId}`).emit('battle_end', {
                                 result: true,
                                 winner: result.result.winner,

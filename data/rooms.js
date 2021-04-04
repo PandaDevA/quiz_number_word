@@ -26,6 +26,7 @@ const exportedMethods = {
                 joinUsers: [{ userName: data.username, point: userInfo.point, isOver: false }],
                 winner: '',
                 winnerPoint: 0,
+                isOver: false,
                 isStarted: false,
                 isClosed: false,
             };
@@ -283,7 +284,7 @@ const exportedMethods = {
         };
         if (allIsOver) {
             updatedRoomData.isClosed = true;
-            updatedRoomData.winUser = '';
+            updatedRoomData.winner = '';
         }
 
         const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
@@ -298,7 +299,7 @@ const exportedMethods = {
                 id: String(updatedRoomData._id),
                 userName: updatedRoomData.userName,
                 joinUsers: updatedRoomData.joinUsers,
-                winUser: updatedRoomData.winUser,
+                winner: updatedRoomData.winner,
                 isStarted: updatedRoomData.isStarted,
                 isClosed: updatedRoomData.isClosed,
             }
@@ -319,7 +320,8 @@ const exportedMethods = {
         const newroom = {
             userName: username,
             joinUsers: [],
-            winUser: '',
+            winner: '',
+            winnerPoint: 0,
             isOver: false,
             isStarted: false,
             isClosed: false,
@@ -377,7 +379,8 @@ const exportedMethods = {
             id: String(updatedRoomData._id),
             userName: updatedRoomData.userName,
             joinUsers: updatedRoomData.joinUsers,
-            winUser: updatedRoomData.winUser,
+            winner: updatedRoomData.winner,
+            winnerPoint: updatedRoomData.winnerPoint,
             isOver: updatedRoomData.isOver,
             isStarted: updatedRoomData.isStarted,
             isClosed: updatedRoomData.isClosed,
@@ -545,7 +548,7 @@ const exportedMethods = {
 
         let ref_user;
         if(!data.isAlive) {
-            ref_user = users.delUserValue(data.username, {heart: 1});
+            ref_user = await users.delUserValue(data.username, {heart: 1});
             // if(!ref) return false;
         } else if(data.point > updatedRoomData.winnerPoint) {
             updatedRoomData.winner = data.username;
