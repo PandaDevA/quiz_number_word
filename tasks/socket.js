@@ -102,16 +102,17 @@ const exportedMethods = {
 
             socket.on('login', (data) => {
                 // console.log('login request recevied');
-                users.getUserByName(data.username, data.password).then((result) => {
-                    if (result) {
-                        players[data.username] = socket.id;
-                        socket.emit('login', { result: result });
-                        // console.log(`${data.username} is logged`);
-                    } else {
-                        socket.emit('login', { result: false });
-                        // console.log(`${data.username} is not logged`);
-                    }
-                });
+                if(!players[data.username])
+                    users.getUserByName(data.username, data.password).then((result) => {
+                        if (result) {
+                            players[data.username] = socket.id;
+                            socket.emit('login', { result: result });
+                            // console.log(`${data.username} is logged`);
+                        } else {
+                            socket.emit('login', { result: false });
+                            // console.log(`${data.username} is not logged`);
+                        }
+                    });
             });
 
             socket.on('stage_start', (data) => {
@@ -327,7 +328,8 @@ const exportedMethods = {
 
                             socket.join(`game_of_${randomPlayers[username].roomId}`);
 
-                            getMultiRandomData().then(({numDataList, wordDataList}) => {                                        
+                            getMultiRandomData().then(({numDataList, wordDataList}) => { 
+                                socket.emit('battle_start', { result: data.roomId, gameData: { numData: numDataList, wordData: wordDataList } });
                                 socket.to(`game_of_${randomPlayers[username].roomId}`)
                                     .emit('battle_start', { result: data.roomId, gameData: { numData: numDataList, wordData: wordDataList } });
                             });
