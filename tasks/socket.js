@@ -353,18 +353,19 @@ const exportedMethods = {
 
             socket.on('random_cancel', (data) => {
                 console.log('random_cancel is received');
-                rooms.cancelRoom(data.roomId).then((result) => {
-                    if (result) {
-                        randomPlayers[data.username] = undefined;
-                        console.log('random_cancel is sent.');
-                        console.log(randomPlayers);
-                        socket.leave(`game_of_${result.id}`);
-                        // socket.emit('random_cancel', {result: true});
-                    } else {
-                        // socket.emit('random_cancel', { result: false });
-                        console.log(`random_cancel request of ${data.username} is failed`);
-                    }
-                });
+                if(data.roomId)
+                    rooms.cancelRoom(data.roomId).then((result) => {
+                        if (result) {
+                            randomPlayers[data.username] = undefined;
+                            console.log('random_cancel is sent.');
+                            console.log(randomPlayers);
+                            socket.leave(`game_of_${result.id}`);
+                            // socket.emit('random_cancel', {result: true});
+                        } else {
+                            // socket.emit('random_cancel', { result: false });
+                            console.log(`random_cancel request of ${data.username} is failed`);
+                        }
+                    });
             });
 
 
