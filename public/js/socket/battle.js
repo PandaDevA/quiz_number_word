@@ -7,13 +7,13 @@ Client.invite_accept = function(){
 };
 
 Client.invite_reject = function(){
-    Client.socket.emit('invite_reject', {roomId : room_id, inviteuser : invite_name});
+    Client.socket.emit('invite_reject', {roomId : room_id, waituser : invite_name, inviteuser:userData.username});
     room_id = "";
     invite_name = "";
 };
 
 Client.invite_cancel = function(){
-    Client.socket.emit('invite_cancel', {roomId : room_id, inviteuser : invite_name});
+    Client.socket.emit('invite_cancel', {roomId : room_id, waituser : invite_name});
     room_id = "";
     invite_name = "";
 };
