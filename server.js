@@ -24,7 +24,7 @@ app.use(session);
 io.use(sharedsession(session));
 
 app.get('/', (req, res) => {
-    req.session.ship_exists = false;
+    req.session.game_exists = false;
     res.sendFile(__dirname + '/index.html');
 });
 
