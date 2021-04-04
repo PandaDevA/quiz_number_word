@@ -514,7 +514,7 @@ const exportedMethods = {
                             const joinuser = result.result.joinUsers[0].userName;
                             if(players[createuser]) socket.to(players[createuser]).leave(`game_of_${data.roomId}`);
                             if(players[joinuser]) socket.to(players[joinuser]).leave(`game_of_${data.roomId}`);
-                            if(randomPlayers[createuser]) randomPlayers[createuser] = undefined;
+                            randomPlayers[createuser] = undefined;
                             console.log('All users are ended');
                         }
                         console.log('end is processed');
