@@ -23,7 +23,24 @@ class WordGameScreen extends Phaser.Scene{
         this.characterImages = [];
 
         this.circleImage = this.add.image(56,30,'Circle2').setScale(0.3);
+        this.coinText = this.add.text(70,32, userData.coin, { fixedWidth: 22, fixedHeight: 22 })
+        .setOrigin(0.5,0.5)
+        .setStyle({
+            fontSize: '18px',
+            fontFamily: 'Arial',
+            color: '#000000',
+            align: 'center',
+        });
+
         this.heartImage = this.add.image(242,30,'Heart2').setScale(0.3);
+        this.heartText = this.add.text(250,30, userData.heart, { fixedWidth: 20, fixedHeight: 20 })
+            .setOrigin(0.5,0.5)
+            .setStyle({
+                fontSize: '18px',
+                fontFamily: 'Arial',
+                color: '#000000',
+                align: 'center',
+            });
 
         this.resultImage = this.add.image(150,150,'Result').setScale(0.3);
         this.resultWord = this.add.text(150,160, '', { fixedWidth: 150, fixedHeight: 36 })

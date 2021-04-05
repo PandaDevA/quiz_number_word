@@ -29,7 +29,24 @@ class NumberGameScreen extends Phaser.Scene{
         this.selected_operator = -1;
 
         this.circleImage = this.add.image(56,30,'Circle2').setScale(0.3);
+        this.coinText = this.add.text(70,32, userData.coin, { fixedWidth: 22, fixedHeight: 22 })
+        .setOrigin(0.5,0.5)
+        .setStyle({
+            fontSize: '18px',
+            fontFamily: 'Arial',
+            color: '#000000',
+            align: 'center',
+        });
+
         this.heartImage = this.add.image(242,30,'Heart2').setScale(0.3);
+        this.heartText = this.add.text(250,30, userData.heart, { fixedWidth: 20, fixedHeight: 20 })
+            .setOrigin(0.5,0.5)
+            .setStyle({
+                fontSize: '18px',
+                fontFamily: 'Arial',
+                color: '#000000',
+                align: 'center',
+            });
 
         this.targetImage = this.add.image(80,80,'Target').setScale(0.3);
         this.targetNumber = this.add.text(80,90, gameData.numData[cur_number].result, { fixedWidth: 150, fixedHeight: 36 })
