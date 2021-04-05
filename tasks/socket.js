@@ -543,6 +543,39 @@ const exportedMethods = {
                     }
                 });
             });
+
+            socket.on('passion_flower', async(data) => {
+                console.log('passion_flower request is received');
+                if(!data.kind || !data.username) {
+                    console.log('Error: kind is not supplied while passion_flower');
+                    socket.emit('passion_flower', {result: false, error: 'Kind must be supplied'});
+                    return;
+                }
+
+                let valueData = {};
+                if(data.kind == 'none') {
+                    console.log('The kind of passion is none');
+                    return;
+                }
+                if(data.kind == 'coin') {
+                    valueData['coin'] = data.value;
+                } else if(data.kind == 'point') {
+                    valueData['point'] = data.value;
+                } else {
+                    console.log(`Invalid kind is supplied: ${data.kind}`);
+                    socket.emit('passion_flower', {result: false, error: `Invalid kind is supplied: ${data.kind}`});
+                    return;
+                }
+
+                const result = await users.addUserValue(data.username, valueData);
+                if(!result) {
+                    console.log('Error occured while add user value');
+                    socket.emit('passion_flower', {result: false, error: 'Error occured while add User Value'});
+                    return;
+                }
+                socket.emit('passion_flower', {result: true});
+                socket.emit('update_userdata', {result});
+            });
         });
     },
 };

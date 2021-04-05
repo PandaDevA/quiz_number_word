@@ -2,6 +2,7 @@ const mongoCollections = require('../config/mongoCollections');
 const rooms = mongoCollections.rooms;
 let { ObjectId } = require('mongodb');
 const users = require('./users');
+const { delUserValue } = require('./users');
 
 const exportedMethods = {
 
@@ -52,6 +53,12 @@ const exportedMethods = {
 
         const updatedRoomData = room;
         let joinusers = updatedRoomData.joinUsers;
+
+        if(joinusers.length == 100) {
+            console.log('Already 100 users take part in the Tournament');
+            return { error: 'Already 100 users take part in the Tournament'};
+        }
+
         let idxOfUser = -1;
         joinusers.map((user, index) => {
             if(user.userName == data.username) {
@@ -150,6 +157,10 @@ const exportedMethods = {
         if (room.joinUsers.length == 0) {
             console.log('no one joined the tournament. it counld not start any more');
             updatedRoomData.isClosed = true;
+        } else {
+            room.joinUsers.map(async(user, index) => {
+                await delUserValue(user, {coin: 10});
+            });
         }
 
         const updatedInfo = await roomCollection.updateOne({ _id: room._id }, { $set: updatedRoomData });
@@ -410,7 +421,10 @@ const exportedMethods = {
 
         const updatedRoomData = room;
         updatedRoomData.isStarted = true;
-
+        
+        if(room.userName) await delUserValue(room.userName, {coin: 3});
+        if(room.joinUsers.length > 0 && room.joinUsers[0].userName) await delUserValue(room.joinUsers[0].userName, {coin: 3});
+        
         const updatedInfo = await roomCollection.updateOne({ _id: parsedId }, { $set: updatedRoomData });
 
         if (updatedInfo.modifiedCount === 0) {
