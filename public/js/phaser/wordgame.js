@@ -43,7 +43,7 @@ class WordGameScreen extends Phaser.Scene{
             });
 
         this.resultImage = this.add.image(150,150,'Result').setScale(0.3);
-        this.resultWord = this.add.text(150,160, '', { fixedWidth: 150, fixedHeight: 36 })
+        this.resultWord = this.add.text(150,160, '', { fixedWidth: 250, fixedHeight: 36 })
         .setOrigin(0.5,0.5)
         .setStyle({
             fontSize: '36px',
@@ -62,7 +62,7 @@ class WordGameScreen extends Phaser.Scene{
             align: 'center',
         });
 
-        let quiz_word = gameData.wordData[cur_word].split('');
+        let quiz_word = gameData.wordData[cur_word].word.split('');
         let mix_word = [];
         while (quiz_word.length > 0) {
             let character = '';
@@ -92,18 +92,13 @@ class WordGameScreen extends Phaser.Scene{
             this.characterImages.push(characterImage);
 
             characterImage.setInteractive().on('pointerdown', () => {
-                if(this.characterImages[i].alpha == 0.5)
-                    return;
                 this.resultWord.setText(this.resultWord.text + this.characterTexts[i].text);
-                this.characterImages[i].setAlpha(0.5);
             });
         }
 
         this.refreshButton = this.add.image(200,500,'Refresh').setScale(0.3);
         this.refreshButton.setInteractive().on('pointerdown', () => {
             this.resultWord.setText('');
-            for(let i=0; i<this.characterImages.length; i++)
-                this.characterImages[i].setAlpha(1);
         });
 
         this.checkButton = this.add.image(100,500,'Check').setScale(0.3);
