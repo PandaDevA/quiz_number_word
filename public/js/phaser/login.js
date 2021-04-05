@@ -35,8 +35,8 @@ class LoginScreen extends Phaser.Scene{
         })
         .setOrigin(0,0.5);
 
-        this.passwordImage = this.add.image(150,300,'Password').setScale(0.3);
-        this.password = this.add.text(155, 300, '1234', { fixedWidth: 150, fixedHeight: 18 })
+        this.passwordImage = this.add.image(150,250,'Password').setScale(0.3);
+        this.password = this.add.text(155, 250, '1234', { fixedWidth: 150, fixedHeight: 18 })
         .setStyle({
             fontSize: '18px',
             fontFamily: 'Arial',
@@ -52,18 +52,69 @@ class LoginScreen extends Phaser.Scene{
             this.rexUI.edit(this.password)
         });
 
-        this.loginButton = this.add.image(150,400,'Login').setScale(0.3);
+        this.loginButton = this.add.image(150,350,'Login').setScale(0.3);
         this.loginButton.setInteractive().on('pointerdown', () => {
             console.log('login_request');
             Client.login(this.userName.text, this.password.text);
         });
 
-        this.registerButton = this.add.image(150,500,'Register').setScale(0.3);
+        this.registerButton = this.add.image(150,450,'Register').setScale(0.3);
         this.registerButton.setInteractive().on('pointerdown', () => {
             game.scene.stop('LoginScreen');
             game.scene.start('RegisterScreen');
         });
     }
     update(){
+    }
+
+    toast_failed(){
+        var toast = this.rexUI.add.toast({
+            x: 150,
+            y: 550,
+
+            background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 20, 0xcc4040),
+            text: this.add.text(0, 0, '', {
+                fontSize: '18px'
+            }),
+            space: {
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: 20,
+            },
+
+            duration: {
+                in: 250,
+                hold: 1000,
+                out: 250,
+            },
+        })
+        .show('Login failed...')
+        .show('Correct infomation...')
+    }
+
+    toast_register_succeed(){
+        var toast = this.rexUI.add.toast({
+            x: 150,
+            y: 550,
+
+            background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 20, 0xcc4040),
+            text: this.add.text(0, 0, '', {
+                fontSize: '18px'
+            }),
+            space: {
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: 20,
+            },
+
+            duration: {
+                in: 250,
+                hold: 1000,
+                out: 250,
+            },
+        })
+        .show('Register succeed...')
     }
 }

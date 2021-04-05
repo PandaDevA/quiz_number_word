@@ -108,6 +108,7 @@ class BattleScreen extends Phaser.Scene{
         this.inviteButton.setAlpha(1.0);
         this.invite_cancel_Button.setInteractive();
         this.invite_cancel_Button.setAlpha(1.0);
+        toast_inviting();
     }
 
     invite_request_failed(){
@@ -129,6 +130,7 @@ class BattleScreen extends Phaser.Scene{
         this.inviteButton.setAlpha(1.0);
         this.invite_cancel_Button.disableInteractive();
         this.invite_cancel_Button.setAlpha(0.5);
+        this.toast_invite_failed();
     }
 
     random_request(){
@@ -153,5 +155,55 @@ class BattleScreen extends Phaser.Scene{
         this.inviteButton.setAlpha(0.5);
         this.random_cancel_Button.setInteractive();
         this.random_cancel_Button.setAlpha(1.0);
+    }
+
+    toast_invite_failed(){
+        var toast = this.rexUI.add.toast({
+            x: 150,
+            y: 550,
+
+            background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 20, 0xcc4040),
+            text: this.add.text(0, 0, '', {
+                fontSize: '18px'
+            }),
+            space: {
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: 20,
+            },
+
+            duration: {
+                in: 250,
+                hold: 1000,
+                out: 250,
+            },
+        })
+        .show('Invite failed...')
+    }
+
+    toast_inviting(){
+        var toast = this.rexUI.add.toast({
+            x: 150,
+            y: 550,
+
+            background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 20, 0xcc4040),
+            text: this.add.text(0, 0, '', {
+                fontSize: '18px'
+            }),
+            space: {
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: 20,
+            },
+
+            duration: {
+                in: 250,
+                hold: 1000,
+                out: 250,
+            },
+        })
+        .show(invite_name + ' is inviting you...')
     }
 }

@@ -31,6 +31,7 @@ Client.socket.on('tournament_in',function(data){
     }
     else
     {
+        game.scene.getScene('HomeScreen').toast_tournament_failed();
         console.log('failed');
     }
 });

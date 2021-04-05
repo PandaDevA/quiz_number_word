@@ -27,6 +27,22 @@ Client.socket.on('login',function(data){
     }
     else
     {
+        game.scene.getScene('LoginScreen').toast_failed();
+        console.log('failed');
+    }
+});
+
+Client.socket.on('register',function(data){
+    if(data.result)
+    {
+        game.scene.stop('RegisterScreen');
+        game.scene.start('LoginScreen');
+        game.scene.getScene('LoginScreen').toast_register_succeed();
+        console.log('success');
+    }
+    else
+    {
+        game.scene.getScene('RegisterScreen').toast_failed();
         console.log('failed');
     }
 });

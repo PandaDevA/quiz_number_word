@@ -29,6 +29,7 @@ Client.socket.on('stage_start',function(data){
     }
     else
     {
+        game.scene.getScene('HomeScreen').toast_stage_failed();
         console.log('failed');
     }
 });
