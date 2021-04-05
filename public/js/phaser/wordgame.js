@@ -123,10 +123,24 @@ class WordGameScreen extends Phaser.Scene{
 
     checkResult(){
         let bPass = false;
-        if(this.resultWord.text == gameData.wordData[cur_word])
+        let match_index = gameData.wordData[cur_word].matchArray.indexOf(this.resultWord.text);
+        if(match_index != -1)
         {
             bPass = true;
-            cur_point += 15 + Number.parseInt(this.timeText.text);
+            let word_length = gameData.wordData[cur_word].matchArray[match_index].length;
+            if(word_length == 9)
+            {
+                cur_point += 15 + Number.parseInt(this.timeText.text);
+            }
+            else if(word_length == 8){
+                cur_point += 10 + Number.parseInt(this.timeText.text);
+            }
+            else if(word_length == 7){
+                cur_point += 5;
+            }
+            else if(word_length == 6){
+                cur_point += 2;
+            }
         }
         
         this.timer.remove();
