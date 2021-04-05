@@ -1,4 +1,5 @@
 const express = require('express');
+const cool = require('cool-ascii-faces');
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io').listen(server);
@@ -27,6 +28,7 @@ app.get('/', (req, res) => {
     req.session.game_exists = false;
     res.sendFile(__dirname + '/index.html');
 });
+app.get('/cool', (req, res) => res.send(cool()));
 
 let number;
 let connections = [];
