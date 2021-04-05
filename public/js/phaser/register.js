@@ -70,8 +70,8 @@ class RegisterScreen extends Phaser.Scene{
                 .then(function () {
                     URL.revokeObjectURL(url);
                     canvas.fitTo(button);
-                })
-        })
+                });
+        });
         
         this.userNameImage = this.add.image(150,250,'UserName').setScale(0.3);
         this.userName = this.add.text(155, 250, 'testuser', { fixedWidth: 150, fixedHeight: 18 })
@@ -117,8 +117,36 @@ class RegisterScreen extends Phaser.Scene{
             Client.register(this.userName.text, this.email.text, this.password.text, this.avatar);
         });
     }
+
     update(){
     }
+
+    toast_failed(){
+        var toast = this.rexUI.add.toast({
+            x: 150,
+            y: 550,
+
+            background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 20, 0xcc4040),
+            text: this.add.text(0, 0, '', {
+                fontSize: '18px'
+            }),
+            space: {
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: 20,
+            },
+
+            duration: {
+                in: 250,
+                hold: 1000,
+                out: 250,
+            },
+        })
+        .show('Register failed...')
+        .show('UserName Duplicated...')
+    }
+
 }
 
 var FitTo = function (child, parent, out) {

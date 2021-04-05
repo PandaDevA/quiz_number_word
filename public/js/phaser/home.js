@@ -19,11 +19,11 @@ class HomeScreen extends Phaser.Scene{
         this.load.image("Tournament", "./images/button3.png");
         this.load.image("DailyGame", "./images/link1.png");
         this.load.image("PassionFlower", "./images/link2.png");
-        // this.load.scenePlugin({
-        //     key: 'rexuiplugin',
-        //     url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
-        //     sceneKey: 'rexUI'
-        // });
+        this.load.scenePlugin({
+            key: 'rexuiplugin',
+            url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+            sceneKey: 'rexUI'
+        });
 
         // this.load.plugin('rextexteditplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rextexteditplugin.min.js', true);
         if(userData.avatar != "")
@@ -38,6 +38,7 @@ class HomeScreen extends Phaser.Scene{
         }
         else{
             this.userAvatar = this.add.image(150,100,'user_avatar');
+            this.userAvatar.setDisplaySize(75,75);
         }
         this.userName = this.add.text(150,160, userData.username, { fixedWidth: 150, fixedHeight: 36 })
             .setOrigin(0.5,0.5)
@@ -108,5 +109,55 @@ class HomeScreen extends Phaser.Scene{
         this.coinText.setText(userData.coin);
         this.heartText.setText(userData.heart);
         this.points.setText(userData.point);
+    }
+
+    toast_tournament_failed(){
+        var toast = this.rexUI.add.toast({
+            x: 150,
+            y: 550,
+
+            background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 20, 0xcc4040),
+            text: this.add.text(0, 0, '', {
+                fontSize: '18px'
+            }),
+            space: {
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: 20,
+            },
+
+            duration: {
+                in: 250,
+                hold: 1000,
+                out: 250,
+            },
+        })
+        .show('Can not take part in tournament...')
+    }
+
+    toast_stage_failed(){
+        var toast = this.rexUI.add.toast({
+            x: 150,
+            y: 550,
+
+            background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 20, 0xcc4040),
+            text: this.add.text(0, 0, '', {
+                fontSize: '18px'
+            }),
+            space: {
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: 20,
+            },
+
+            duration: {
+                in: 250,
+                hold: 1000,
+                out: 250,
+            },
+        })
+        .show('Can not play stage...')
     }
 }
