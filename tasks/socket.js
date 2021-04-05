@@ -215,6 +215,8 @@ const exportedMethods = {
                 console.log('register request is received');
                 if(!data.username) {
                     console.log('username is not supplied while register');
+                    socket.emit('register', {result: false, error: 'Username must be supplied'});
+                    return;
                 }
                 users.getUserInfo(data.username).then((result) => {
                     if(result) {
@@ -222,7 +224,11 @@ const exportedMethods = {
                         socket.emit('register', {result: false, error: `${data.username} is already registered`});
                     } else {
                         users.addUser(data).then((result) => {
-
+                            if(result) {
+                                socket.emit('register', {result: true, error: ''});
+                            } else {
+                                socket.emit('register', {result: false, error: `Error occurred while register user in db`});
+                            }
                         });
                     }
                 });
