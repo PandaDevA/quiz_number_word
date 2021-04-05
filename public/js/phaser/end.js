@@ -22,9 +22,13 @@ class EndScreen extends Phaser.Scene{
         {
             this.resultText = this.add.text(50, 200, "Winner is " + winner_name + "!!!\nCongratulation....", { fixedWidth: 200, fixedHeight: 36 });
         }
+        else if(game_type == "stage")
+        {
+            this.resultText = this.add.text(50, 200, "Game Ended!!!", { fixedWidth: 200, fixedHeight: 36 });
+        }
         else{
             this.resultText = this.add.text(50, 200, is_timeout ? "Time out!!!" : "Game Ended!!!", { fixedWidth: 200, fixedHeight: 36 });
-            this.waitingText = this.add.text(100, 300, "Waiting for result...", { fixedWidth: 100, fixedHeight: 36 });
+            this.waitingText = this.add.text(50, 300, "Waiting for result...", { fixedWidth: 200, fixedHeight: 36 });
         }
     }
     update(){
