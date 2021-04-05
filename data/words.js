@@ -4,9 +4,9 @@ let { ObjectId } = require('mongodb');
 
 const exportedMethods = {
 
-  async addWord(newWord) {
-    if(newWord === undefined || newWord =='') {
-      console.log("Failed in addWord! newWord is undefined");
+  async addWord(data) {
+    if(!data || !data.word || data.word =='' || !data.matchArray) {
+      console.log("Failed in addWord! word is undefined");
       return false;
     }
 
@@ -15,7 +15,7 @@ const exportedMethods = {
 
     const isExist = false;
     word.map((worddata, index) => {
-      if(worddata.word == newWord) {
+      if(worddata.word == data.word) {
         isExist = true;
         return;
       };
@@ -26,7 +26,8 @@ const exportedMethods = {
     }
 
     const newWordData = {
-      word: newWord,
+      word: data.word,
+      matchArray: data.matchArray,
     };
 
     const newInsertInformation = await wordCollection.insertOne(newWordData);
@@ -35,7 +36,7 @@ const exportedMethods = {
       return false;
     }
 
-    return newWord;
+    return data;
   },
 
   async removeword(delWord) {
@@ -61,10 +62,11 @@ const exportedMethods = {
 
     const rndIndex =  Math.floor(Math.random() * word.length);
 
-    let result = '';
+    let result = {};
     word.map((worddata, index) => {
       if(index == rndIndex) {
-        result = worddata.word;
+        result['word'] = worddata.word;
+        result['matchArray'] = worddata.matchArray;
         return;
       };
     });

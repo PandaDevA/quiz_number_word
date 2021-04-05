@@ -9,22 +9,22 @@ async function main() {
 
 
     const db = await dbConnection();
-    await db.dropDatabase();
+    // await db.dropDatabase();
 
-    await words.addWord('Rocket');
-    await words.addWord('Computer');
-    await words.addWord('Nation');
+    await words.addWord({word: 'ROCKET', matchArray: ['OK', 'OCR']});
+    await words.addWord({word: 'COMPUTER', matchArray: ['COM', 'PUT', 'POT', 'ROM', 'ROME']});
+    await words.addWord({word: 'NATION', matchArray: ['NAT', 'NIT', 'NOT', 'TON', 'NAN']});
     // await words.removeword('Rocket');
 
-    let isAdded = await users.addUser({username: "testuser", password: "1234", email: "testuser@gmail.com"});
-    if (isAdded) console.log('user Added');
-    else console.log("user not added");
+    // let isAdded = await users.addUser({username: "testuser", password: "1234", email: "testuser@gmail.com"});
+    // if (isAdded) console.log('user Added');
+    // else console.log("user not added");
 
     // await users.startStage('testuser2');
 
-    isAdded = await users.addUser({username: "testuser2", password: "1234", email: "testuser2@gmail.com"});
-    if (isAdded) console.log('user Added');
-    else console.log("user not added");
+    // isAdded = await users.addUser({username: "testuser2", password: "1234", email: "testuser2@gmail.com"});
+    // if (isAdded) console.log('user Added');
+    // else console.log("user not added");
 
     // let addedData = await rooms.createRoom('createuser');
     // if (addedData) console.log(`room created: ${JSON.stringify(addedData)}`);
