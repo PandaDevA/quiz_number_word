@@ -39,7 +39,7 @@ const exportedMethods = {
                 if (user.heart < 3) {
                     const info = users.addUserValue(user.username, { heart: 1 });
                     if (!info) console.log('Error occured whild addHeart');
-                    else io.emit('update_userdata', info);
+                    else io.emit('update_userdata', {result: info});
                 }
             });
         console.log('Hearts supplied.');
@@ -261,7 +261,7 @@ const exportedMethods = {
                     if (result) {
                         socket.emit('stage_end', { result: true, info: result });
                         console.log(`${data.username} end stage`);
-                        if(!data.result.isWin) socket.emit('update_userdata', result);
+                        if(!data.result.isWin) socket.emit('update_userdata', {result});
                     } else {
                         socket.emit('stage_end', { result: false });
                         console.log(`${data.username} end failure stage`);
@@ -330,7 +330,7 @@ const exportedMethods = {
                                     winner: result.result.winner,
                                     winnerPoint: result.result.winnerPoint
                                 });
-                                socket.emit('update_userdata', result.userInfo);
+                                socket.emit('update_userdata', {result: result.userInfo});
                                 console.log('All users are ended');
                             }// else {
                                 // socket.emit('tournament_end', {
@@ -527,7 +527,7 @@ const exportedMethods = {
                                 winner: result.result.winner,
                                 winnerPoint: result.result.winnerPoint
                             });
-                            socket.emit('update_userdata', result.userInfo);
+                            socket.emit('update_userdata', {result: result.userInfo});
                             const createuser = result.result.userName;
                             const joinuser = result.result.joinUsers[0].userName;
                             if(players[createuser]) socket.to(players[createuser]).leave(`game_of_${data.roomId}`);
