@@ -50,7 +50,7 @@ class PassionScreen extends Phaser.Scene{
         this.turnButton.disableInteractive().setAlpha(0.5);
         this.bTurn = true;
         this.timer = this.time.addEvent({
-            delay: 50,
+            delay: 100,
             callback: this.updateTimer,
             args: [this],
             loop: true
