@@ -37,9 +37,6 @@ const config = {
 };
 
 var game = new Phaser.Game(config);
-// if (!game.device.os.desktop) {
-//     game.input.mousePointer.stop();
-//     // game.input.touch.startListeners();
-// }
+
 game.scene.start('LoginScreen');
 

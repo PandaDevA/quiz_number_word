@@ -6,7 +6,10 @@
 class LoginScreen extends Phaser.Scene{
     constructor(){
         super({key: "LoginScreen"});
-       
+        if(!game.device.os.desktop)
+        {
+            game.input.mouse.enabled = false;
+        }
     }
 
     preload() {
@@ -64,32 +67,6 @@ class LoginScreen extends Phaser.Scene{
             game.scene.stop('LoginScreen');
             game.scene.start('RegisterScreen');
         });
-
-        if(this.sys.game.device.os == "desktop")
-        {
-            var toast = this.rexUI.add.toast({
-                x: 150,
-                y: 550,
-    
-                background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 20, 0xcc4040),
-                text: this.add.text(0, 0, '', {
-                    fontSize: '18px'
-                }),
-                space: {
-                    left: 20,
-                    right: 20,
-                    top: 20,
-                    bottom: 20,
-                },
-    
-                duration: {
-                    in: 250,
-                    hold: 1000,
-                    out: 250,
-                },
-            })
-            .show('This is mobile....')
-        }
     }
     update(){
     }
