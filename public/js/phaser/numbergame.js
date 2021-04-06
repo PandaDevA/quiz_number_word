@@ -106,22 +106,22 @@ class NumberGameScreen extends Phaser.Scene{
                     {
                         this.numberTexts[i].setText(Number.parseInt(this.numberTexts[i].text) + Number.parseInt(this.numberTexts[this.selected_index].text));
                         this.numberImages[this.selected_index].setAlpha(0.5).setFrame(0);
-                        this.numberImages[i].setFrame(1);;
-                        this.selected_index = i;
+                        this.numberImages[i].setFrame(0);
+                        this.selected_index = -1;
                     }
                     else if(this.selected_operator == 2)
                     {
                         this.numberTexts[i].setText(Number.parseInt(this.numberTexts[this.selected_index].text) - Number.parseInt(this.numberTexts[i].text));
                         this.numberImages[this.selected_index].setAlpha(0.5).setFrame(0);
-                        this.numberImages[i].setFrame(1);;
-                        this.selected_index = i;
+                        this.numberImages[i].setFrame(0);
+                        this.selected_index = -1;
                     }
                     else if(this.selected_operator == 3)
                     {
                         this.numberTexts[i].setText(Number.parseInt(this.numberTexts[this.selected_index].text) * Number.parseInt(this.numberTexts[i].text));
                         this.numberImages[this.selected_index].setAlpha(0.5).setFrame(0);
-                        this.numberImages[i].setFrame(1);;
-                        this.selected_index = i;
+                        this.numberImages[i].setFrame(0);
+                        this.selected_index = -1;
                     }
                     else if(this.selected_operator == 4)
                     {
@@ -130,8 +130,8 @@ class NumberGameScreen extends Phaser.Scene{
                             return;
                         this.numberTexts[i].setText(Number.parseInt(this.numberTexts[this.selected_index].text) / Number.parseInt(this.numberTexts[i].text));
                         this.numberImages[this.selected_index].setAlpha(0.5).setFrame(0);
-                        this.numberImages[i].setFrame(1);
-                        this.selected_index = i;
+                        this.numberImages[i].setFrame(0);
+                        this.selected_index = -1;
                     }
                 }
             });
