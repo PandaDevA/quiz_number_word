@@ -17,6 +17,7 @@ const sharedsession = require('express-socket.io-session');
 
 const port = process.env.PORT || 8081;
 const baseUrl = 'localhost';
+//const baseUrl = 'quizpuzzle.chileracing.net'
 
 app.use(express.static(__dirname + '/public'));
 
