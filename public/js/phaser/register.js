@@ -6,7 +6,6 @@
 class RegisterScreen extends Phaser.Scene{
     constructor(){
         super({key: "RegisterScreen"});
-        this.avatar = "";
     }
 
     preload() {
@@ -26,6 +25,8 @@ class RegisterScreen extends Phaser.Scene{
         this.load.image("Email", "./images/email.png");
         this.load.image("Password", "./images/password.png");
         this.load.image("UserAvatar", "./images/avatar.png");
+
+        this.avatar = "";
     }
 
     create() {
