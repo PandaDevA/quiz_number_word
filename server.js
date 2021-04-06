@@ -1,4 +1,6 @@
 const express = require('express');
+const fs = require('fs');
+const util = require('util');
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io').listen(server);
@@ -14,6 +16,15 @@ const session = require('express-session')({
     // },
 });
 const sharedsession = require('express-socket.io-session');
+
+let log_file = fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
+let log_stdout = process.stdout;
+
+console.log = function(d) { //
+  const now = new Date();
+  log_file.write( now.toLocaleTimeString()+ ' ' + util.format(d) + '\n');
+  log_stdout.write( now.toLocaleTimeString()+ ' ' + util.format(d) + '\n');
+};
 
 const port = process.env.PORT || 8081;
 const baseUrl = 'localhost';
@@ -38,6 +49,7 @@ socketSrc.useSocket(io).then(() => {
     });
     number = setInterval(() => {
         socketSrc.onTimeInteval(io);
+        log_file = fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
     }, 30 * 60 * 1000);// 
 
     process.on('SIGTERM', shutDown);

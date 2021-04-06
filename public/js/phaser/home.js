@@ -28,6 +28,8 @@ class HomeScreen extends Phaser.Scene{
         // this.load.plugin('rextexteditplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rextexteditplugin.min.js', true);
         if(userData.avatar != "")
         {
+            if(this.textures.exists('user_avatar'))
+                this.textures.remove('user_avatar');
             this.textures.addBase64('user_avatar', userData.avatar);
         }
     }
