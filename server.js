@@ -1,4 +1,6 @@
 const express = require('express');
+const fs = require('fs');
+const util = require('util');
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io').listen(server);
@@ -14,6 +16,14 @@ const session = require('express-session')({
     // },
 });
 const sharedsession = require('express-socket.io-session');
+
+let log_file = fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
+let log_stdout = process.stdout;
+
+console.log = function(d) { //
+  log_file.write(util.format(d) + '\n');
+  log_stdout.write(util.format(d) + '\n');
+};
 
 const port = process.env.PORT || 8081;
 const baseUrl = 'localhost';
