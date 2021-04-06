@@ -6,10 +6,6 @@
 class PassionScreen extends Phaser.Scene{
     constructor(){
         super({key: "PassionScreen"});
-        this.angle_speed = 0.05;
-        this.angle = 0.0;
-        this.bStop = false;
-        this.bTurn = false;
     } 
 
     preload() {
@@ -18,6 +14,10 @@ class PassionScreen extends Phaser.Scene{
         this.load.image("Stop", "./images/stop.png");
         this.load.image("Indicator", "./images/passion_picker.png");
         this.load.image("Back", "./images/back.png");
+        this.angle_speed = 0.05;
+        this.angle = 0.0;
+        this.bStop = false;
+        this.bTurn = false;
     }
 
     create() {
