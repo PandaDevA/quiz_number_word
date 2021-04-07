@@ -1,7 +1,31 @@
-6:11:33 PM Listening on 8081
-6:11:33 PM a user connected
-6:11:38 PM user disconnected
-6:11:38 PM a user connected
-6:11:54 PM user disconnected
-6:11:54 PM a user connected
-6:12:04 PM Could not connect database
+11:57:26 PM Listening on 8081
+11:57:26 PM Warning: the tournament is not updated while opentournament
+11:57:56 PM no one joined the tournament. it counld not start any more
+11:57:56 PM Tournament automatically closed because it's not ready yet
+11:58:32 PM a user connected
+11:58:50 PM a user connected
+11:58:55 PM { testuser2: 'CSTqY56z5TduAHpKAAAB' }
+11:58:56 PM { testuser2: 'CSTqY56z5TduAHpKAAAB', testuser: '7gWUCT_ebzh18VFBAAAA' }
+11:58:58 PM stage_start request recevied
+11:58:58 PM testuser start stage
+11:59:27 PM stage_end request recevied : 
+11:59:27 PM testuser
+11:59:27 PM testuser end stage
+12:02:10 AM stage_start request recevied
+12:02:10 AM testuser2 start stage
+12:02:47 AM stage_end request recevied : 
+12:02:47 AM testuser2
+12:02:47 AM testuser2 end stage
+12:07:04 AM user disconnected
+12:07:04 AM {}
+12:07:04 AM a user connected
+12:07:11 AM {
+  testuser2: undefined,
+  testuser: '7gWUCT_ebzh18VFBAAAA',
+  testuser3: '8zzY_srq5-nzxg0jAAAC'
+}
+12:07:13 AM stage_start request recevied
+12:07:13 AM testuser3 start stage
+12:07:41 AM stage_end request recevied : 
+12:07:41 AM testuser3
+12:07:41 AM testuser3 end stage
