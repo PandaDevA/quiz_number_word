@@ -48,7 +48,7 @@ Client.socket.on('register',function(data){
 });
 
 Client.socket.on('update_userdata',function(data){
-    userData = data;
+    userData = data.result;
     if(game.scene.isActive('HomeScreen'))
         game.scene.getScene('HomeScreen').update();
 });
