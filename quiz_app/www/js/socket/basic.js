@@ -3,7 +3,7 @@
  */
 
 var Client = {};
-Client.socket = io.connect();
+Client.socket = io("http://quizpuzzle.chileracing.net/");
 
 Client.login = function(username, password){
     Client.socket.emit('login', {username: username, password: password});
