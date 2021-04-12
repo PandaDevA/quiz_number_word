@@ -29,7 +29,7 @@ console.log = function(d) { //
 };
 
 const port = process.env.PORT || 8081;
-const baseUrl = '192.168.104.55';
+const baseUrl = 'localhost';
 //const baseUrl = 'quizpuzzle.chileracing.net'
 
 app.use(express.static(__dirname + '/public'));
