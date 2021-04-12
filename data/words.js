@@ -40,14 +40,18 @@ const exportedMethods = {
   },
 
   async removeword(delWord) {
-    if (!delWord || delWord == '') throw 'ReferenceError: You must provide an word to remove';
+    if (!delWord || delWord == '') {
+      console.log( 'ReferenceError: You must provide an word to remove');
+      return false;
+    };
 
     const wordCollection = await words();
     try {
       const word = await wordCollection.findOne({word: delWord});
       const deletionInfo = await wordCollection.removeOne({ _id: word._id });
       if (deletionInfo.deletedCount === 0) {
-        throw `Could not delete the word`;
+        console.log(`Could not delete the word`);
+        return false;
       }
     } catch (e) {
       console.log('the word is not exist');
@@ -73,6 +77,33 @@ const exportedMethods = {
     return result;
   },
 
+  async getAll(filter, pageId, countPerPage) {
+    let perPage = countPerPage ? Number.parseInt(countPerPage) : 10;
+    let curPage = Number.parseInt(pageId);
+    let result = {};
+
+    const wordCollection = await words();
+    let count = await wordCollection.find({word: {$regex: filter.toUpperCase()}}).count();
+    if(!count) {
+        console.log('could not get the count of words');
+        count = 0;
+    }
+    else console.log(`page count is : ${count}`);
+
+    if(Number.parseInt(count) <= perPage * ( curPage - 1 )) curPage = 1;
+    try {
+        const wordData = await wordCollection.find({word: {$regex: filter.toUpperCase()}}).skip(perPage * (curPage - 1)).limit(perPage).toArray();
+        if(wordData)
+            result = { result: wordData, pageInfo: {perPage: perPage, count: count, curPage: curPage} };
+        else 
+            result = { result: [], pageInfo: {perPage: 10, count: 0, curPage: 1}, error: 'could not get word data' };
+        return result;
+    } catch (e) {
+        console.log(`Error while getWordList: ${e}`);
+        result = { result: [], pageInfo: {perPage: 10, count: 0, curPage: 1}, error: e };
+        return result;
+    }
+  },
 };
 
 module.exports = exportedMethods;
