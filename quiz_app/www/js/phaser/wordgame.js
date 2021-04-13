@@ -9,16 +9,46 @@ class WordGameScreen extends Phaser.Scene{
     }
 
     preload() {
-        this.load.image("Result", "./images/result.png");
+        this.load.image("Logo", "./images/logo.png");
+        this.load.image("Target", "./images/target.png");
         this.load.image("Time", "./images/time.png");
-        this.load.image("Circle2", "./images/circle2.png");
-        this.load.image("Heart2", "./images/heart2.png");
-        this.load.spritesheet("Number", "./images/number.png", { frameWidth: 188, frameHeight: 176 });
-        this.load.image("Refresh", "./images/refresh.png");
-        this.load.image("Check", "./images/check.png");
+        this.load.image("Letter", "./images/letter.png");
+        this.load.spritesheet("Number", "./images/number.png", { frameWidth: 211, frameHeight: 199 });
+        this.load.spritesheet("Multi", "./images/sign_multi.png", { frameWidth: 190, frameHeight: 178 });
+        this.load.spritesheet("Plus", "./images/sign_plus.png", { frameWidth: 190, frameHeight: 178 });
+        this.load.spritesheet("Minus", "./images/sign_minus.png", { frameWidth: 190, frameHeight: 178 });
+        this.load.spritesheet("Divi", "./images/sign_div.png", { frameWidth: 190, frameHeight: 178 });
+        this.load.spritesheet("Refresh", "./images/refresh.png", { frameWidth: 190, frameHeight: 178 });
+        this.load.spritesheet("Check", "./images/check.png", { frameWidth: 190, frameHeight: 178 });
     }
 
     create() {
+        this.logo = this.add.image(540,120,'Logo');
+
+        this.graphics = this.add.graphics();
+        this.graphics.lineStyle(4, '#000000', 1);
+        this.graphics.strokeRoundedRect(35,190,1010,1300, 10);
+
+        this.targetImage = this.add.image(320,350,'Target');
+        this.targetNumber = this.add.text(320,390, gameData.numData[cur_number].result, { fixedWidth: 350, fixedHeight: 110 })
+        .setOrigin(0.5,0.5)
+        .setStyle({
+            fontSize: '78px',
+            fontFamily: 'RR',
+            color: '#ffffff',
+            align: 'center',
+        });
+
+        this.timeImage = this.add.image(760,350,'Time');
+        this.timeText = this.add.text(760,390, '30', { fixedWidth: 350, fixedHeight: 110 })
+        .setOrigin(0.5,0.5)
+        .setStyle({
+            fontSize: '78px',
+            fontFamily: 'RR',
+            color: '#ffffff',
+            align: 'center',
+        });
+
         this.characterTexts = [];
         this.characterImages = [];
 

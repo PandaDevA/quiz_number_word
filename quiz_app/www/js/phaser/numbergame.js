@@ -9,73 +9,60 @@ class NumberGameScreen extends Phaser.Scene{
     }
 
     preload() {
+        this.load.image("Logo", "./images/logo.png");
         this.load.image("Target", "./images/target.png");
         this.load.image("Time", "./images/time.png");
-        this.load.image("Circle2", "./images/circle2.png");
-        this.load.image("Heart2", "./images/heart2.png");
-        this.load.spritesheet("Number", "./images/number.png", { frameWidth: 188, frameHeight: 176 });
-        this.load.spritesheet("Multi", "./images/sign1.png", { frameWidth: 169, frameHeight: 158 });
-        this.load.spritesheet("Plus", "./images/sign2.png", { frameWidth: 168, frameHeight: 158 });
-        this.load.spritesheet("Minus", "./images/sign3.png", { frameWidth: 168, frameHeight: 158 });
-        this.load.spritesheet("Divi", "./images/sign4.png", { frameWidth: 169, frameHeight: 158 });
-        this.load.image("Refresh", "./images/refresh.png");
-        this.load.image("Check", "./images/check.png");
+        this.load.spritesheet("Number", "./images/number.png", { frameWidth: 211, frameHeight: 199 });
+        this.load.spritesheet("Multi", "./images/sign_multi.png", { frameWidth: 190, frameHeight: 178 });
+        this.load.spritesheet("Plus", "./images/sign_plus.png", { frameWidth: 190, frameHeight: 178 });
+        this.load.spritesheet("Minus", "./images/sign_minus.png", { frameWidth: 190, frameHeight: 178 });
+        this.load.spritesheet("Divi", "./images/sign_div.png", { frameWidth: 190, frameHeight: 178 });
+        this.load.spritesheet("Refresh", "./images/refresh.png", { frameWidth: 190, frameHeight: 178 });
+        this.load.spritesheet("Check", "./images/check.png", { frameWidth: 190, frameHeight: 178 });
     }
 
     create() {
+        this.logo = this.add.image(540,120,'Logo');
+
+        this.graphics = this.add.graphics();
+        this.graphics.lineStyle(4, '#000000', 1);
+        this.graphics.strokeRoundedRect(35,190,1010,1300, 10);
+
+        this.targetImage = this.add.image(320,350,'Target');
+        this.targetNumber = this.add.text(320,390, gameData.numData[cur_number].result, { fixedWidth: 350, fixedHeight: 110 })
+        .setOrigin(0.5,0.5)
+        .setStyle({
+            fontSize: '78px',
+            fontFamily: 'RR',
+            color: '#ffffff',
+            align: 'center',
+        });
+
+        this.timeImage = this.add.image(760,350,'Time');
+        this.timeText = this.add.text(760,390, '30', { fixedWidth: 350, fixedHeight: 110 })
+        .setOrigin(0.5,0.5)
+        .setStyle({
+            fontSize: '78px',
+            fontFamily: 'RR',
+            color: '#ffffff',
+            align: 'center',
+        });
+
         this.numberTexts = [];
         this.numberImages = [];
         this.selected_index = -1;
         this.selected_operator = -1;
 
-        this.circleImage = this.add.image(56,30,'Circle2').setScale(0.3);
-        this.coinText = this.add.text(70,32, userData.coin, { fixedWidth: 22, fixedHeight: 22 })
-        .setOrigin(0.5,0.5)
-        .setStyle({
-            fontSize: '18px',
-            fontFamily: 'Arial',
-            color: '#000000',
-            align: 'center',
-        });
-
-        this.heartImage = this.add.image(242,30,'Heart2').setScale(0.3);
-        this.heartText = this.add.text(250,30, userData.heart, { fixedWidth: 20, fixedHeight: 20 })
-            .setOrigin(0.5,0.5)
-            .setStyle({
-                fontSize: '18px',
-                fontFamily: 'Arial',
-                color: '#000000',
-                align: 'center',
-            });
-
-        this.targetImage = this.add.image(80,80,'Target').setScale(0.3);
-        this.targetNumber = this.add.text(80,90, gameData.numData[cur_number].result, { fixedWidth: 150, fixedHeight: 36 })
-        .setOrigin(0.5,0.5)
-        .setStyle({
-            fontSize: '36px',
-            fontFamily: 'Arial',
-            color: '#000000',
-            align: 'center',
-        });
-        this.timeImage = this.add.image(220,80,'Time').setScale(0.3);
-        this.timeText = this.add.text(220,90, '30', { fixedWidth: 150, fixedHeight: 36 })
-        .setOrigin(0.5,0.5)
-        .setStyle({
-            fontSize: '36px',
-            fontFamily: 'Arial',
-            color: '#000000',
-            align: 'center',
-        });
-
         for(let i=0; i<6; i++)
         {
-            let numberImage = this.add.image(90 + (i%3)*60, 270 + Math.floor(i/3) * 60,'Number', 0).setScale(0.3);
-            let numberText = this.add.text(90 + (i%3)*60, 270 + Math.floor(i/3) * 60, gameData.numData[cur_number].array[i], { fixedWidth: 60, fixedHeight: 60 })
-            .setOrigin(0.5,0.2)
+            let numberImage = this.add.image(300 + (i%3)*240, 720 + Math.floor(i/3) * 250, 'Number', 0);
+            let numberText = this.add.text(300 + (i%3)*240, 720 + Math.floor(i/3) * 250, gameData.numData[cur_number].array[i], { fixedWidth: 180, fixedHeight: 100 })
+            .setOrigin(0.5,0.5)
             .setStyle({
-                fontSize: '24px',
-                fontFamily: 'Arial',
-                color: '#000000',
+                fontSize: '100px',
+                fontFamily: 'RR',
+                fontWeight:'bold',
+                color: '#1d3d59',
                 align: 'center',
             });
             this.numberTexts.push(numberText);
@@ -137,73 +124,73 @@ class NumberGameScreen extends Phaser.Scene{
             });
         }
 
-        this.plusOperator = this.add.image(60,400,'Plus', 0).setScale(0.3);
+        this.plusOperator = this.add.image(225, 1170,'Plus', 1);
         this.plusOperator.setInteractive().on('pointerdown', () => {
             if(this.selected_operator == 1)
             {
                 this.selected_operator = -1;
-                this.plusOperator.setFrame(0);
+                this.plusOperator.setFrame(1);
             }
             else
             {
                 this.refreshOperators();
                 this.selected_operator = 1;
-                this.plusOperator.setFrame(1);
+                this.plusOperator.setFrame(0);
             }
         });
 
-        this.minusOperator = this.add.image(120,400,'Minus', 0).setScale(0.3);
+        this.minusOperator = this.add.image(430,1170,'Minus', 1);
         this.minusOperator.setInteractive().on('pointerdown', () => {
             if(this.selected_operator == 2)
             {
                 this.selected_operator = -1;
-                this.minusOperator.setFrame(0);
+                this.minusOperator.setFrame(1);
             }
             else
             {
                 this.refreshOperators();
                 this.selected_operator = 2;
-                this.minusOperator.setFrame(1);
+                this.minusOperator.setFrame(0);
             }
         });
 
-        this.multiOperator = this.add.image(180,400,'Multi', 0).setScale(0.3);
+        this.multiOperator = this.add.image(635,1170,'Multi', 1);
         this.multiOperator.setInteractive().on('pointerdown', () => {
             if(this.selected_operator == 3)
             {
                 this.selected_operator = -1;
-                this.multiOperator.setFrame(0);
+                this.multiOperator.setFrame(1);
             }
             else
             {
                 this.refreshOperators();
                 this.selected_operator = 3;
-                this.multiOperator.setFrame(1);
+                this.multiOperator.setFrame(0);
             }
         });
 
-        this.diviOperator = this.add.image(240,400, 'Divi', 0).setScale(0.3);
+        this.diviOperator = this.add.image(840,1170, 'Divi', 1);
         this.diviOperator.setInteractive().on('pointerdown', () => {
             if(this.selected_operator == 4)
             {
                 this.selected_operator = -1;
-                this.diviOperator.setFrame(0);
+                this.diviOperator.setFrame(1);
             }
             else
             {
                 this.refreshOperators();
                 this.selected_operator = 4;
-                this.diviOperator.setFrame(1);
+                this.diviOperator.setFrame(0);
             }
         });
 
-        this.refreshButton = this.add.image(200,500,'Refresh').setScale(0.3);
+        this.refreshButton = this.add.image(440,1380,'Refresh', 1);
         this.refreshButton.setInteractive().on('pointerdown', () => {
             this.refreshNumbers();
             this.refreshOperators();
         });
 
-        this.checkButton = this.add.image(100,500,'Check').setScale(0.3);
+        this.checkButton = this.add.image(640,1380,'Check', 1);
         this.checkButton.setInteractive().on('pointerdown', () => {
             this.checkResult();
         });
@@ -289,9 +276,9 @@ class NumberGameScreen extends Phaser.Scene{
 
     refreshOperators(){
         this.selected_operator = -1;
-        this.plusOperator.setFrame(0);
-        this.minusOperator.setFrame(0);
-        this.multiOperator.setFrame(0);
-        this.diviOperator.setFrame(0);
+        this.plusOperator.setFrame(1);
+        this.minusOperator.setFrame(1);
+        this.multiOperator.setFrame(1);
+        this.diviOperator.setFrame(1);
     }
 }

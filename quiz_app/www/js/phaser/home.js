@@ -9,21 +9,22 @@ class HomeScreen extends Phaser.Scene{
     }
 
     preload() {
+        this.load.image("Logo", "./images/logo.png");
         this.load.image("UserAvatar", "./images/avatar.png");
-        this.load.image("Circle", "./images/circle1.png");
-        this.load.image("Heart", "./images/heart1.png");
-        this.load.image("Point", "./images/point1.png");
-        this.load.image("Ranking", "./images/ranking1.png");
-        this.load.image("Stage", "./images/button1.png");
-        this.load.image("Battle", "./images/button2.png");
-        this.load.image("Tournament", "./images/button3.png");
-        this.load.image("DailyGame", "./images/link1.png");
-        this.load.image("PassionFlower", "./images/link2.png");
-        this.load.scenePlugin({
-            key: 'rexuiplugin',
-            url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
-            sceneKey: 'rexUI'
-        });
+        this.load.image("Life", "./images/life.png");
+        this.load.image("Coin", "./images/coin.png");
+        this.load.image("InfoPanel", "./images/user_detail.png");
+        this.load.image("Stage", "./images/stage.png");
+        this.load.image("Battle", "./images/battle.png");
+        this.load.image("Tournament", "./images/tournament.png");
+        this.load.image("DailyGame", "./images/daily_game.png");
+        this.load.image("TurnEarn", "./images/turn_earn.png");
+        this.load.image("Menu", "./images/menu.png");
+        // this.load.scenePlugin({
+        //     key: 'rexuiplugin',
+        //     url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+        //     sceneKey: 'rexUI'
+        // });
 
         // this.load.plugin('rextexteditplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rextexteditplugin.min.js', true);
         if(userData.avatar != "")
@@ -35,67 +36,93 @@ class HomeScreen extends Phaser.Scene{
     }
 
     create() {
+        this.logo = this.add.image(540,120,'Logo');
+
+        this.coin = this.add.image(820,120,'Coin');
+        this.coinText = this.add.text(820,140, userData.coin, { fixedWidth: 80, fixedHeight: 50 })
+            .setOrigin(0.5,0.5)
+            .setStyle({
+                fontSize: '48px',
+                fontFamily: 'RR',
+                color: '#106eac',
+                align: 'center',
+            });
+        this.life = this.add.image(260,120,'Life');
+        this.lifeText = this.add.text(260,140, userData.heart, { fixedWidth: 80, fixedHeight: 50 })
+            .setOrigin(0.5,0.5)
+            .setStyle({
+                fontSize: '48px',
+                fontFamily: 'RR',
+                color: '#106eac',
+                align: 'center',
+            });
+
+        // this.userName = this.add.text(150,160, userData.username, { fixedWidth: 150, fixedHeight: 36 })
+        //     .setOrigin(0.5,0.5)
+        //     .setStyle({
+        //         fontSize: '24px',
+        //         fontFamily: 'Arial',
+        //         color: '#ffffff',
+        //         align: 'center',
+        //     });
+        this.info_panel = this.add.image(540,520,'InfoPanel');
+        this.pointText = this.add.text(720,570,'Point', { fixedWidth: 180, fixedHeight: 50 })
+        .setOrigin(0.5,0.5)
+        .setStyle({
+            fontSize: '46px',
+            fontFamily: 'RR',
+            color: '#ffffff',
+            align: 'center',
+        });
+        this.points = this.add.text(720,645, userData.point, { fixedWidth: 300, fixedHeight: 64 })
+        .setOrigin(0.5,0.5)
+        .setStyle({
+            fontSize: '60px',
+            fontFamily: 'RR',
+            color: '#ffffff',
+            align: 'center',
+        });
+
+        this.rankingText = this.add.text(720,390,'Ranking', { fixedWidth: 180, fixedHeight: 50 })
+        .setOrigin(0.5,0.5)
+        .setStyle({
+            fontSize: '46px',
+            fontFamily: 'RR',
+            color: '#ffffff',
+            align: 'center',
+        });
+
         if(userData.avatar == ""){
-            this.userAvatar = this.add.image(150,100,'UserAvatar').setScale(0.3);   
+            this.userAvatar = this.add.image(380,520,'UserAvatar');   
         }
         else{
-            this.userAvatar = this.add.image(150,100,'user_avatar');
-            this.userAvatar.setDisplaySize(75,75);
+            this.userAvatar = this.add.image(380,520,'user_avatar');
+            this.userAvatar.setDisplaySize(330,340);
         }
-        this.userName = this.add.text(150,160, userData.username, { fixedWidth: 150, fixedHeight: 36 })
-            .setOrigin(0.5,0.5)
-            .setStyle({
-                fontSize: '24px',
-                fontFamily: 'Arial',
-                color: '#ffffff',
-                align: 'center',
-            });
-        this.circle = this.add.image(230,100,'Circle').setScale(0.3);
-        this.coinText = this.add.text(230,100, userData.coin, { fixedWidth: 22, fixedHeight: 22 })
-            .setOrigin(0.5,0.5)
-            .setStyle({
-                fontSize: '18px',
-                fontFamily: 'Arial',
-                color: '#eae9d7',
-                align: 'center',
-            });
-        this.heart = this.add.image(70,100,'Heart').setScale(0.3);
-        this.heartText = this.add.text(70,100, userData.heart, { fixedWidth: 20, fixedHeight: 20 })
-            .setOrigin(0.5,0.5)
-            .setStyle({
-                fontSize: '18px',
-                fontFamily: 'Arial',
-                color: '#fe7042',
-                align: 'center',
-            });
-        this.point = this.add.image(150,180,'Point').setScale(0.3);
-        this.points = this.add.text(205,187, userData.point, { fixedWidth: 80, fixedHeight: 36 })
-            .setOrigin(0.5,0.5)
-            .setStyle({
-                fontSize: '18px',
-                fontFamily: 'Arial',
-                color: '#000000',
-            });
-        this.ranking = this.add.image(150,210,'Ranking').setScale(0.3);
-        this.stage = this.add.image(150,260,'Stage').setScale(0.3);
+
+        this.stage = this.add.image(540,850,'Stage');
         this.stage.setInteractive().on('pointerdown', () => {
             Client.stage_start();
         });
-        this.battle = this.add.image(150,330,'Battle').setScale(0.3);
+        this.battle = this.add.image(540,1030,'Battle');
         this.battle.setInteractive().on('pointerdown', () => {
             game.scene.stop('HomeScreen');
             game.scene.start('BattleScreen');
         });
-        this.tournament = this.add.image(150,400,'Tournament').setScale(0.3);
+        this.tournament = this.add.image(540,1210,'Tournament');
         this.tournament.setInteractive().on('pointerdown', () => {
             Client.tournament_in();
         });
-        this.dailyGame = this.add.image(80,500,'DailyGame').setScale(0.3);
-        this.passionFlower = this.add.image(220,500,'PassionFlower').setScale(0.3);
-        this.passionFlower.setInteractive().on('pointerdown', () => {
+        this.daily_game = this.add.image(540,1390,'DailyGame');
+
+        this.turn_earn = this.add.image(540,1570,'TurnEarn');
+        this.turn_earn.setInteractive().on('pointerdown', () => {
             game.scene.stop('HomeScreen');
             game.scene.start('PassionScreen');
         });
+
+        this.menu = this.add.image(960,1570,'Menu');
+
         // this.userName = this.add.text(100, 100, 'testuser', { fixedWidth: 150, fixedHeight: 36 });
         // this.password = this.add.text(100, 200, '123', { fixedWidth: 150, fixedHeight: 36 });
     
@@ -109,7 +136,7 @@ class HomeScreen extends Phaser.Scene{
     }
     update(){
         this.coinText.setText(userData.coin);
-        this.heartText.setText(userData.heart);
+        this.lifeText.setText(userData.heart);
         this.points.setText(userData.point);
     }
 

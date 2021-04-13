@@ -42,14 +42,14 @@ class LoginScreen extends Phaser.Scene{
                 text:'testuser',
                 type:'text',
                 fontSize: '64px',
-                fontFamily: 'Righteous-Regular',
+                fontFamily: 'RR',
                 color: '#000000',
             })
         .setOrigin(0.5,0.5);
         this.userNameText = this.add.text(210, 495, 'Username', { fixedWidth: 200, fixedHeight: 32 })
         .setStyle({
             fontSize: '28px',
-            fontFamily: 'Righteous-Regular',
+            fontFamily: 'RR',
             fontWeight: 'bold',
             color: '#ffffff',
         })
