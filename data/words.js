@@ -13,7 +13,7 @@ const exportedMethods = {
     const wordCollection = await words();
     const word = await wordCollection.find().toArray();
 
-    const isExist = false;
+    let isExist = false;
     word.map((worddata, index) => {
       if(worddata.word == data.word) {
         isExist = true;
@@ -37,6 +37,41 @@ const exportedMethods = {
     }
 
     return data;
+  },
+
+  async updateWord(data) {
+    if(!data || !data.oldword || !data.word || data.word =='' || !data.matchArray) {
+      console.log("Failed in updateWord! word is undefined");
+      return false;
+    }
+
+    const wordCollection = await words();
+    const word = await wordCollection.find().toArray();
+
+    let isExist = false;
+    word.map((worddata, index) => {
+      if(worddata.word == data.oldword) {
+        isExist = true;
+        return;
+      };
+    });
+    if(!isExist) {
+      console.log('The word is not exist');
+      return false;
+    }
+
+    const newWordData = {
+      word: data.word,
+      matchArray: data.matchArray,
+    };
+
+    const newInsertInformation = await wordCollection.updateOne({word: data.oldword}, { $set: newWordData });
+    if (newInsertInformation.updatedCount === 0) {
+      console.log('Could not update word');
+      // return false;
+    }
+
+    return true;
   },
 
   async removeword(delWord) {

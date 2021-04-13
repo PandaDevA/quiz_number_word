@@ -344,6 +344,10 @@ button{
     width: 90px;
 }
 
+.button_col button {
+    width: 70px;
+}
+
 .text_col textarea {
     width: 90%;
 }

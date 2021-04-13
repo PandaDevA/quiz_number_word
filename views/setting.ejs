@@ -67,7 +67,8 @@
                                                 <textarea class="info_text" value="" placeholder="matchArray" readonly><%= words.result[i].matchArray.join(',') %></textarea>
                                             </td>
                                             <td class="border py-2 button_col text-center" data-word="<%= words.result[i].word %>">
-                                                <button type="button" class="User-Delete">Delete</button>
+                                                <button type="button" class="Word-Update">Update</button>
+                                                <button type="button" class="User-Delete mt-2">Delete</button>
                                             </td>
                                         </tr>
                                     <% } %>
@@ -75,8 +76,8 @@
                             </table>
                             <div class="row action-area py-4">
                                 <!-- <button class="offset-lg-3 col-lg-3" type="button" id="tips_info_clear">Clear</button> -->
-                                <button class="col-lg-2 mr-2" type="button" id="tips_info_add">Add</button>
-                                <button class="col-lg-2" id="tips_info_save">Save</button>
+                                <button class="col-lg-2 mr-2 ml-2" type="button" id="tips_info_add">Add</button>
+                                <!-- <button class="col-lg-2 mr-2 ml-2" id="tips_info_save">Save</button> -->
                             </div>
                         </div>
                     </div>

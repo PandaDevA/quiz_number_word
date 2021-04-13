@@ -1,14 +1,15 @@
 $('#tips_info_add').click(function(){
     if($('#user_table').find('td').last().attr('data-word') == '') return;
     $('#user_table').append("<tr>"+
-        "<td class='border py-2'>"+
+        "<td class='border py-2 word_col text-center'>"+
         "<input class='info_race info_text' type='text' value='' placeholder='word'/>"+
         "</td>"+
-        "<td class='border py-2'>"+
+        "<td class='border py-2 text_col text-center'>"+
         "<textarea class='info_text' value='' placeholder='matchArray' ></textarea>"+
         "</td>"+    
-        "<td class='border usercell py-2' data-word=''>"+
-            "<button type='button' class='User-Delete'>Delete</button>" +
+        "<td class='border py-2 button_col text-center' data-word=''>"+
+            "<button type='button' class='Word-Update'>Save</button>" + 
+            "<button type='button' class='User-Delete mt-2'>Delete</button>" +
         "</td>" +
         "</tr>");
 })
@@ -66,14 +67,15 @@ function update_user(filter, page, count){
             $('#user_table').empty();
             for(var i=0; i<data.result.length; i++) {
                 $('#user_table').append("<tr>"+
-                    "<td class='border py-2'>"+
+                    "<td class='border py-2 word_col text-center'>"+
                     "<input class='info_race info_text' type='text' value='" + data.result[i].word + "' placeholder='word' readonly/>"+
                     "</td>"+
-                    "<td class='border py-2'>"+
+                    "<td class='border py-2 text_col text-center'>"+
                     "<textarea class='info_text' value='' placeholder='matchArray' readonly>" + data.result[i].matchArray.join(',') + "</textarea>"+
                     "</td>"+    
-                    "<td class='border usercell py-2' data-word='" + data.result[i].word + "'>"+
-                        "<button type='button' class='User-Delete'>Delete</button>" +
+                    "<td class='border py-2 button_col text-center' data-word='" + data.result[i].word + "'>"+
+                        "<button type='button' class='Word-Update'>Update</button>" + 
+                        "<button type='button' class='User-Delete mt-2'>Delete</button>" +
                     "</td>" +
                     "</tr>");
             } 
@@ -123,37 +125,118 @@ $('body').on('click', '.User-Delete', function(){
     }
 })
 
-$('#tips_info_save').click(function(){
-    var last = $('#user_table').find('tr').last();
-    if(last.find('input').first().val() == '') {
-        $('#user_table').find('tr').last().remove();
-        return;
-     }
-    var returnVal = confirm("Are you sure?");
-    if(returnVal) {
-        $.blockUI({ message: '<h1><img src="/img/busy.gif" /> Just a moment...</h1>' });
-        $.ajax({
-            url : '/setting/add',
-            type : 'POST',
-            data : {
-                word: last.find('input').first().val(),
-                matchArrayString: last.find('textarea').first().val()
-            },
-            success : function(data) {
-                $('#user_table').find('input').last().attr('readonly', true);
-                $('#user_table').find('textarea').last().attr('readonly', true);
-                var filter = $('#user_filter').val();
-                var page = 1;
-                var perPage = $('#user_perPage').val();
-                update_user(filter, page, perPage);
-            },
-            error: function(data){
-                if(data.error) alert("Error occured..."+data.error);
-                else alert("Error occured...");
+$('body').on('click', '.Word-Update', function(){
+    var oldWord = $(this).closest('td').data('word');
+    console.log($(this).closest('tr').find('textarea').first().val());
+    if($(this).text() == 'Update') {
+        $(this).closest('tr').find('input').first().attr('readonly', false);
+        $(this).closest('tr').find('textarea').first().attr('readonly', false);
+        $(this).text('Save');
+    } else {
+        $(this).closest('tr').find('input').first().attr('readonly', true);
+        $(this).closest('tr').find('textarea').first().attr('readonly', true);
+        $(this).text('Update');
+
+        if($(this).closest('tr').find('input').first().val() == '') {
+            $(this).closest('tr').find('input').first().val(oldWord);
+            alert("Please input word.");
+            return;
+        }
+
+        if(oldWord == '') {
+            var last = $('#user_table').find('tr').last();
+            var returnVal = confirm("Are you sure?");
+            if(returnVal) {
+                $.blockUI({ message: '<h1><img src="/img/busy.gif" /> Just a moment...</h1>' });
+                $.ajax({
+                    url : '/setting/add',
+                    type : 'POST',
+                    data : {
+                        word: last.find('input').first().val(),
+                        matchArrayString: last.find('textarea').first().val()
+                    },
+                    success : function(data) {
+                        $('#user_table').find('input').last().attr('readonly', true);
+                        $('#user_table').find('textarea').last().attr('readonly', true);
+                        var filter = $('#user_filter').val();
+                        var page = 1;
+                        var perPage = $('#user_perPage').val();
+                        update_user(filter, page, perPage);
+                    },
+                    error: function(data){
+                        if(data.error) alert("Error occured..."+data.error);
+                        else alert("Error occured...");
+                        $('#user_table').find('tr').last().remove();
+                    }
+                });
             }
-        });
+        } else {
+            var last = $(this).closest('tr');
+            var returnVal = confirm("Are you sure?");
+            if(returnVal) {
+                $.blockUI({ message: '<h1><img src="/img/busy.gif" /> Just a moment...</h1>' });
+                $.ajax({
+                    url : '/setting/update',
+                    type : 'POST',
+                    data : {
+                        oldword: oldWord,
+                        word: last.find('input').first().val(),
+                        matchArrayString: last.find('textarea').first().val()
+                    },
+                    success : function(data) {
+                        $('#user_table').find('input').attr('readonly', true);
+                        $('#user_table').find('textarea').attr('readonly', true);
+                        var filter = $('#user_filter').val();
+                        var page = 1;
+                        var perPage = $('#user_perPage').val();
+                        update_user(filter, page, perPage);
+                    },
+                    error: function(data){
+                        if(data.error) alert("Error occured..."+data.error);
+                        else alert("Error occured...");
+                        var filter = $('#user_filter').val();
+                        var page = 1;
+                        var perPage = $('#user_perPage').val();
+                        update_user(filter, page, perPage);
+                    }
+                });
+            }
+        }
     }
 })
+
+// $('#tips_info_save').click(function(){
+//     var last = $('#user_table').find('tr').last();
+//     if(last.find('input').first().val() == '') {
+//         $('#user_table').find('tr').last().remove();
+//         return;
+//      }
+//     var returnVal = confirm("Are you sure?");
+//     if(returnVal) {
+//         $.blockUI({ message: '<h1><img src="/img/busy.gif" /> Just a moment...</h1>' });
+//         $.ajax({
+//             url : '/setting/add',
+//             type : 'POST',
+//             data : {
+//                 word: last.find('input').first().val(),
+//                 matchArrayString: last.find('textarea').first().val()
+//             },
+//             success : function(data) {
+//                 $('#user_table').find('input').last().attr('readonly', true);
+//                 $('#user_table').find('textarea').last().attr('readonly', true);
+//                 var filter = $('#user_filter').val();
+//                 var page = 1;
+//                 var perPage = $('#user_perPage').val();
+//                 update_user(filter, page, perPage);
+//             },
+//             error: function(data){
+//                 if(data.error) alert("Error occured..."+data.error);
+//                 else alert("Error occured...");
+//                 $(this).closest('tr').remove();
+//             }
+//         });
+//     }
+// })
 
 function update_row_num(tbl_class){
     $(tbl_class).find("tr > td.row_num").each(function( index ) {
