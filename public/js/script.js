@@ -14,10 +14,6 @@ $('#tips_info_add').click(function(){
         "</tr>");
 })
 
-// $('body').on('click', '#tips_info_clear', function(){
-//     $('#user_table').html("");
-// })
-
 function update_user(filter, page, count){
     $.blockUI({ message: '<h1><img src="/img/busy.gif" /> Just a moment...</h1>' });
     $.ajax({
@@ -64,6 +60,7 @@ function update_user(filter, page, count){
                 content+="</ul>";
                 $('#user-pagination').html(content);
             }
+            $('#count_label').html('<label>' + data.pageInfo.count + ' of ' + data.totalNum + '</label>');
             $('#user_table').empty();
             for(var i=0; i<data.result.length; i++) {
                 $('#user_table').append("<tr>"+
@@ -204,44 +201,5 @@ $('body').on('click', '.Word-Update', function(){
         }
     }
 })
-
-// $('#tips_info_save').click(function(){
-//     var last = $('#user_table').find('tr').last();
-//     if(last.find('input').first().val() == '') {
-//         $('#user_table').find('tr').last().remove();
-//         return;
-//      }
-//     var returnVal = confirm("Are you sure?");
-//     if(returnVal) {
-//         $.blockUI({ message: '<h1><img src="/img/busy.gif" /> Just a moment...</h1>' });
-//         $.ajax({
-//             url : '/setting/add',
-//             type : 'POST',
-//             data : {
-//                 word: last.find('input').first().val(),
-//                 matchArrayString: last.find('textarea').first().val()
-//             },
-//             success : function(data) {
-//                 $('#user_table').find('input').last().attr('readonly', true);
-//                 $('#user_table').find('textarea').last().attr('readonly', true);
-//                 var filter = $('#user_filter').val();
-//                 var page = 1;
-//                 var perPage = $('#user_perPage').val();
-//                 update_user(filter, page, perPage);
-//             },
-//             error: function(data){
-//                 if(data.error) alert("Error occured..."+data.error);
-//                 else alert("Error occured...");
-//                 $(this).closest('tr').remove();
-//             }
-//         });
-//     }
-// })
-
-function update_row_num(tbl_class){
-    $(tbl_class).find("tr > td.row_num").each(function( index ) {
-        $( this ).html(index+1);
-    });
-}
 
 $(document).ajaxStop($.unblockUI);

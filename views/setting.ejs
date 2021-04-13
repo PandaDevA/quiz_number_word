@@ -7,7 +7,7 @@
                         <div class="col-lg-12 details order-2 order-lg-1">
                             <h3>Word Information</h3>
                             <div class="row action-area py-4">
-                                <div class="col-lg-7">
+                                <div class="col-lg-6">
                                     <label>Search:</label>
                                     <input id="user_filter" class="info_text" type="text" value="" placeholder="Input filter"/>
                                     <button id="user_find">Find</button>
@@ -18,7 +18,7 @@
                                         <option value="50" <%= words.pageInfo.perPage == 50 ? 'selected':'' %>>50</option>
                                     </select>
                                 </div>
-                                <div class="col-lg-5" id="user-pagination">
+                                <div class="col-lg-4" id="user-pagination">
                                     <% if (Math.ceil(words.pageInfo.count / words.pageInfo.perPage) > 0) { %>
                                         <ul class="pagination text-center">
                                             <% if (words.pageInfo.curPage == 1) { %>
@@ -47,6 +47,9 @@
                                             <% } %>
                                         </ul>
                                     <% } %>
+                                </div>
+                                <div class="col-lg-2" id="count_label">
+                                    <label><%= words.pageInfo.count %> of <%= words.totalNum %></label>
                                 </div>
                             </div>
                             <table class="w-full table-auto bg-white full-width">

@@ -15,7 +15,7 @@ function settingController(){
                         result: []}
                     });
             }
-            let resData = {messages: {error: 'no error'}, words: {pageInfo: {perpage : 10, count: result.result.length, curPage: 1}, result: result.result}};
+            let resData = {messages: {error: 'no error'}, words: {pageInfo: {perpage : 10, count: result.result.length, curPage: 1}, result: result.result, totalNum: result.totalNum}};
             console.log(resData);
             res.render('setting', resData);
         },
@@ -27,8 +27,8 @@ function settingController(){
             //word table data: 
             const result = await words.getAll(filter, page, count);
             console.log(result);
-            if(result.error) res.status(500).send({messages: {error: result.error}, words: {pageInfo: {perpage : count, count: 0, curPage: 1}, result: []}});
-            else res.status(200).send({words: {pageInfo: result.pageInfo, result: result.result}});
+            if(result.error) res.status(500).send({messages: {error: result.error}, words: {pageInfo: {perpage : count, count: 0, curPage: 1}, result: [], totalNum: 0}});
+            else res.status(200).send({words: {pageInfo: result.pageInfo, result: result.result, totalNum: result.totalNum}});
         },
 
         async delete(req, res){
