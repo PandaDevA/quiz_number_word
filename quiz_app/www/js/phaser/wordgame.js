@@ -10,14 +10,9 @@ class WordGameScreen extends Phaser.Scene{
 
     preload() {
         this.load.image("Logo", "./images/logo.png");
-        this.load.image("Target", "./images/target.png");
         this.load.image("Time", "./images/time.png");
         this.load.image("Letter", "./images/letter.png");
         this.load.spritesheet("Number", "./images/number.png", { frameWidth: 211, frameHeight: 199 });
-        this.load.spritesheet("Multi", "./images/sign_multi.png", { frameWidth: 190, frameHeight: 178 });
-        this.load.spritesheet("Plus", "./images/sign_plus.png", { frameWidth: 190, frameHeight: 178 });
-        this.load.spritesheet("Minus", "./images/sign_minus.png", { frameWidth: 190, frameHeight: 178 });
-        this.load.spritesheet("Divi", "./images/sign_div.png", { frameWidth: 190, frameHeight: 178 });
         this.load.spritesheet("Refresh", "./images/refresh.png", { frameWidth: 190, frameHeight: 178 });
         this.load.spritesheet("Check", "./images/check.png", { frameWidth: 190, frameHeight: 178 });
     }
@@ -29,18 +24,8 @@ class WordGameScreen extends Phaser.Scene{
         this.graphics.lineStyle(4, '#000000', 1);
         this.graphics.strokeRoundedRect(35,190,1010,1300, 10);
 
-        this.targetImage = this.add.image(320,350,'Target');
-        this.targetNumber = this.add.text(320,390, gameData.numData[cur_number].result, { fixedWidth: 350, fixedHeight: 110 })
-        .setOrigin(0.5,0.5)
-        .setStyle({
-            fontSize: '78px',
-            fontFamily: 'RR',
-            color: '#ffffff',
-            align: 'center',
-        });
-
-        this.timeImage = this.add.image(760,350,'Time');
-        this.timeText = this.add.text(760,390, '30', { fixedWidth: 350, fixedHeight: 110 })
+        this.timeImage = this.add.image(540,350,'Time');
+        this.timeText = this.add.text(540,390, '30', { fixedWidth: 350, fixedHeight: 110 })
         .setOrigin(0.5,0.5)
         .setStyle({
             fontSize: '78px',
@@ -74,16 +59,6 @@ class WordGameScreen extends Phaser.Scene{
 
         this.resultImage = this.add.image(150,150,'Result').setScale(0.3);
         this.resultWord = this.add.text(150,160, '', { fixedWidth: 250, fixedHeight: 36 })
-        .setOrigin(0.5,0.5)
-        .setStyle({
-            fontSize: '36px',
-            fontFamily: 'Arial',
-            color: '#000000',
-            align: 'center',
-        });
-
-        this.timeImage = this.add.image(150,80,'Time').setScale(0.3);
-        this.timeText = this.add.text(150,90, '30', { fixedWidth: 150, fixedHeight: 36 })
         .setOrigin(0.5,0.5)
         .setStyle({
             fontSize: '36px',
@@ -126,12 +101,12 @@ class WordGameScreen extends Phaser.Scene{
             });
         }
 
-        this.refreshButton = this.add.image(200,500,'Refresh').setScale(0.3);
+        this.refreshButton = this.add.image(640,1380,'Refresh', 1);
         this.refreshButton.setInteractive().on('pointerdown', () => {
-            this.resultWord.setText('');
+            this.refreshResult();
         });
 
-        this.checkButton = this.add.image(100,500,'Check').setScale(0.3);
+        this.checkButton = this.add.image(440,1380,'Check', 1);
         this.checkButton.setInteractive().on('pointerdown', () => {
             this.checkResult();
         });

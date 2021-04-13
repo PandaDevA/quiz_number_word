@@ -26,8 +26,8 @@ const config = {
         parent: '#phaser-area',
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: 300,
-        height: 600,
+        width: 1080,
+        height: 1680
     },
     transparent: true,
     scene: [LoginScreen, HomeScreen,TournamentScreen, NumberGameScreen, EndScreen, WordGameScreen, BattleScreen, PassionScreen, RegisterScreen ],

@@ -184,13 +184,13 @@ class NumberGameScreen extends Phaser.Scene{
             }
         });
 
-        this.refreshButton = this.add.image(440,1380,'Refresh', 1);
+        this.refreshButton = this.add.image(640,1380,'Refresh', 1);
         this.refreshButton.setInteractive().on('pointerdown', () => {
             this.refreshNumbers();
             this.refreshOperators();
         });
 
-        this.checkButton = this.add.image(640,1380,'Check', 1);
+        this.checkButton = this.add.image(440,1380,'Check', 1);
         this.checkButton.setInteractive().on('pointerdown', () => {
             this.checkResult();
         });
