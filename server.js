@@ -1,9 +1,11 @@
 const express = require('express');
 const fs = require('fs');
 const util = require('util');
+const ejs = require('ejs');
+const expressLayouts = require('express-ejs-layouts');
 const app = express();
 const server = require('http').Server(app);
-const io = require('socket.io').listen(server);
+const io = require('socket.io')(server);
 
 const socketSrc = require('./tasks/socket');
 
@@ -27,7 +29,7 @@ console.log = function(d) { //
 };
 
 const port = process.env.PORT || 8081;
-const baseUrl = '192.168.104.55';
+const baseUrl = 'localhost';
 //const baseUrl = 'quizpuzzle.chileracing.net'
 
 app.use(express.static(__dirname + '/public'));
@@ -35,10 +37,18 @@ app.use(express.static(__dirname + '/public'));
 app.use(session);
 io.use(sharedsession(session));
 
-app.get('/', (req, res) => {
-    req.session.game_exists = false;
-    res.sendFile(__dirname + '/index.html');
-});
+// app.get('/', (req, res) => {
+//     req.session.game_exists = false;
+//     res.sendFile(__dirname + '/index.html');
+// });
+
+//Set Template Engine
+app.use(expressLayouts);
+app.use(express.urlencoded({ extended: true }));
+app.set('view engine', 'ejs');
+
+//Set Route
+require('./routes/web.js')(app);
 
 let number;
 let connections = [];

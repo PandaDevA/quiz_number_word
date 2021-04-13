@@ -3,7 +3,7 @@
  */
 
 var Client = {};
-Client.socket = io("http://192.168.104.55:8081/");
+Client.socket = io.connect();
 
 Client.login = function(username, password){
     Client.socket.emit('login', {username: username, password: password});

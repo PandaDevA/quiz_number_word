@@ -1,0 +1,333 @@
+.bottom-bar-1{
+    border-width: 32px 0px 64px;
+    border-style: solid;
+    border-color: transparent;
+    border-image: url('../img/bar.png') 0% 0% 100% 0%;
+    position: relative;
+}
+
+.bottom-bar-1::after{
+    position: absolute;
+    bottom: -64px;
+    left: 50%;
+    margin-left: -32px;
+    background-image: url('../img/star.png');
+    width: 64px;
+    height: 64px;
+    content: '';
+}
+
+.top-bar-1{
+    border-width: 64px 0px 32px;
+    border-style: solid;
+    border-color: transparent;
+    border-image: url('../img/bar.png') 100% 0% 0% 0%;
+    position: relative;
+}
+
+.top-bar-1::before{
+    position: absolute;
+    top: -64px;
+    left: 50%;
+    margin-left: -32px;
+    background-image: url('../img/star.png');
+    width: 64px;
+    height: 64px;
+    content: '';
+}
+
+button[type="submit"]{
+    background: #d9232d;
+    border: 0;
+    color: #fff;
+    transition: 0.4s;
+    border-radius: 4px;
+}
+
+#footer{
+    background-color: #ffffff;
+    padding: 0px;
+    margin: 3rem 0 0;
+    color:#000;
+}
+
+#footer .footer-top {
+    background: #ffffff;
+    padding: 0px;
+}
+
+.service_item{
+    text-align: center!important;
+    margin: auto;
+    position: relative;
+    padding-top:2rem;
+}
+
+.row.content:nth-child(odd) .service_item::after{
+    position:absolute;
+    content: '';
+    width:8rem;
+    height:0.3rem;
+    margin-left:-4rem;
+    left:50%;
+    bottom:0px;
+    background-color: red;
+}
+
+.row.content:nth-child(even) .service_item::after{
+    position:absolute;
+    content: '';
+    width:16rem;
+    height:0.3rem;
+    margin-left:-8rem;
+    left:50%;
+    bottom:0px;
+    background-color: blue;
+}
+
+.register_panel{
+    padding-top: 3rem;
+    width:30rem;
+    margin:auto;
+}
+
+.message-error{
+    margin-top:0.5rem;
+    margin-bottom:0.5rem;
+    background-color:#ff0000a0;
+    border: red 0.3rem solid;
+    color: white;
+    font-size: 1rem;
+    line-height: 1rem;
+}
+
+.message-succeed{
+    margin-top:0.5rem;
+    margin-bottom:0.5rem;
+    background-color:#00ff00a0;
+    border: green 0.3rem solid;
+    color: white;
+    font-size: 1rem;
+    line-height: 1rem;
+}
+
+.hide{
+    display: none;
+}
+
+.show{
+    display: block;
+}
+
+.clients{
+    margin-top: 3rem;
+
+}
+
+.panel_title{
+    text-align: center;
+    margin:auto;
+    width: 50%;
+    border-width: 16px 0px 32px;
+    border-style: solid;
+    border-color: transparent;
+    border-image: url('../img/bar.png') 0% 0% 100% 0%;
+    position: relative;
+}
+
+.panel_title::after{
+    position: absolute;
+    bottom: -32px;
+    left: 50%;
+    margin-left: -16px;
+    background-image: url('../img/star.png');
+    background-size: cover;
+    width: 32px;
+    height: 32px;
+    content: '';
+}
+
+.panel_content{
+    width: 100%;
+    margin-top:1rem;    
+    margin-left:10rem;
+    margin-right:10rem;
+    height:20rem;
+    overflow:auto;
+}
+
+.bet_info_item{
+    margin: 1rem 1rem;
+}
+
+.live_result_item{
+    margin: 1rem 1rem;
+    border: #eaeef1 2px solid;
+    padding: 0.5rem 1rem;
+}
+
+#stream_preview{
+    margin: 1rem;
+}
+
+.full-width{
+    width: 100%;
+}
+
+.action-area{
+    margin: 0px;
+}
+
+th{
+    text-align:center;
+}
+
+.Color_Blue{
+    background-color:cyan;
+}
+
+.Color_Red{
+    background-color:mediumvioletred;
+}
+
+.fade-in {
+    animation: fadeIn ease 3s;
+    -webkit-animation: fadeIn ease 3s;
+    -moz-animation: fadeIn ease 3s;
+    -o-animation: fadeIn ease 3s;
+    -ms-animation: fadeIn ease 3s;
+}
+
+@keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
+
+@-moz-keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
+
+@-webkit-keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
+
+@-o-keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
+
+@-ms-keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
+
+.fade-out {
+    animation: fadeOut ease 3s;
+    -webkit-animation: fadeOut ease 3s;
+    -moz-animation: fadeOut ease 3s;
+    -o-animation: fadeOut ease 3s;
+    -ms-animation: fadeOut ease 3s;
+}
+
+@keyframes fadeOut {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
+
+@-moz-keyframes fadeOut {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
+
+@-webkit-keyframes fadeOut {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
+
+@-o-keyframes fadeOut {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
+
+@-ms-keyframes fadeOut {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
+
+.form-row > .form-control{
+    margin-top: auto;
+}
+
+.resource-block{
+    border: 2px solid black;
+    padding:5px 10px;
+    margin: 5px 0px;
+}
+
+.resource-block > .row{
+    padding: 10px 20px;
+}
+
+.resource-block h3{
+    border-bottom: 1px solid black;
+}
+
+#user-pagination li{
+    margin:2px;
+    border: 1px solid black;
+    padding:2px 5px;
+}
+
+.long-table input {
+    width: 120px;
+}
+
+.long-table select {
+    width: 120px;
+}
+
+button{
+    background-color: #0000ffaa;
+    border: 1px solid blue;
+    border-radius: 2px;
+    color:white;
+}
+
+.button{
+    background-color: #0000ffaa;
+    border: 1px solid blue;
+    border-radius: 5px;
+    color:white;
+}
+
+.usercell{
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+}
+
+@media screen and (max-width: 1500px) {
+    .usercell{
+        padding-left: .5rem !important;
+        padding-right: .5rem !important;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .usercell{
+        padding-left: .3rem !important;
+        padding-right: .3rem !important;
+    }
+}
+
+@media screen and (max-width: 1050px) {
+    .usercell{
+        padding-left: .1rem !important;
+        padding-right: .1rem !important;
+    }
+}
+
+.info_text {
+    text-transform: uppercase;
+}
