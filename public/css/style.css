@@ -2,7 +2,7 @@
     border-width: 32px 0px 64px;
     border-style: solid;
     border-color: transparent;
-    border-image: url('../img/bar.png') 0% 0% 100% 0%;
+    /* border-image: url('../img/bar.png') 0% 0% 100% 0%; */
     position: relative;
 }
 
@@ -11,7 +11,7 @@
     bottom: -64px;
     left: 50%;
     margin-left: -32px;
-    background-image: url('../img/star.png');
+    /* background-image: url('../img/star.png'); */
     width: 64px;
     height: 64px;
     content: '';
@@ -21,7 +21,7 @@
     border-width: 64px 0px 32px;
     border-style: solid;
     border-color: transparent;
-    border-image: url('../img/bar.png') 100% 0% 0% 0%;
+    /* border-image: url('../img/bar.png') 100% 0% 0% 0%; */
     position: relative;
 }
 
@@ -30,7 +30,7 @@
     top: -64px;
     left: 50%;
     margin-left: -32px;
-    background-image: url('../img/star.png');
+    /* background-image: url('../img/star.png'); */
     width: 64px;
     height: 64px;
     content: '';
@@ -330,4 +330,20 @@ button{
 
 .info_text {
     text-transform: uppercase;
+}
+
+.word_col {
+    width: 130px;
+}
+
+.word_col input {
+    width: 100px;
+}
+
+.button_col {
+    width: 90px;
+}
+
+.text_col textarea {
+    width: 90%;
 }
