@@ -13,7 +13,7 @@ const exportedMethods = {
     const wordCollection = await words();
     const word = await wordCollection.find().toArray();
 
-    const isExist = false;
+    let isExist = false;
     word.map((worddata, index) => {
       if(worddata.word == data.word) {
         isExist = true;
@@ -37,6 +37,41 @@ const exportedMethods = {
     }
 
     return data;
+  },
+
+  async updateWord(data) {
+    if(!data || !data.oldword || !data.word || data.word =='' || !data.matchArray) {
+      console.log("Failed in updateWord! word is undefined");
+      return false;
+    }
+
+    const wordCollection = await words();
+    const word = await wordCollection.find().toArray();
+
+    let isExist = false;
+    word.map((worddata, index) => {
+      if(worddata.word == data.oldword) {
+        isExist = true;
+        return;
+      };
+    });
+    if(!isExist) {
+      console.log('The word is not exist');
+      return false;
+    }
+
+    const newWordData = {
+      word: data.word,
+      matchArray: data.matchArray,
+    };
+
+    const newInsertInformation = await wordCollection.updateOne({word: data.oldword}, { $set: newWordData });
+    if (newInsertInformation.updatedCount === 0) {
+      console.log('Could not update word');
+      // return false;
+    }
+
+    return true;
   },
 
   async removeword(delWord) {
@@ -83,6 +118,13 @@ const exportedMethods = {
     let result = {};
 
     const wordCollection = await words();
+    let total = await wordCollection.find({}).count();
+    if(!total) {
+        console.log('could not get the total of words');
+        total = 0;
+    }
+    else console.log(`page total is : ${total}`);
+
     let count = await wordCollection.find({word: {$regex: filter.toUpperCase()}}).count();
     if(!count) {
         console.log('could not get the count of words');
@@ -94,13 +136,13 @@ const exportedMethods = {
     try {
         const wordData = await wordCollection.find({word: {$regex: filter.toUpperCase()}}).skip(perPage * (curPage - 1)).limit(perPage).toArray();
         if(wordData)
-            result = { result: wordData, pageInfo: {perPage: perPage, count: count, curPage: curPage} };
+            result = { result: wordData, totalNum: total, pageInfo: {perPage: perPage, count: count, curPage: curPage} };
         else 
-            result = { result: [], pageInfo: {perPage: 10, count: 0, curPage: 1}, error: 'could not get word data' };
+            result = { result: [], totalNum: total, pageInfo: {perPage: 10, count: 0, curPage: 1}, error: 'could not get word data' };
         return result;
     } catch (e) {
         console.log(`Error while getWordList: ${e}`);
-        result = { result: [], pageInfo: {perPage: 10, count: 0, curPage: 1}, error: e };
+        result = { result: [], totalNum: total, pageInfo: {perPage: 10, count: 0, curPage: 1}, error: e };
         return result;
     }
   },

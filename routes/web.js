@@ -4,6 +4,7 @@ function initRoute(app) {
     app.get('/*', mainController().index);
     app.post('/setting/word', mainController().word);
     app.post('/setting/add', mainController().add);
+    app.post('/setting/update', mainController().update);
     app.post('/setting/delete', mainController().delete);
 }
 

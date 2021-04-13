@@ -15,7 +15,7 @@ function settingController(){
                         result: []}
                     });
             }
-            let resData = {messages: {error: 'no error'}, words: {pageInfo: {perpage : 10, count: result.result.length, curPage: 1}, result: result.result}};
+            let resData = {messages: {error: 'no error'}, words: {pageInfo: {perpage : 10, count: result.result.length, curPage: 1}, result: result.result, totalNum: result.totalNum}};
             console.log(resData);
             res.render('setting', resData);
         },
@@ -27,8 +27,8 @@ function settingController(){
             //word table data: 
             const result = await words.getAll(filter, page, count);
             console.log(result);
-            if(result.error) res.status(500).send({messages: {error: result.error}, words: {pageInfo: {perpage : count, count: 0, curPage: 1}, result: []}});
-            else res.status(200).send({words: {pageInfo: result.pageInfo, result: result.result}});
+            if(result.error) res.status(500).send({messages: {error: result.error}, words: {pageInfo: {perpage : count, count: 0, curPage: 1}, result: [], totalNum: 0}});
+            else res.status(200).send({words: {pageInfo: result.pageInfo, result: result.result, totalNum: result.totalNum}});
         },
 
         async delete(req, res){
@@ -50,7 +50,7 @@ function settingController(){
         },
 
         async add(req, res){
-            console.log('ajax access request is received');
+            console.log('ajax add request is received');
             let { word, matchArrayString } = req.body;
             console.log(word, matchArrayString);
             let resData = {result: false};
@@ -62,6 +62,24 @@ function settingController(){
             let matchArray = matchArrayString.toUpperCase().split(',');
 
             const result = await words.addWord({word: word.toUpperCase(), matchArray});
+            resData = {result};
+            if(!resData.result) res.status(500).send(resData);
+            else res.status(200).send(resData);
+        },
+
+        async update(req, res){
+            console.log('ajax update request is received');
+            let { oldword, word, matchArrayString } = req.body;
+            console.log(oldword, word, matchArrayString);
+            let resData = {result: false};
+            if(!oldword || !word || !matchArrayString || matchArrayString == '') {
+                console.log('Invalid params is supplied');
+                res.status(403).send(resData);
+                return;
+            }
+            let matchArray = matchArrayString.toUpperCase().split(',');
+
+            const result = await words.updateWord({oldword, word: word.toUpperCase(), matchArray});
             resData = {result};
             if(!resData.result) res.status(500).send(resData);
             else res.status(200).send(resData);

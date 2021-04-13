@@ -1,120 +1,102 @@
-<div id="message-box" class="container error <%= messages.error ? 'show' : 'hide' %>">
-    <%= messages.error%>
-</div>
 <section id="features order px-12 py-12" class="features">
     <div class="container">
-
-        <div class="section-title">
-            <h2>Settings</h2>
-            <p>Update to new informations</p>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-3">
-                <ul class="nav nav-tabs flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link show active" data-toggle="tab" href="#tab-1">Words</a>
-                    </li>
-                    <!-- <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#tab-2">Resource Urls</a>
-                    </li> -->
-                    </li>
-                </ul>
-            </div>
-            <div class="col-lg-9 mt-4 mt-lg-0">
-                <div class="tab-content">
-                    <div class="tab-pane show active" id="tab-1">
-                        <div class="row">
-                            <div class="col-lg-12 details order-2 order-lg-1">
-                                <h3>User Information</h3>
-                                <div class="row action-area">
-                                    <div class="col-lg-7">
-                                        <label>Search:</label>
-                                        <input id="user_filter" class="info_text" type="text" value="" placeholder="Input filter"/>
-                                        <button id="user_find">Find</button>
-                                        <label>Row:</label>
-                                        <select id="user_perPage">
-                                            <option value="10" <%= words.pageInfo.perPage == 10 ? 'selected':'' %>>10</option>
-                                            <option value="20" <%= words.pageInfo.perPage == 20 ? 'selected':'' %>>20</option>
-                                            <option value="50" <%= words.pageInfo.perPage == 50 ? 'selected':'' %>>50</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-5" id="user-pagination">
-                                        <% if (Math.ceil(words.pageInfo.count / words.pageInfo.perPage) > 0) { %>
-                                            <ul class="pagination text-center">
-                                                <% if (words.pageInfo.curPage == 1) { %>
-                                                    <li class="disabled">First</li>
+        <div class="col-lg-12 mt-4 mt-lg-0">
+            <div class="tab-content">
+                <div class="tab-pane show active" id="tab-1">
+                    <div class="row">
+                        <div class="col-lg-12 details order-2 order-lg-1">
+                            <h3>Word Information</h3>
+                            <div class="row action-area py-4">
+                                <div class="col-lg-6">
+                                    <label>Search:</label>
+                                    <input id="user_filter" class="info_text" type="text" value="" placeholder="Input filter"/>
+                                    <button id="user_find">Find</button>
+                                    <label>Row:</label>
+                                    <select id="user_perPage">
+                                        <option value="10" <%= words.pageInfo.perPage == 10 ? 'selected':'' %>>10</option>
+                                        <option value="20" <%= words.pageInfo.perPage == 20 ? 'selected':'' %>>20</option>
+                                        <option value="50" <%= words.pageInfo.perPage == 50 ? 'selected':'' %>>50</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-4" id="user-pagination">
+                                    <% if (Math.ceil(words.pageInfo.count / words.pageInfo.perPage) > 0) { %>
+                                        <ul class="pagination text-center">
+                                            <% if (words.pageInfo.curPage == 1) { %>
+                                                <li class="disabled">First</li>
+                                            <% } else { %>
+                                                <li data-page="1">First</li>
+                                            <% } %>
+                                            <% var i = (Number(words.pageInfo.curPage) > 5 ? Number(words.pageInfo.curPage) - 4 : 1) %>
+                                            <% if (i !== 1) { %>
+                                                <li class="disabled">...</li>
+                                            <% } %>
+                                            <% for (; i <= (Number(words.pageInfo.curPage) + 4) && i <= Math.ceil(words.pageInfo.count / words.pageInfo.perPage); i++) { %>
+                                                <% if (i == words.pageInfo.curPage) { %>
+                                                    <li class="active"><%= i %></li>
                                                 <% } else { %>
-                                                    <li data-page="1">First</li>
+                                                    <li data-page="<%= i %>"><%= i %></li>
                                                 <% } %>
-                                                <% var i = (Number(words.pageInfo.curPage) > 5 ? Number(words.pageInfo.curPage) - 4 : 1) %>
-                                                <% if (i !== 1) { %>
+                                                <% if (i == Number(words.pageInfo.curPage) + 4 && i < Math.ceil(words.pageInfo.count / words.pageInfo.perPage)) { %>
                                                     <li class="disabled">...</li>
                                                 <% } %>
-                                                <% for (; i <= (Number(words.pageInfo.curPage) + 4) && i <= Math.ceil(words.pageInfo.count / words.pageInfo.perPage); i++) { %>
-                                                    <% if (i == words.pageInfo.curPage) { %>
-                                                        <li class="active"><%= i %></li>
-                                                    <% } else { %>
-                                                        <li data-page="<%= i %>"><%= i %></li>
-                                                    <% } %>
-                                                    <% if (i == Number(words.pageInfo.curPage) + 4 && i < Math.ceil(words.pageInfo.count / words.pageInfo.perPage)) { %>
-                                                        <li class="disabled">...</li>
-                                                    <% } %>
-                                                <% } %>
-                                                <% if (words.pageInfo.curPage == Math.ceil(words.pageInfo.count / words.pageInfo.perPage)) { %>
-                                                    <li class="disabled">Last</li>
-                                                <% } else { %>
-                                                    <li data-page="<%= Math.ceil(words.pageInfo.count / words.pageInfo.perPage) %>">Last</li>
-                                                <% } %>
-                                            </ul>
-                                        <% } %>
-                                    </div>
+                                            <% } %>
+                                            <% if (words.pageInfo.curPage == Math.ceil(words.pageInfo.count / words.pageInfo.perPage)) { %>
+                                                <li class="disabled">Last</li>
+                                            <% } else { %>
+                                                <li data-page="<%= Math.ceil(words.pageInfo.count / words.pageInfo.perPage) %>">Last</li>
+                                            <% } %>
+                                        </ul>
+                                    <% } %>
                                 </div>
-                                <table class="w-full table-auto bg-white full-width">
-                                    <thead>
+                                <div class="col-lg-2" id="count_label">
+                                    <label><%= words.pageInfo.count %> of <%= words.totalNum %></label>
+                                </div>
+                            </div>
+                            <table class="w-full table-auto bg-white full-width">
+                                <thead>
+                                    <tr>
+                                        <th class="border py-2 word_col">Race</th>
+                                        <th class="border py-2 text_col">Notes</th>
+                                        <th class="border py-2 button_col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="user_table">
+                                    <% for(var i=0; i<words.result.length; i++) { %>
                                         <tr>
-                                            <th class="border py-2">Race</th>
-                                            <th class="border py-2">Notes</th>
-                                            <th class="border py-2">Action</th>
+                                            <td class="border py-2 word_col text-center">
+                                                <input class="info_race info_text" type="text" value="<%= words.result[i].word %>" placeholder="word" readonly/>
+                                            </td>
+                                            <td class="border py-2 text_col text-center">
+                                                <textarea class="info_text" value="" placeholder="matchArray" readonly><%= words.result[i].matchArray.join(',') %></textarea>
+                                            </td>
+                                            <td class="border py-2 button_col text-center" data-word="<%= words.result[i].word %>">
+                                                <button type="button" class="Word-Update">Update</button>
+                                                <button type="button" class="User-Delete mt-2">Delete</button>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody id="user_table">
-                                        <% for(var i=0; i<words.result.length; i++) { %>
-                                            <tr>
-                                                <td class="border py-2">
-                                                    <input class="info_race info_text" type="text" value="<%= words.result[i].word %>" placeholder="word" readonly/>
-                                                </td>
-                                                <td class="border py-2">
-                                                    <textarea class="info_text" value="" placeholder="matchArray" readonly><%= words.result[i].matchArray.join(',') %></textarea>
-                                                </td>
-                                                <td class="border py-2" data-word="<%= words.result[i].word %>">
-                                                    <button type="button" class="User-Delete">Delete</button>
-                                                </td>
-                                            </tr>
-                                        <% } %>
-                                    </tbody>
-                                </table>
-                                <div class="row action-area">
-                                    <!-- <button class="offset-lg-3 col-lg-3" type="button" id="tips_info_clear">Clear</button> -->
-                                    <button class="col-lg-3" type="button" id="tips_info_add">Add</button>
-                                    <button class="col-lg-3" id="tips_info_save">Save</button>
-                                </div>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                            <div class="row action-area py-4">
+                                <!-- <button class="offset-lg-3 col-lg-3" type="button" id="tips_info_clear">Clear</button> -->
+                                <button class="col-lg-2 mr-2 ml-2" type="button" id="tips_info_add">Add</button>
+                                <!-- <button class="col-lg-2 mr-2 ml-2" id="tips_info_save">Save</button> -->
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="tab-pane" id="tab-2">
-                        <div class="row">
-                            <div class="col-lg-12 details order-2 order-lg-1 resource-block">
-                                <h3>Live Stream URL:</h3>
-                                <div class="row">
-                                    <input id="stream_url" value="<%=  %>" type="text" class="col-md-8" placeholder="Stream URL">
-                                    <button type="button" class="col-md-2" id="view_stream">View</button>
-                                    <button type="button" class="col-md-2" id="stream_url_save">Save</button>
-                                </div>
+                </div>
+                <!-- <div class="tab-pane" id="tab-2">
+                    <div class="row">
+                        <div class="col-lg-12 details order-2 order-lg-1 resource-block">
+                            <h3>Live Stream URL:</h3>
+                            <div class="row">
+                                <input id="stream_url" value="<%=  %>" type="text" class="col-md-8" placeholder="Stream URL">
+                                <button type="button" class="col-md-2" id="view_stream">View</button>
+                                <button type="button" class="col-md-2" id="stream_url_save">Save</button>
                             </div>
                         </div>
-                    </div> -->
-                </div>
+                    </div>
+                </div> -->
             </div>
         </div>
     </div>
