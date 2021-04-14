@@ -95,6 +95,9 @@ class NumberGameScreen extends Phaser.Scene{
                         this.numberImages[this.selected_index].setAlpha(0.5).setFrame(0);
                         this.numberImages[i].setFrame(0);
                         this.selected_index = -1;
+                        this.selected_operator = -1;
+                        this.plusOperator.setFrame(1);
+
                     }
                     else if(this.selected_operator == 2)
                     {
@@ -102,6 +105,8 @@ class NumberGameScreen extends Phaser.Scene{
                         this.numberImages[this.selected_index].setAlpha(0.5).setFrame(0);
                         this.numberImages[i].setFrame(0);
                         this.selected_index = -1;
+                        this.selected_operator = -1;
+                        this.minusOperator.setFrame(1);
                     }
                     else if(this.selected_operator == 3)
                     {
@@ -109,6 +114,8 @@ class NumberGameScreen extends Phaser.Scene{
                         this.numberImages[this.selected_index].setAlpha(0.5).setFrame(0);
                         this.numberImages[i].setFrame(0);
                         this.selected_index = -1;
+                        this.selected_operator = -1;
+                        this.multiOperator.setFrame(1);
                     }
                     else if(this.selected_operator == 4)
                     {
@@ -119,6 +126,8 @@ class NumberGameScreen extends Phaser.Scene{
                         this.numberImages[this.selected_index].setAlpha(0.5).setFrame(0);
                         this.numberImages[i].setFrame(0);
                         this.selected_index = -1;
+                        this.selected_operator = -1;
+                        this.diviOperator.setFrame(1);
                     }
                 }
             });
@@ -226,18 +235,21 @@ class NumberGameScreen extends Phaser.Scene{
         this.time.removeEvent(this.timer);
         if(!bPass)
         {
-            game.scene.stop('NumberGameScreen');
-            game.scene.start('EndScreen');
-            if(game_type == "stage")
+            if(game_type == "stage"){
                 Client.stage_end(false);
+                game_state = "failed";
+            }
             else if(game_type == "tournament")
                 Client.tournament_end(false);
             else if(game_type == "battle")
                 Client.battle_end(false);
+            game.scene.stop('NumberGameScreen');
+            game.scene.start('EndScreen');
         }
         else if(cur_number == gameData.numData.length-1){
             game.scene.stop('NumberGameScreen');
-            game.scene.start('WordGameScreen');
+            game_state = "number";
+            game.scene.start('EndScreen');
         }
         else{
             cur_number++;
@@ -250,14 +262,17 @@ class NumberGameScreen extends Phaser.Scene{
         {
             scene.timer.remove();
             scene.time.removeEvent(scene.timer);
-            game.scene.stop('NumberGameScreen');
-            game.scene.start('EndScreen');
             if(game_type == "stage")
+            {
                 Client.stage_end(false);
+                game_state = "failed";
+            }
             else if(game_type == "tournament")
                 Client.tournament_end(false);
             else if(game_type == "battle")
                 Client.battle_end(false);
+            game.scene.stop('NumberGameScreen');
+            game.scene.start('EndScreen');
         }
         else{
             scene.timeText.setText(current_time);

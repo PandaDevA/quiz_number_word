@@ -9,14 +9,15 @@ var tournamentTime = "";
 var gameData = {};
 
 var game_type = "";
-var cur_number = 0;
-var cur_word = 0;
-var cur_point = 0;
-
+var game_state = "";
 var is_timeout = false;
 
-var winner_name = "";
+var cur_number = 0;
+var cur_word = 0;
 
+var cur_point = 0;
+
+var winner_name = "";
 var invite_name = "";
 var room_id = "";
 

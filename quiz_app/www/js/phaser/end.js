@@ -9,39 +9,197 @@ class EndScreen extends Phaser.Scene{
     }
 
     preload() {
-        this.load.image("Back", "./images/back.png");
+        if(game_type == "stage"){
+            if(game_state == "failed"){
+                this.load.image("Lose", "./images/lose.png");
+                this.load.image("MainPage", "./images/main_page.png");
+                this.load.image("PlayAgain", "./images/play_again.png");
+            } else if(game_state == "number"){
+                this.load.image("Win", "./images/win.png");
+                this.load.image("Orange", "./images/orange_back.png");
+            } else if(game_state == "word"){
+                this.load.image("Win", "./images/win.png");
+                this.load.image("Orange", "./images/orange_back.png");
+                this.load.image("MainPage", "./images/main_page.png");
+                this.load.image("NextStage", "./images/next_stage.png");
+                this.load.image("PointAds", "./images/win_earn_point_ads.png");
+                this.load.image("CoinAds", "./images/win_earn_coin_ads.png");
+            }
+        }
     }
 
     create() {
-        this.homeButton = this.add.image(150,400,'Back').setScale(0.3);
-        this.homeButton.setInteractive().on('pointerdown', () => {
-            game.scene.stop('EndScreen');
-            game.scene.start('HomeScreen');
-        });
-        if(winner_name != "")
-        {
-            this.resultText = this.add.text(50, 200, "Winner is " + winner_name + "!!!\nCongratulation....", { fixedWidth: 200, fixedHeight: 36 });
-        }
-        else if(game_type == "stage")
-        {
-            this.resultText = this.add.text(50, 200, "Game Ended!!!", { fixedWidth: 200, fixedHeight: 36 });
-        }
-        else{
-            this.resultText = this.add.text(50, 200, is_timeout ? "Time out!!!" : "Game Ended!!!", { fixedWidth: 200, fixedHeight: 36 });
-            this.waitingText = this.add.text(50, 300, "Waiting for result...", { fixedWidth: 200, fixedHeight: 36 });
+        if(game_type == "stage"){
+            if(game_state == "failed"){
+                this.lose = this.add.image(540,480,'Lose');
+                this.main_page = this.add.image(540,1140,'MainPage');
+                this.main_page.setInteractive().on('pointerdown', () => {
+                    game.scene.stop('EndScreen');
+                    game.scene.start('HomeScreen');
+                });
+        
+                this.play_again = this.add.image(540,1320,'PlayAgain');
+                this.play_again.setInteractive().on('pointerdown', () => {
+                    Client.stage_start();
+                });
+
+                this.lostText = this.add.text(540, 850, 'YOU CAN"T PASS\nTHE STAGE', { fixedWidth: 700, fixedHeight: 200, align:'center' })
+                .setStyle({
+                    fontSize: '80px',
+                    fontFamily: 'RR',
+                    fontWeight: 'bold',
+                    color: '#ffffff',
+                })
+                .setOrigin(0.5,0.5);
+            } else if(game_state == "number"){
+                this.win = this.add.image(540,480,'Win');
+                this.earnedPointText = this.add.text(420, 840, 'YOU\nEARNED\nPOINT', { fixedWidth: 150, fixedHeight: 120, align:'center' })
+                .setStyle({
+                    fontSize: '36px',
+                    fontFamily: 'RR',
+                    fontWeight: 'bold',
+                    color: '#ffffff',
+                })
+                .setOrigin(0.5,0.5);
+                this.pointBack = this.add.image(590,840,'Orange');
+                this.pointText = this.add.text(590,840, cur_point, { fixedWidth: 160, fixedHeight: 60, align:'center' })
+                .setStyle({
+                    fontSize: '60px',
+                    fontFamily: 'RR',
+                    fontWeight: 'bold',
+                    color: '#ffffff',
+                })
+                .setOrigin(0.5,0.5);
+
+                this.graphics = this.add.graphics();
+                // this.graphics.lineStyle(4, '#ffffff', 1);
+                this.graphics.fillStyle(0xffffff, 1);
+                this.graphics.fillRoundedRect(100,1050,880,490, 10);
+                this.gameStartText = this.add.text(540,1130, 'WORD GAME WILL START', { fixedWidth: 780, fixedHeight: 60, align:'center' })
+                .setStyle({
+                    fontSize: '60px',
+                    fontFamily: 'RR',
+                    fontWeight: 'bold',
+                    color: '#106ead',
+                })
+                .setOrigin(0.5,0.5);
+                this.graphics.fillStyle(0xfa5c00, 1);
+                this.graphics.fillRoundedRect(410,1200,260,260, 10);
+                this.timeText = this.add.text(540,1330, '5', { fixedWidth: 170, fixedHeight: 170, align:'center' })
+                .setStyle({
+                    fontSize: '160px',
+                    fontFamily: 'RR',
+                    fontWeight: 'bold',
+                    color: '#ffffff',
+                })
+                .setOrigin(0.5,0.5);
+
+                this.timer = this.time.addEvent({
+                    delay: 1000,
+                    callback: this.updateTimer,
+                    args: [this],
+                    loop: true
+                });
+
+            } else if(game_state == "word"){
+                this.win = this.add.image(540,400,'Win');
+                this.gameFinishText = this.add.text(540,700, 'YOU FINISHED STAGE!', { fixedWidth: 700, fixedHeight: 50, align:'center' })
+                .setStyle({
+                    fontSize: '50px',
+                    fontFamily: 'RR',
+                    fontWeight: 'bold',
+                    color: '#ffffff',
+                })
+                .setOrigin(0.5,0.5);
+                this.pointAds = this.add.image(540,890,'PointAds');
+                this.pointAds.setInteractive().on('pointerdown', () => {
+                    console.log('Point Interstitial');
+                    AdMob.showInterstitial();
+                    AdMob.prepareInterstitial({
+                        adId: admobid.interstitial,
+                        autoShow:false,
+                        isTesting: true,
+                    });
+                
+                });
+        
+                this.pointText = this.add.text(410,890, cur_point, { fixedWidth: 160, fixedHeight: 60, align:'center' })
+                .setStyle({
+                    fontSize: '60px',
+                    fontFamily: 'RR',
+                    fontWeight: 'bold',
+                    color: '#ffffff',
+                })
+                .setOrigin(0.5,0.5);
+                this.getPointText = this.add.text(800,890, 'GET ×3', { fixedWidth: 150, fixedHeight: 45, align:'center' })
+                .setStyle({
+                    fontSize: '45px',
+                    fontFamily: 'RR',
+                    fontWeight: 'bold',
+                    color: '#fa5c00',
+                })
+                .setOrigin(0.5,0.5);
+
+                this.coinAds = this.add.image(540,1080,'CoinAds');
+                this.coinAds.setInteractive().on('pointerdown', () => {
+                    console.log('Coin Interstitial');
+                    AdMob.showInterstitial();
+                });
+
+                this.coinText = this.add.text(410,1080, '1', { fixedWidth: 160, fixedHeight: 60, align:'center' })
+                .setStyle({
+                    fontSize: '60px',
+                    fontFamily: 'RR',
+                    fontWeight: 'bold',
+                    color: '#ffffff',
+                })
+                .setOrigin(0.5,0.5);
+                this.getCoinText = this.add.text(800,1080, 'GET ×2', { fixedWidth: 150, fixedHeight: 45, align:'center' })
+                .setStyle({
+                    fontSize: '45px',
+                    fontFamily: 'RR',
+                    fontWeight: 'bold',
+                    color: '#fa5c00',
+                })
+                .setOrigin(0.5,0.5);
+
+                this.main_page = this.add.image(540,1310,'MainPage');
+                this.main_page.setInteractive().on('pointerdown', () => {
+                    game.scene.stop('EndScreen');
+                    game.scene.start('HomeScreen');
+                });
+        
+                this.next_stage = this.add.image(540,1495,'NextStage');
+                this.next_stage.setInteractive().on('pointerdown', () => {
+                    Client.stage_start();
+                });
+
+            }
         }
     }
     update(){
     }
 
-    updateResult(){
-        this.waitingText.destroy();
-        if(winner_name != "")
+    updateTimer(scene){
+        let current_time = Number.parseInt(scene.timeText.text) - 1;
+        if(current_time < 0)
         {
-            this.resultText.setText("Winner is " + winner_name + "!!!\nCongratulation....");
+            if(game_type == "stage")
+            {
+                if(game_state == "number")
+                {
+                    scene.timer.remove();
+                    scene.time.removeEvent(scene.timer);
+                    game.scene.stop('EndScreen');
+                    game.scene.start('WordGameScreen');
+                }
+            }
         }
         else{
-            this.resultText.setText("Everybody Timed out!!!\n Nobody Win...");
+            scene.timeText.setText(current_time);
         }
+    }
+
+    updateResult(){
     }
 }

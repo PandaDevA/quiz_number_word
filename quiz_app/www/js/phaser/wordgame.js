@@ -87,7 +87,7 @@ class WordGameScreen extends Phaser.Scene{
 
         this.refreshButton = this.add.image(640,1380,'Refresh', 1);
         this.refreshButton.setInteractive().on('pointerdown', () => {
-            this.result = 0;
+            this.result = '';
             for(var i=0; i<this.resultTexts.length; i++)
                 this.resultTexts[i].setText('');
         });
@@ -114,11 +114,7 @@ class WordGameScreen extends Phaser.Scene{
         {
             bPass = true;
             let word_length = gameData.wordData[cur_word].matchArray[match_index].length;
-            if(word_length == 9)
-            {
-                cur_point += 15 + Number.parseInt(this.timeText.text);
-            }
-            else if(word_length == 8){
+            if(word_length == 8){
                 cur_point += 10 + Number.parseInt(this.timeText.text);
             }
             else if(word_length == 7){
@@ -132,25 +128,31 @@ class WordGameScreen extends Phaser.Scene{
         this.timer.remove();
         this.time.removeEvent(this.timer);
         if(!bPass){
-            game.scene.stop('WordGameScreen');
-            game.scene.start('EndScreen');
             if(game_type == "stage")
+            {
                 Client.stage_end(false);
+                game_state = "failed";
+            }
             else if(game_type == "tournament")
                 Client.tournament_end(false);
             else if(game_type == "battle")
                 Client.battle_end(false);
+            game.scene.stop('WordGameScreen');
+            game.scene.start('EndScreen');
         }
         else if(cur_word == gameData.wordData.length-1)
         {
-            game.scene.stop('WordGameScreen');
-            game.scene.start('EndScreen');
             if(game_type == "stage")
+            {
                 Client.stage_end(true);
+                game_state = "word";
+            }
             else if(game_type == "tournament")
                 Client.tournament_end(true);
             else if(game_type == "battle")
                 Client.battle_end(true);
+            game.scene.stop('WordGameScreen');
+            game.scene.start('EndScreen');
         }
         else{
             cur_word++;
@@ -162,16 +164,20 @@ class WordGameScreen extends Phaser.Scene{
         let current_time = Number.parseInt(scene.timeText.text) - 1;
         if(current_time < 0)
         {
-            scene.timer.remove();
-            scene.time.removeEvent(scene.timer);
-            game.scene.stop('WordGameScreen');
-            game.scene.start('EndScreen');
             if(game_type == "stage")
+            {
                 Client.stage_end(false);
+                game_state = "failed";
+            }
             else if(game_type == "tournament")
                 Client.tournament_end(false);
             else if(game_type == "battle")
                 Client.battle_end(false);
+
+            scene.timer.remove();
+            scene.time.removeEvent(scene.timer);
+            game.scene.stop('WordGameScreen');
+            game.scene.start('EndScreen');
         }
         else{
             scene.timeText.setText(current_time);

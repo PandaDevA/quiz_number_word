@@ -61,6 +61,7 @@ Client.socket.on('tournament_start',function(data){
     if(data.result)
     {
         game_type = "tournament";
+        game_state = "";
         gameData = data.gameData;
         cur_number = 0;
         cur_word = 0;

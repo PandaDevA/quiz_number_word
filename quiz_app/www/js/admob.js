@@ -28,9 +28,11 @@ function initApp() {
         adId: admobid.banner, 
         isTesting: true,
     } );
+    AdMob.showBanner(AdMob.AD_POSITION.BOTTOM_CENTER);
 
     AdMob.prepareInterstitial({
         adId: admobid.interstitial,
+        autoShow:false,
         isTesting: true,
     });
 

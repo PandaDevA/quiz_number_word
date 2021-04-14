@@ -100,6 +100,7 @@ Client.socket.on('battle_start',function(data){
     {
         room_id = data.result;
         game_type = "battle";
+        game_state = "";
         gameData = data.gameData;
         cur_number = 0;
         cur_word = 0;

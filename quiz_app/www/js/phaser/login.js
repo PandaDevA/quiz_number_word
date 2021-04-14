@@ -32,9 +32,6 @@ class LoginScreen extends Phaser.Scene{
     }
 
     create() {
-        // AdMob.showInterstitial();
-        AdMob.showBanner(AdMob.AD_POSITION.BOTTOM_CENTER);
-
         this.logo = this.add.image(540,325,'Logo');
 
         this.userNameImage = this.add.image(540,560,'InputBack');
@@ -43,7 +40,7 @@ class LoginScreen extends Phaser.Scene{
                 text:'testuser',
                 type:'text',
                 fontSize: '64px',
-                fontFamily: 'Righteous-Regular',
+                fontFamily: 'RR',
                 color: '#000000',
             })
         .setOrigin(0.5,0.5);
@@ -63,7 +60,7 @@ class LoginScreen extends Phaser.Scene{
                 text:'1234',
                 type:'password',
                 fontSize: '64px',
-                fontFamily: 'Righteous-Regular',
+                fontFamily: 'RR',
                 color: '#000000',
             })
         .setOrigin(0.5,0.5);
@@ -79,7 +76,7 @@ class LoginScreen extends Phaser.Scene{
         this.forgotText = this.add.text(860, 765, 'Forgot Password?', { fixedWidth: 250, fixedHeight: 32 })
         .setStyle({
             fontSize: '28px',
-            fontFamily: 'Righteous-Regular',
+            fontFamily: 'RR',
             fontWeight: 'bold',
             color: '#ffffffa0',
         })
@@ -94,7 +91,7 @@ class LoginScreen extends Phaser.Scene{
         this.withText = this.add.text(540, 1020, 'or\nsign up with', { fixedWidth: 200, fixedHeight: 64, align:'center' })
         .setStyle({
             fontSize: '28px',
-            fontFamily: 'Righteous-Regular',
+            fontFamily: 'RR',
             fontWeight: 'bold',
             color: '#000000',
         })
@@ -112,7 +109,7 @@ class LoginScreen extends Phaser.Scene{
         this.usingText = this.add.text(540, 1430, 'or\nsign up using', { fixedWidth: 200, fixedHeight: 64, align:'center' })
         .setStyle({
             fontSize: '28px',
-            fontFamily: 'Righteous-Regular',
+            fontFamily: 'RR',
             fontWeight: 'bold',
             color: '#000000',
         })
