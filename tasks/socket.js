@@ -2,10 +2,8 @@ const data = require('../data/');
 const puzzle = require('./puzzle');
 const users = data.users;
 const rooms = data.rooms;
-const words = data.words;
 
 const players = {};
-const randomPlayers = {};
 
 const getDateTimeString = (date) => {
 
@@ -22,7 +20,7 @@ const getDateTimeString = (date) => {
 
  const getMultiRandomData = async () => {
     let numDataList = [], wordDataList = [];
-    for(let i = 0; i < 1; i++) {
+    for(let i = 0; i < /*5*/1; i++) {
         const numData = puzzle.getNumberData();
         const wordData = await puzzle.getWordData();
         numDataList.push(numData);
@@ -32,354 +30,375 @@ const getDateTimeString = (date) => {
 };
 
 const exportedMethods = {
-    async onTimeInteval(io) {
+    async onHeartSupply(io) {
+        //Supply heart to all users every 30mins
         let result = await users.getAllUsers();
         if (result)
             result.map((user, index) => {
                 if (user.heart < 3) {
-                    const info = users.addUserValue(user.username, { heart: 1 });
+                    const info = users.addUserValue(user.userName, { heart: 1 });
                     if (!info) console.log('Error occured whild addHeart');
-                    else io.emit('update_userdata', {result: info});
+                    else io.to(players[user.userName]).emit('update_userdata', {result: info});
                 }
             });
         console.log('Hearts supplied.');
     },
 
-    async useSocket(io) {
-
-        let tournamentDateTime = new Date();
-        tournamentDateTime.setTime(tournamentDateTime.getTime() + 30000);
-        // console.log(getDateTimeString(tournamentDateTime));
-        rooms.openTournament().then(() => {
-            const timeNumber = setTimeout(() => {
-                try {
-                    rooms.startTournament().then((result) => {
-                        if(result)
+    async onTimeInteval(io) {
+        let curDateTime = new Date();
+        console.log(getDateTimeString(curDateTime));
+        
+        rooms.listTournament().then((roomList) => {
+            if (roomList.length != 0) {
+                for( room in roomList) {
+                    const startDateTime = room.startDateTime;
+                    if (startDateTime.getDate() != curDateTime.getDate())continue;
+                    if (startDateTime.getHours() != curDateTime.getHours())continue;
+                    if (startDateTime.getMinutes() != curDateTime.getMinutes())continue;
+                    rooms.startRoom({room_id: String(room._id)}).then((result) => {
+                        if(result.result) {
+                            result.result.joinUsers.map(async(user, index) => {
+                                users.delUserValue(user.userName, {coin: result.result.joiningFee, heart: 1}).then((userData) => {
+                                    socket.to(players[user.userName]).emit('update_userdata', {result: userData.result});
+                                });
+                            });
                             getMultiRandomData().then(({numDataList, wordDataList}) => {
-                                io.to('game_of_tournament').emit('tournament_start', {
-                                    result: true,
+                                io.to(`game_of_${room._id}`).emit('online_start', {
+                                    result: {roomId: String(room._id), timeOut: result.result.timeOut, prize: result.result.prize},
                                     gameData: { numData: numDataList, wordData: wordDataList }
                                 });
                             });
+                        }
                         else {
                             console.log("Tournament automatically closed because it's not ready yet");
                         }
                     });
-                } catch (e) {
-                    console.log(`Tournament couldn't start: ${e.message}`);
                 }
-            }, 30000);
+            }
         });
+    },
 
+    async useSocket(io) {
         io.on('connection', socket => {
             console.log('a user connected');
-            // if the player doesn't already have an existing session, create a new player
-            // (check prevents creating multiple ships when browser auto disconnects
-            // and reconnects socket)
 
-            // // create a new player and add it to our players object
-            // players[socket.id] = {
-            //     playerId: socket.id,
-            // };
+            // Auto login if the socket has session with username
+            const userNameInSession = socket.handshake.session.username;
+            if (userNameInSession) {
+                players[userNameInSession] = {
+                    socketId: socket.id,
+                };
+                socket.handshake.session.status = 'Idle';
+                socket.emit('update_userdata', { isRefresh: true });
+            }
 
-            // // send the players object to the new player
-            // socket.emit('currentPlayers', players);
-            // socket.broadcast.emit('newPlayer', players[socket.id]);
-
-            socket.on('disconnect', () => {
+            socket.on('disconnect', async() => {
                 console.log('user disconnected');
-                // console.log(socket.handshake.session);
-                // remove this player from our players object
-                if (socket.handshake.session.game_exists) {
-                    const username = socket.handshake.session.username;
-                    switch(socket.handshake.session.player_status) {
-                        case 'tournament_in':
-                            //tournament end
-                            rooms.endTournament({username: username, isAlive: false, point: 0}).then((result) => {
-                                if (result) {
-                                    if(result.allIsOver) {
-                                        socket.to('game_of_tournament').emit('tournament_end', {
-                                            result: true,
-                                            winner: result.result.winner,
-                                            winnerPoint: result.result.winnerPoint
-                                        });
-                                    }
-                                } else {
-                                    rooms.leaveTournament({username: username});
-                                    socket.leave('game_of_tournament');
-                                    socket.emit('tournament_out', username);
-                                    socket.to('game_of_tournament').emit('tournament_out', username);
-                                }
-                            });
-                            break;
-                        case 'stage_start':
-                            //stage end
-                            users.stopStage(username, {isWin: false, point: 0});
-                            break;
-                        case 'random_wait':
-                            //random end
-                            if(randomPlayers[username] && randomPlayers[username].joinUsers == '')
-                                rooms.cancelRoom(randomPlayers[username].roomId).then((result) => {
-                                    if (result) {
-                                        socket.leave(`game_of_${result.id}`);
-                                    }
-                                    randomPlayers[username] = undefined;
-                                });
-                            else {
-                                rooms.endRoom({roomId: randomPlayers[username].roomId, username: username, isAlive: false, point: 0}).then((result) => {
-                                    if (result) {
-                                        if(result.allIsOver) {
-                                            socket.to(`game_of_${randomPlayers[username].roomId}`).emit('battle_end', {
-                                                result: true,
-                                                winner: result.result.winner,
-                                                winnerPoint: result.result.winnerPoint
-                                            });
-                                            if(players[randomPlayers[username].joinUser]) socket.to(players[randomPlayers[username].joinUser]).leave(`game_of_${randomPlayers[username].roomId}`);
-                                            socket.leave(`game_of_${randomPlayers[username].roomId}`);
-                                            randomPlayers[username] = undefined;
-                                        } else {
-                                            socket.leave(`game_of_${randomPlayers[username].roomId}`);
-                                        }
-                                    } else {
-                                        socket.leave(`game_of_${randomPlayers[username].roomId}`);
-                                    }
-                                });
+
+                const userNameInSession = socket.handshake.session.username;
+                if (userNameInSession) {
+                    // Get the room Id which this user is joined in
+                    const joinedInfo = await rooms.getJoinRoomIdByUserName(userNameInSession);
+                    socket.leave(`game_of_${joinedInfo.roomId}`);
+                    switch (socket.handshake.session.status) {
+                        case 'Tournament':
+                        case 'Battle':
+                            // If tournament is not started yet, perform leave from tournament
+                            if (!joinedInfo.isStarted) {
+                                await rooms.leaveRoom({username: userNameInSession, room_id: joinedInfo.roomId});
+                                break;
                             }
-                            break;
-                        case 'random_start':
-                            //random end
-                            let createUser = '';
-                            for (const user in randomPlayers) {
-                                if(user == username || !randomPlayers[user]) continue;
-                                if(randomPlayers[user].joinUser == username) {createUser = user;break;}
-                            }
-                            if(createUser == '')break;
-                            rooms.endRoom({roomId: randomPlayers[createUser].roomId, username: username, isAlive: false, point: 0}).then((result) => {
-                                if (result) {
-                                    if(result.allIsOver) {
-                                        socket.to(`game_of_${randomPlayers[createUser].roomId}`).emit('battle_end', {
-                                            result: true,
-                                            winner: result.result.winner,
-                                            winnerPoint: result.result.winnerPoint
+                            // REQUIRE INFO: data.username, data.room_id, data.point, (data.coin, data.heart)OPTIONAL
+                            const room = await rooms.endRoom({username: userNameInSession, room_id: joinedInfo.roomId, point: 0});
+                            if (room.result) {
+                                await rooms.leaveRoom({username: userNameInSession, room_id: joinedInfo.roomId}, /*isForce:*/true);
+                                if(room.allIsOver) {
+                                    socket.to(`game_of_${joinedInfo.roomId}`).emit('online_end', {
+                                        result: true,
+                                        winner: room.result.winner,
+                                        winnerPoint: room.result.winnerPoint
+                                    });
+                                } else if (room.allIsEnd) {
+                                    socket.to(`game_of_${joinedInfo.roomId}`).emit('online_end', {
+                                        result: true,
+                                        winner: room.result.winner,
+                                        winnerPoint: room.result.winnerPoint
+                                    });
+                                    if (room.result.winner.length != 0)
+                                        users.addUserValue(room.result.winner[0],
+                                            {
+                                                point: room.result.winnerPoint[0],
+                                                coin: room.result.prize,
+                                                heart: 1,
+                                            }).then((user) => {
+                                                socket.to(players[room.result.winner[0]]).emit('update_userdata', {result: user});
                                         });
-                                        if(players[createUser]) socket.to(players[createUser]).leave(`game_of_${randomPlayers[createUser].roomId}`);
-                                        socket.leave(`game_of_${randomPlayers[createUser].roomId}`);
-                                        randomPlayers[createUser] = undefined;
-                                    } else {
-                                        socket.leave(`game_of_${randomPlayers[createUser].roomId}`);
-                                    }
-                                } else {
-                                    socket.leave(`game_of_${randomPlayers[createUser].roomId}`);
+                                    io.sockets.clients(`game_of_${data.room_id}`).forEach(function(client){
+                                        client.leave(`game_of_${data.room_id}`);
+                                        client.handshake.session.status = 'Idle';
+                                    });
                                 }
-                            });
+                            }
+                            await rooms.removeRoom({room_id: data.room_id});
+                            break;
+                        case 'Waiting':
+                            await rooms.removeRoom({room_id: joinedInfo.roomId});
                             break;
                     }
-                    //daily end
-                    //invite end
-                    players[username] = undefined;
-                    socket.handshake.session.game_exists = false;
-                    // console.log(players);
-                    console.log(randomPlayers);
-                    // console.log(socket.handshake.session);
-                    socket.handshake.session.save();
+
+                    // Set PLAYERS value of this user as 'undefined' to remove the user from PLAYERS Object
+                    players[userNameInSession] = undefined;
                 }
             });
 
             socket.on('login', (data) => {
-                // console.log('login request recevied');
-                if(!players[data.username])
-                    users.getUserByName(data.username, data.password).then((result) => {
-                        if (result) {
-                            if (!socket.handshake.session.game_exists) {
-                                players[data.username] = socket.id;
-                                socket.handshake.session.game_exists = true;
-                                socket.handshake.session.player_status = 'login';
-                                socket.handshake.session.username = data.username;
-                                console.log(players);
-                                socket.handshake.session.save();
-                            }
-                            socket.emit('login', { result: result });
-                            // console.log(`${data.username} is logged`);
-                        } else {
-                            socket.emit('login', { result: false });
-                            // console.log(`${data.username} is not logged`);
-                        }
-                    });
-                else {
-                    console.log(`${data.username} is already logged in`);
-                    socket.emit('login', {result: false});
-                }
+                // REQUIRE INFO: data.username and data.password
+                console.log('login request recevied');
+
+                users.getUserByName(data.username, data.password).then((result) => {
+                    if (result) {
+                        players[data.username] = socket.id;
+                        socket.handshake.session.status = 'Idle';
+                        socket.handshake.session.username = data.username;
+                        socket.emit('login', { result: result });
+                        // console.log(`${data.username} is logged`);
+                    } else {
+                        socket.emit('login', { result: false });
+                        // console.log(`${data.username} is not logged`);
+                    }
+                });
             });
 
-            socket.on('register', async(data) => {
+            socket.on('register', (data) => {
+                // REQUIRE INFO: data.username and data.password and data.email
                 console.log('register request is received');
-                if(!data.username) {
-                    console.log('username is not supplied while register');
-                    socket.emit('register', {result: false, error: 'Username must be supplied'});
+                if (data.username == 'tournament') {
+                    socket.emit('register', {result: false, error: 'The user name is not allowed. Please use other name.'});
                     return;
                 }
-                users.getUserInfo(data.username).then((result) => {
-                    if(result) {
-                        console.log(`${data.username} is already registered while register`);
-                        socket.emit('register', {result: false, error: `${data.username} is already registered`});
+
+                users.addUser(data).then((result) => {
+                    if(result.result) {
+                        socket.emit('register', {result: true});
                     } else {
-                        users.addUser(data).then((result) => {
-                            if(result) {
-                                socket.emit('register', {result: true, error: ''});
-                            } else {
-                                socket.emit('register', {result: false, error: `Error occurred while register user in db`});
-                            }
-                        });
+                        socket.emit('register', {result: false, error: result.error});
                     }
                 });
             });
 
             socket.on('stage_start', (data) => {
+                // REQUIRE INFO: data.username
                 console.log('stage_start request recevied');
-                users.startStage(data.username).then((result) => {
-                    if (result) {
+                users.delUserValue(data.username, {heart: 1}).then((user) => {
+                    if (user.result) {
                         const numData = puzzle.getNumberData();
                         puzzle.getWordData().then((wordData) => {
-                            if (socket.handshake.session.game_exists) socket.handshake.session.player_status = 'stage_start';
+                            socket.handshake.session.status = 'Stage';
                             socket.emit('stage_start', {
                                 result: true,
-                                info: result,
                                 gameData: { numData: [numData], wordData: [wordData] }
                             });
+                            socket.emit('update_userdata', {result: user.result});
                         });
                         console.log(`${data.username} start stage`);
                     } else {
-                        socket.emit('stage_start', { result: false });
+                        socket.emit('stage_start', { result: false, error: user.error });
                         console.log(`${data.username} failure to start stage`);
                     }
                 });
             });
 
-            socket.on('stage_end', (data) => {
-                console.log('stage_end request recevied : ', data);
-                users.stopStage(data.username, data.result).then((result) => {
-                    if (result) {
-                        socket.emit('stage_end', { result: true, info: result });
-                        console.log(`${data.username} end stage`);
-                        if(!data.result.isWin) socket.emit('update_userdata', {result});
-                    } else {
-                        socket.emit('stage_end', { result: false });
-                        console.log(`${data.username} end failure stage`);
-                    }
+            socket.on('standalone_end', (data) => {
+                // REQUIRE INFO: data.username and user value; data.coin or data.point or data.heart
+                console.log('standalone_end request recevied : ', data);
+
+                users.addUserValue(data.username, data).then((user) => {
+                    if (user) socket.emit('update_userdata', {result: user});
+                    else console.log(`${data.username} could not find while process standalone_end`);
                 });
-                if (socket.handshake.session.game_exists) socket.handshake.session.player_status = 'stage_end';
+                socket.handshake.session.status = 'Idle';
             });
 
-            socket.on('stage_cancel', (data) => {
-                console.log('stage_cancel request recevied');
-                users.cancelStage(data.username).then((result) => {});
-                if (socket.handshake.session.game_exists) socket.handshake.session.player_status = 'stage_cancel';
+            socket.on('daily_start', (data) => {
+                // REQUIRE INFO: data.username
+                console.log('daily_start request recevied');
+                // get curDay
+                const now = new Date();
+                users.delUserValue(data.username, {now_day: now.getDay()}).then((user) => {
+                    if (user.result) {
+                        const numData = puzzle.getNumberData();
+                        puzzle.getWordData().then((wordData) => {
+                            socket.handshake.session.status = 'Daily';
+                            socket.emit('daily_start', {
+                                result: true,
+                                gameData: { numData: [numData], wordData: [wordData] }
+                            });
+                        });
+                        console.log(`${data.username} start daily`);
+                    } else {
+                        socket.emit('daily_start', { result: false, error: user.error });
+                        console.log(`${data.username} failure to start daily`);
+                    }
+                });
+            });
+
+            // socket.on('daily_end', (data) => {
+            //     // REQUIRE INFO: data.username and user value; data.coin or data.point
+            //     console.log('daily_end request recevied : ', data);
+
+            //     users.addUserValue(data.username, data).then((user) => {
+            //         if (user) socket.emit('update_userdata', {result: user});
+            //         else console.log(`${data.username} could not find while process daily_end`);
+            //     });
+            //     socket.handshake.session.status = 'Idle';
+            // });
+
+            socket.on('tournament_list', () => {
+                // REQUIRE INFO:
+                console.log('tournament_list request received');
+
+                rooms.listTournament().then((roomList) => {
+                    if (!roomList.length) {
+                        socket.emit('tournament_list', { result: false });
+                    } else {
+                        let list = [];
+                        for( room in roomList) {
+                            list.push({
+                                joiningFee: room.joiningFee,
+                                startDateTime: getDateTimeString(room.startDateTime),
+                                prize: room.prize,
+                            });
+                        }
+                        socket.emit('tournament_list', { result: list});
+                    }
+                });
             });
 
             socket.on('tournament_in', (data) => {
+                // REQUIRE INFO: data.username and "tournament room id"=data.room_id
                 console.log('tournament_in request received');
-                rooms.joinTournament(data).then((result) => {
-                    if (result) {
-                        if (!result.error) {
-                            if (socket.handshake.session.game_exists) socket.handshake.session.player_status = 'tournament_in';
-                            socket.emit('tournament_in', {
-                                result: result.joinUsers,
-                                time: getDateTimeString(tournamentDateTime),
-                            });
-                            socket.to('game_of_tournament').emit('tournament_in', {
-                                result: {userName: data.username, point: result.newUserPoint}
-                            });
-                            socket.join('game_of_tournament');
-                        } else {
-                            socket.emit('tournament_in', { result: false, error: result.error });
-                            console.log(`${ data.username } couldn 't join tournament because ${result.error}`);
-                        }
+
+                rooms.joinRoom(data).then((room) => {
+                    if (!room.error) {
+                        socket.handshake.session.status = 'Tournament';
+                        socket.emit('tournament_in', { result: true });
+                        socket.join(`game_of_${data.room_id}`);
+                        console.log(`${data.username} is joined tournament`);
                     } else {
-                        socket.emit('tournament_in', { result: false, error: 'Error occured while join in tournament' });
-                        console.log(`${data.username} failure to join tournament`);
+                        socket.emit('tournament_in', { result: false, error: room.error });
+                        console.log(`${ data.username } couldn 't join tournament because ${room.error}`);
                     }
                 });
             });
 
             socket.on('tournament_out', (data) => {
+                // REQUIRE INFO: data.username and "tournament room id"=data.room_id
                 console.log('tournament_out request received');
-                rooms.leaveTournament(data).then((result) => {
-                    if (result) {
-                        if (!result.error) {
-                            socket.leave('game_of_tournament');
-                            socket.to('game_of_tournament').emit('tournament_out', data.username);
-                        } else {
-                            socket.emit('tournament_out', { result: false, error: result.error });
-                            console.log(`${ data.username } couldn 't leave tournament`);
-                        }
+
+                rooms.leaveRoom(data).then((room) => {
+                    if (!room.error) {
+                        socket.emit('tournament_out', { result: true });
+                        socket.leave(`game_of_${data.room_id}`);
+                        console.log(`${data.username} is leaved tournament`);
+                        socket.handshake.session.status = 'Idle';
                     } else {
-                        socket.emit('tournament_out', { result: false, error: 'ServerInternalError' });
-                        console.log(`${data.username} failure to leave tournament`);
+                        socket.emit('tournament_out', { result: false, error: room.error });
+                        console.log(`${ data.username } couldn 't leave tournament because ${room.error}`);
                     }
                 });
-                if (socket.handshake.session.game_exists) socket.handshake.session.player_status = 'tournament_out';
             });
 
-            socket.on('tournament_end', (data) => {
-                console.log('tournament_end request received');
-                    rooms.endTournament(data).then((result) => {
-                        if (result) {
-                            if(result.allIsOver) {
-                                socket.to('game_of_tournament').emit('tournament_end', {
-                                    result: true,
-                                    winner: result.result.winner,
-                                    winnerPoint: result.result.winnerPoint
+            socket.on('online_end', (data) => {
+                // REQUIRE INFO: data.username, data.room_id, data.point, (data.coin, data.heart)OPTIONAL
+                console.log('online_end request received');
+                rooms.endRoom(data).then(async(room) => {
+                    if (room.result) {
+                        if(room.allIsOver) {
+                            socket.to(`game_of_${data.room_id}`).emit('online_end', {
+                                result: true,
+                                winner: room.result.winner,
+                                winnerPoint: room.result.winnerPoint
+                            });
+                            socket.emit('online_end', {
+                                result: true,
+                                winner: room.result.winner,
+                                winnerPoint: room.result.winnerPoint
+                            });
+                            // console.log('All users are overed');
+                        } else if (room.allIsEnd) {
+                            socket.to(`game_of_${data.room_id}`).emit('online_end', {
+                                result: true,
+                                winner: room.result.winner,
+                                winnerPoint: room.result.winnerPoint
+                            });
+                            socket.emit('online_end', {
+                                result: true,
+                                winner: room.result.winner,
+                                winnerPoint: room.result.winnerPoint
+                            });
+                            if (room.result.winner.length != 0)
+                                users.addUserValue(room.result.winner[0],
+                                    {
+                                        point: room.result.winnerPoint[0],
+                                        coin: room.result.prize,
+                                        heart: 1,
+                                    }).then((user) => {
+                                        socket.to(players[room.result.winner[0]]).emit('update_userdata', {result: user});
                                 });
-                                socket.emit('update_userdata', {result: result.userInfo});
-                                console.log('All users are ended');
-                            }// else {
-                                // socket.emit('tournament_end', {
-                                    // result: true,
-                                    // winner: result.result.winner,
-                                    // winnerPoint: result.result.winnerPoint
-                                // });
-                            // }
-                            console.log('end is processed');
-                            if (socket.handshake.session.game_exists) socket.handshake.session.player_status = 'tournament_end';
-                        } else {
-                            // socket.emit('tournament_end', { result: false });
-                            console.log('the room could not end');
+                            io.sockets.clients(`game_of_${data.room_id}`).forEach(function(client){
+                                client.leave(`game_of_${data.room_id}`);
+                                client.handshake.session.status = 'Idle';
+                            });
+                            socket.handshake.session.status = 'Idle';
+                            // console.log('All users are ended');
+
+                            await rooms.removeRoom({room_id: data.room_id});
                         }
-                    });
-            });
+                        console.log('end is processed');
+                    } else {
+                        socket.emit('online_end', { result: false, error: room.error });
+                        console.log('the room could not end');
+                    }
+                });
+            });    
 
             socket.on('invite_request', (data) => {
+                //REQUIRE INFO: data.username, data.inviteuser
                 console.log('invite_request is received');
-                let isOnline = false;
-                for(user in players) {
-                    if(user == data.inviteuser) {
-                        isOnline = true;
-                        break;
-                    }                    
-                }
-                if (!isOnline) {
+                if (players[data.inviteuser] === undefined) {
                     console.log('invite user is not connected.');
-                    socket.emit('invite_request', {result: false, to: data.inviteuser});
+                    socket.emit('invite_request', {result: false, to: data.inviteuser, error: 'Invite user is offline.'});
+                } else if (socket.to(players[data.inviteuser]).handshake.session.status != 'Idle') {
+                    console.log('invite user is playing game now.');
+                    socket.emit('invite_request', {result: false, to: data.inviteuser, error: 'Invite user is playing now.'});
                 } else {
-                    rooms.createRoom(data.waituser).then((result) => {
+                    rooms.createRoom({username: data.username}).then((result) => {
                         if (result) {
                             console.log('invite_request is sent.');
                             socket.join(`game_of_${result.id}`);
                             socket.emit('invite_request', {result: result, to: data.inviteuser});
                             if(players[data.inviteuser])
-                                socket.to(players[data.inviteuser]).emit('invite_request', {result: result, from: data.waituser});
+                                socket.to(players[data.inviteuser]).emit('invite_request', {result: result, from: data.username});
+                            socket.handshake.session.status = 'Battle';
                         } else {
-                            socket.emit('invite_request', { result: false, to: data.inviteuser });
-                            console.log(`invite_request request of ${data.waituser} is failed`);
+                            socket.emit('invite_request', { result: false, to: data.inviteuser, error: 'Could not create room.' });
+                            console.log(`invite_request request of ${data.username} is failed`);
                         }
                     });
                 }
             });
 
             socket.on('invite_accept', (data) => {
-                console.log('invite_accept request recevied');
-                rooms.joinRoom(data.roomId, data.inviteuser).then((result) => {
-                    if (result) {
+                // REQUIRE INFO: data.waituser(waiting user), data.inviteuser(accepting user), data.roomId
+                console.log('invite_accept request received');
+                if (players[data.waituser] === undefined) {
+                    console.log('wait user is not connected.');
+                    socket.emit('invite_accept', {result: false, error: 'Wait user is offline.'});
+                } else if (socket.to(players[data.waituser]).handshake.session.status != 'Battle') {
+                    console.log('invite user canceled battle.');
+                    socket.emit('invite_accept', {result: false, error: 'Wait user canceled battle.'});
+                } else {
+                    rooms.joinRoom({room_id: data.roomId, username: data.inviteuser}).then((result) => {
                         if (result.error) {
                             socket.emit('invite_accept', { result: false, error: result.error });
                             if(players[data.waituser]) {
@@ -389,12 +408,24 @@ const exportedMethods = {
                             console.log(`invite_accept request of ${data.inviteuser} is failed`);
                         }
 
-                        rooms.startRoom(data.roomId).then((result) => {
-                            if (result) {
+                        rooms.startRoom({room_id: data.roomId}).then((result) => {
+                            if (result.result) {
+                                result.result.joinUsers.map(async(user, index) => {
+                                    users.delUserValue(user.userName, {coin: result.result.joiningFee, heart: 1}).then((userData) => {
+                                        socket.to(players[user.userName]).emit('update_userdata', {result: userData.result});
+                                    });
+                                });
                                 socket.join(`game_of_${data.roomId}`);
-                                getMultiRandomData().then(({numDataList, wordDataList}) => {                                        
-                                    socket.emit('battle_start', { result: data.roomId, gameData: { numData: numDataList, wordData: wordDataList } });
-                                    socket.to(`game_of_${data.roomId}`).emit('battle_start', { result: data.roomId, gameData: { numData: numDataList, wordData: wordDataList } });
+                                socket.handshake.session.status = 'Battle';
+                                getMultiRandomData().then(({numDataList, wordDataList}) => {
+                                    socket.to(`game_of_${room._id}`).emit('online_start', {
+                                        result: {roomId: String(room._id), timeOut: result.result.timeOut, prize: result.result.prize},
+                                        gameData: { numData: numDataList, wordData: wordDataList }
+                                    });
+                                    socket.emit('online_start', {
+                                        result: {roomId: String(room._id), timeOut: result.result.timeOut, prize: result.result.prize},
+                                        gameData: { numData: numDataList, wordData: wordDataList }
+                                    });
                                 });
                             } else {
                                 socket.emit('invite_accept', { result: false });
@@ -405,26 +436,21 @@ const exportedMethods = {
                                 console.log('the room could not start');
                             }
                         });
-                    } else {
-                        socket.emit('invite_accept', { result: false });
-                        if(players[data.waituser]) {
-                            socket.to(players[data.waituser]).leave(`game_of_${data.roomId}`);
-                            socket.to(players[data.waituser]).emit('invite_accept', { result: false });
-                        }
-                        console.log(`invite_accept request of ${data.inviteuser} is failed`);
-                    }
-                });
+                    });
+                }
             });
 
             socket.on('invite_reject', (data) => {
+                // REQUIRE INFO: data.waituser(waiting user), data.inviteuser(accepting user), data.roomId
                 console.log('invite_reject request received');
-                rooms.rejectRoom(data.roomId).then((result) => {
-                    if (result) {
+                rooms.removeRoom({room_id: data.roomId}).then((result) => {
+                    if (result.result) {
                         // socket.emit('invite_reject', { result: true });
                         socket.to(`game_of_${data.roomId}`).emit('invite_reject', { result: true });
-                        if(players[data.waituser]) {
+                        if(players[data.waituser] && socket.to(players[data.waituser]).handshake.session.status == 'Battle') {
                             socket.to(players[data.waituser]).leave(`game_of_${data.roomId}`);
                             socket.to(players[data.waituser]).emit('invite_reject', { result: true });
+                            socket.to(players[data.waituser]).handshake.session.status = 'Idle';
                         }
                     } else {
                         // socket.emit('invite_reject', { result: false });
@@ -434,12 +460,14 @@ const exportedMethods = {
             });
 
             socket.on('invite_cancel', (data) => {
+                // REQUIRE INFO: data.username(waiting user), data.roomId
                 console.log('invite_cancel request received');
-                rooms.cancelRoom(data.roomId).then((result) => {
-                    if (result) {
+                rooms.removeRoom({room_id: data.roomId}).then((result) => {
+                    if (result.result) {
                         // socket.emit('invite_cancel', { result: true });
                         // socket.to(`game_of_${data.roomId}`).emit('invite_cancel', { result: true });
                         socket.leave(`game_of_${data.roomId}`);
+                        socket.handshake.session.status = 'Idle';
                         // if(players[data.inviteuser])
                         //     socket.to(players[data.inviteuser]).leave(`game_of_${data.roomId}`);
                     } else {
@@ -450,132 +478,83 @@ const exportedMethods = {
             });
 
             socket.on('random_request', async(data) => {
+                // REQUIRE INFO: data.username
                 console.log('random_request is received');
-                console.log(randomPlayers);
-                if(!data.username)return;
-                let isMatch = false;
-                for (const username in randomPlayers) {
-                    if(username == data.username || !randomPlayers[username]) continue;
-                    if(!isMatch && randomPlayers[username].isWaiting) {
-                        //join to randomPlayers[user].socketId;
-                        const result = await rooms.joinRoom(randomPlayers[username].roomId, data.username);
-                        if(result && !result.error) {
-                            randomPlayers[username].isWaiting = false;
-                            randomPlayers[username].joinUser = data.username;
-                            isMatch = true;
-                            await rooms.startRoom(randomPlayers[username].roomId);
-                            socket.join(`game_of_${randomPlayers[username].roomId}`);
+                for (const username in players) {
+                    if(username == data.username || !players[username]) continue;
+                    if(socket.to(players[username]).handshake.session.status == 'Waiting') {
+                        //join to players[username];
+                        const roomId = socket.to(players[username]).handshake.session.createdRoomId;
+                        const result = await rooms.joinRoom({room_id: roomId, username: data.username});
+                        if(!result.error) {
+                            socket.join(`game_of_${roomId}`);
+                            await rooms.startRoom({room_id: roomId});
                             getMultiRandomData().then(({numDataList, wordDataList}) => { 
-                                if (socket.handshake.session.game_exists) socket.handshake.session.player_status = 'random_start';
-                                socket.emit('battle_start', { result: randomPlayers[username].roomId, gameData: { numData: numDataList, wordData: wordDataList } });
-                                socket.to(`game_of_${randomPlayers[username].roomId}`)
-                                    .emit('battle_start', { result: randomPlayers[username].roomId, gameData: { numData: numDataList, wordData: wordDataList } });
+                                socket.to(players[username]).handshake.session.status = 'Battle';
+                                socket.handshake.session.status = 'Battle';
+                                socket.emit('battle_start', { result: roomId, gameData: { numData: numDataList, wordData: wordDataList } });
+                                socket.to(`game_of_${roomId}`)
+                                    .emit('battle_start', { result: roomId, gameData: { numData: numDataList, wordData: wordDataList } });
                             });
-                            break;
+                            return;
                         }
                     }
                 }
-                // console.log(randomPlayers);
-                if(isMatch) return;
-                if(!randomPlayers[data.username])
-                    rooms.createRoom(data.username).then((result) => {
-                        if (result) {
-                            randomPlayers[data.username] = { socketId: socket.id, roomId: result.id, isWaiting: true, joinUser: ''};
-                            console.log('random_request is sent.');
-                            // console.log(randomPlayers);
-                            socket.join(`game_of_${result.id}`);
-                            socket.emit('random_request', {result: result.id});
-                            if (socket.handshake.session.game_exists) socket.handshake.session.player_status = 'random_wait';
-                        } else {
-                            socket.emit('random_request', { result: false });
-                            console.log(`random_request request of ${data.username} is failed`);
-                        }
-                    });
-            });
-
-            socket.on('random_cancel', (data) => {
-                console.log('random_cancel is received');
-                if(data.roomId && data.username)
-                    rooms.cancelRoom(data.roomId).then((result) => {
-                        if (result) {
-                            randomPlayers[data.username] = undefined;
-                            console.log('random_cancel is sent.');
-                            console.log(randomPlayers);
-                            socket.leave(`game_of_${result.id}`);
-                            // socket.emit('random_cancel', {result: true});
-                        } else {
-                            // socket.emit('random_cancel', { result: false });
-                            console.log(`random_cancel request of ${data.username} is failed`);
-                        }
-                    });
-                if (socket.handshake.session.game_exists) socket.handshake.session.player_status = 'random_cancel';
-            });
-
-            socket.on('battle_end', (data) => {
-                console.log('battle_end is received');
-                // console.log(randomPlayers);
-                rooms.endRoom(data).then((result) => {
+                
+                rooms.createRoom({username: data.username}).then((result) => {
                     if (result) {
-                        if(result.allIsOver) {
-                            socket.emit('battle_end', {
-                                result: true,
-                                winner: result.result.winner,
-                                winnerPoint: result.result.winnerPoint
-                            });
-                            socket.to(`game_of_${data.roomId}`).emit('battle_end', {
-                                result: true,
-                                winner: result.result.winner,
-                                winnerPoint: result.result.winnerPoint
-                            });
-                            socket.emit('update_userdata', {result: result.userInfo});
-                            const createuser = result.result.userName;
-                            const joinuser = result.result.joinUsers[0].userName;
-                            if(players[createuser]) socket.to(players[createuser]).leave(`game_of_${data.roomId}`);
-                            if(players[joinuser]) socket.to(players[joinuser]).leave(`game_of_${data.roomId}`);
-                            randomPlayers[createuser] = undefined;
-                            rooms.rejectRoom(data.roomId);
-                            console.log('All users are ended');
-                        }
-                        console.log('end is processed');
-                        if (socket.handshake.session.game_exists) socket.handshake.session.player_status = 'battle_end';
+                        console.log('random_request is sent.');
+                        socket.join(`game_of_${result.id}`);
+                        socket.emit('random_request', {result: result.id});
+                        socket.handshake.session.status = 'Waiting';
+                        socket.handshake.session.createdRoomId = result.id;
                     } else {
-                        console.log('the room could not end');
+                        socket.emit('random_request', { result: false, error: 'Could not create room.'  });
+                        console.log(`random_request request of ${data.username} is failed`);
                     }
                 });
             });
 
-            socket.on('passion_flower', async(data) => {
-                console.log('passion_flower request is received');
-                if(!data.kind || !data.username) {
-                    console.log('Error: kind is not supplied while passion_flower');
-                    socket.emit('passion_flower', {result: false, error: 'Kind must be supplied'});
-                    return;
-                }
-
-                let valueData = {};
-                if(data.kind == 'none') {
-                    console.log('The kind of passion is none');
-                    return;
-                }
-                if(data.kind == 'coin') {
-                    valueData['coin'] = data.value;
-                } else if(data.kind == 'point') {
-                    valueData['point'] = data.value;
-                } else {
-                    console.log(`Invalid kind is supplied: ${data.kind}`);
-                    socket.emit('passion_flower', {result: false, error: `Invalid kind is supplied: ${data.kind}`});
-                    return;
-                }
-
-                const result = await users.addUserValue(data.username, valueData);
-                if(!result) {
-                    console.log('Error occured while add user value');
-                    socket.emit('passion_flower', {result: false, error: 'Error occured while add User Value'});
-                    return;
-                }
-                socket.emit('passion_flower', {result: true});
-                socket.emit('update_userdata', {result});
+            socket.on('random_cancel', (data) => {
+                // REQUIRE INFO: data.username(waiting user), data.roomId
+                console.log('random_cancel is received');
+                rooms.removeRoom({room_id: data.roomId}).then((result) => {
+                    if (result) {
+                        console.log('random_cancel is sent.');
+                        socket.leave(`game_of_${data.roomId}`);
+                        // socket.emit('random_cancel', {result: true});
+                        socket.handshake.session.status = 'Idle';
+                    } else {
+                        // socket.emit('random_cancel', { result: false });
+                        console.log(`random_cancel request of ${data.username} is failed`);
+                    }
+                });
             });
+
+            socket.on('passion_start', (data) => {
+                // REQUIRE INFO: data.username
+                console.log('passion_start request is received');
+                // get curHour
+                const now = new Date();
+                users.delUserValue(data.username, {now_hour: now.getHours()}).then((user) => {
+                    if(user.result) {
+                        socket.emit('passion_start', {result: true});
+                        socket.handshake.session.status = 'Passion';
+                    }
+                    else socket.emit('passion_start', {result: false, error: user.error});
+                });
+            });
+            
+            // socket.on('passion_end', (data) => {
+            //     // REQUIRE INFO: data.username and user value; data.coin or data.point
+            //     console.log('passion_end request recevied : ', data);
+
+            //     users.addUserValue(data.username, data).then((user) => {
+            //         if (user) socket.emit('update_userdata', {result: user});
+            //         else console.log(`${data.username} could not find while process passion_end`);
+            //     });
+            //     socket.handshake.session.status = 'Idle';
+            // });
         });
     },
 };

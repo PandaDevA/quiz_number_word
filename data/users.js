@@ -1,6 +1,5 @@
 const mongoCollections = require('../config/mongoCollections');
 const users = mongoCollections.users;
-let { ObjectId } = require('mongodb');
 
 const exportedMethods = {
     async getAllUsers() {
@@ -9,39 +8,18 @@ const exportedMethods = {
         return result;
     },
 
-    async getUserByName(username, password) {
-        if (!username || !password) {
-            // console.log('Error: username or password is not referred while getUserByName');
-            return undefined;
-        }
-
+    async getUserByName(username, password = undefined) {
         const userCollection = await users();
-        const user = await userCollection.findOne({ username: username });
-
+        const user = await userCollection.findOne({ userName: username });
         if (!user) {
             // console.log(`Error: user "${username}" not exist while getUserByName`);
-            return undefined;
-        }
-
-        if (user.password != password) {
-            // console.log(`Error: user "${username}" password is not correct while getUserByName`);
-            return undefined;
-        }
-
-        return user;
-    },
-
-    async getUserInfo(username) {
-        if (!username) {
-            // console.log('Error: username is not referred while getUserInfo');
             return false;
         }
 
-        const userCollection = await users();
-        const user = await userCollection.findOne({ username: username });
+        if (password === undefined) return user;
 
-        if (!user) {
-            // console.log(`Error: user "${username}" not exist while getUserInfo`);
+        if (user.password != password) {
+            // console.log(`Error: user "${username}" password is not correct while getUserByName`);
             return false;
         }
 
@@ -49,22 +27,23 @@ const exportedMethods = {
     },
 
     async addUser(data) {
-        if (data.username === undefined || data.password === undefined || data.email === undefined) {
-            // console.log("Failed in AddUser! Username or Password is undefined");
-            return false;
+        const userCollection = await users();
+        const user = await this.getUserByName(data.username);
+        if (user) {
+            console.log('user is already registered');
+            return {result: false, error: 'The user is already registered'};
         }
 
-        const userCollection = await users();
-
         const newuser = {
-            username: data.username,
+            userName: data.username,
             password: data.password,
             email: data.email,
             avatar: '',
             point: 1000,
             heart: 3,
             coin: 50,
-            isStartStage: false,
+            lastDate: 0,
+            lastTime: 24,
         };
         if(data.avatar) {
             newuser.avatar = data.avatar;
@@ -73,175 +52,65 @@ const exportedMethods = {
         const newInsertInformation = await userCollection.insertOne(newuser);
         if (newInsertInformation.insertedCount === 0) {
             // console.log('Could not add user');
-            return false;
-        }
-        return true;
-    },
-
-    async startStage(username) {
-        if (!username || username == '') {
-            console.log('ReferenceError: Username is not supplied while startStage');
-            return false;
+            return {result: false, error: 'Internal server error while register user'};
         }
 
-        const userCollection = await users();
-        const user = await userCollection.findOne({ username: username });
-
-        if (!user) {
-            // console.log(`Error: user "${username}" not exist while getUserByName`);
-            return false;
-        }
-
-
-        const updateduserData = user;
-        if (updateduserData.isStartStage) {
-            if (updateduserData.heart == 0) {
-                console.log('heart is already zero');
-                return false;
-            }
-            updateduserData.heart--;
-        } else
-            updateduserData.isStartStage = true;
-
-        const updatedInfo = await userCollection.updateOne({ _id: user._id }, { $set: updateduserData });
-
-        if (updatedInfo.modifiedCount === 0) {
-            console.log('could not update isStartStage successfully');
-            return false;
-        }
-
-        return updateduserData;
-    },
-
-    async cancelStage(username) {
-        if (!username || username == '') {
-            console.log('ReferenceError: Username is not supplied while cancelStage');
-            return false;
-        }
-
-        const userCollection = await users();
-        const user = await userCollection.findOne({ username: username });
-
-        if (!user) {
-            // console.log(`Error: user "${username}" not exist while getUserByName`);
-            return false;
-        }
-
-        const updateduserData = user;
-        if (!updateduserData.isStartStage) return updateduserData;
-        updateduserData.isStartStage = false;
-
-        const updatedInfo = await userCollection.updateOne({ _id: user._id }, { $set: updateduserData });
-
-        if (updatedInfo.modifiedCount === 0) {
-            console.log('could not update isStartStage successfully');
-            return false;
-        }
-
-        return updateduserData;
-    },
-
-
-    async stopStage(username, data) {
-        console.log(username);
-        if (!username || !data) {
-            console.log('ReferenceError: Username is not supplied while endStage');
-            return false;
-        }
-
-        const userCollection = await users();
-        const user = await userCollection.findOne({ username: username });
-
-        if (!user) {
-            // console.log(`Error: user "${username}" not exist while getUserByName`);
-            return false;
-        }
-
-        const updateduserData = user;
-        updateduserData.isStartStage = false;
-
-        if (data.isWin) {
-            if (data.point) updateduserData.point += data.point;
-            if (data.coin) updateduserData.coin += data.coin;
-            if (updateduserData.coin > 100) updateduserData.coin = 100;
-        } else {
-            if (data.point) updateduserData.point += data.point;
-            if (updateduserData.heart > 0) updateduserData.heart--;
-        }
-
-        const updatedInfo = await userCollection.updateOne({ _id: user._id }, { $set: updateduserData });
-
-        if (updatedInfo.modifiedCount === 0) {
-            console.log('could not update isStartStage successfully');
-            return false;
-        }
-
-        return updateduserData;
+        return {result: true};
     },
 
     async addUserValue(username, data) {
-        if (!username || !data) {
-            console.log('ReferenceError: Username is not supplied while addUserValue');
-            return false;
-        }
 
         const userCollection = await users();
-        const user = await userCollection.findOne({ username: username });
+        const user = await userCollection.findOne({ userName: username });
 
         if (!user) {
             // console.log(`Error: user "${username}" not exist while addUserValue`);
             return false;
         }
 
-        const updateduserData = user;
+        const updatedUserData = user;
 
-        if (data.point) updateduserData.point += data.point;
-        if (data.coin) updateduserData.coin += data.coin;
-        if (updateduserData.coin > 100) updateduserData.coin = 100;
-        if (data.heart) updateduserData.heart += data.heart;
-        if (updateduserData.heart > 3) updateduserData.heart = 3;
+        if (data.point) updatedUserData.point += data.point;
+        if (data.coin) updatedUserData.coin += data.coin;
+        if (updatedUserData.coin > 1000) updatedUserData.coin = 1000;
+        if (data.heart) updatedUserData.heart += data.heart;
+        if (updatedUserData.heart > 3) updatedUserData.heart = 3;
 
-        const updatedInfo = await userCollection.updateOne({ _id: user._id }, { $set: updateduserData });
+        await userCollection.updateOne({ _id: user._id }, { $set: updatedUserData });
 
-        if (updatedInfo.modifiedCount === 0) {
-            console.log('could not update UserValue successfully');
-            return false;
-        }
-
-        return updateduserData;
+        return updatedUserData;
     },
 
     async delUserValue(username, data) {
-        if (!username || !data) {
-            console.log('ReferenceError: Username is not supplied while delUserValue');
-            return false;
-        }
 
         const userCollection = await users();
-        const user = await userCollection.findOne({ username: username });
+        const user = await userCollection.findOne({ userName: username });
 
         if (!user) {
             // console.log(`Error: user "${username}" not exist while delUserValue`);
-            return false;
+            return {result: false, error: 'The user name could not find in server'};
         }
 
-        const updateduserData = user;
+        const updatedUserData = user;
 
-        if (data.point) updateduserData.point -= data.point;
-        if (updateduserData.point < 0) updateduserData.point = 0;
-        if (data.coin) updateduserData.coin -= data.coin;
-        if (updateduserData.coin < 0) updateduserData.coin = 0;
-        if (data.heart) updateduserData.heart -= data.heart;
-        if (updateduserData.heart < 0) updateduserData.heart = 0;
+        if (data.now_day && user.lastDate == data.now_day) return {result: false, error: 'Please wait until tomorrow'};
+        else updatedUserData.lastDate = data.now_day;
 
-        const updatedInfo = await userCollection.updateOne({ _id: user._id }, { $set: updateduserData });
+        if (data.now_time && user.lastTime / 4 == data.now_time / 4) return {result: false, error: 'Please wait until the next 4 hours'};
+        else updatedUserData.lastTime = data.now_time;
 
-        if (updatedInfo.modifiedCount === 0) {
-            console.log('could not update UserValue successfully');
-            return false;
+        if (data.coin) {
+            if (updatedUserData.coin < data.coin) return {result: false, error: 'You need more coins'};
+            updatedUserData.coin -= data.coin;
+        }
+        if (data.heart) {
+            if (updatedUserData.heart < data.heart) return {result: false, error: 'Please wait until heart is supplied'};
+            updatedUserData.heart -= data.heart;
         }
 
-        return updateduserData;
+        await userCollection.updateOne({ _id: user._id }, { $set: updatedUserData });
+
+        return {result: updatedUserData};
     },
 };
 

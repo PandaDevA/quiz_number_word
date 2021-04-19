@@ -30,13 +30,13 @@ console.log = function(d) { //
 
 const port = process.env.PORT || 8081;
 // const baseUrl = '192.168.104.55';
-// const baseUrl = '192.168.104.56';
-const baseUrl = 'quizpuzzle.chileracing.net'
+const baseUrl = '192.168.104.56';
+// const baseUrl = 'quizpuzzle.chileracing.net'
 
 app.use(express.static(__dirname + '/public'));
 
 app.use(session);
-io.use(sharedsession(session));
+io.use(sharedsession(session, {autoSave: true}));
 
 // app.get('/', (req, res) => {
 //     req.session.game_exists = false;
@@ -51,7 +51,7 @@ app.set('view engine', 'ejs');
 //Set Route
 require('./routes/web.js')(app);
 
-let number;
+let number, halfCnt = 0;
 let connections = [];
 
 socketSrc.useSocket(io).then(() => {
@@ -59,9 +59,14 @@ socketSrc.useSocket(io).then(() => {
         console.log(`Listening on ${server.address().port}`);
     });
     number = setInterval(() => {
+        halfCnt++;
+        if ( halfCnt == 60 ) {
+            socketSrc.onHeartSupply(io);
+            log_file = fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
+            halfCnt = 0;
+        }
         socketSrc.onTimeInteval(io);
-        log_file = fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
-    }, 30 * 60 * 1000);// 
+    }, 30 * 1000);// 
 
     process.on('SIGTERM', shutDown);
     process.on('SIGINT', shutDown);
