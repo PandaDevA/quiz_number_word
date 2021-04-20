@@ -33,23 +33,24 @@ const baseUrl = '192.168.104.55';
 // const baseUrl = '192.168.104.56';
 // const baseUrl = 'quizpuzzle.chileracing.net'
 
-app.use(express.static(__dirname + '/public'));
+// app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/quiz_app/www'));
 
 app.use(session);
 io.use(sharedsession(session, {autoSave: true}));
 
-// app.get('/', (req, res) => {
-//     req.session.game_exists = false;
-//     res.sendFile(__dirname + '/index.html');
-// });
+app.get('/', (req, res) => {
+    req.session.game_exists = false;
+    res.sendFile(__dirname + '/quiz_app/www/index.html');
+});
 
 //Set Template Engine
 app.use(expressLayouts);
 app.use(express.urlencoded({ extended: true }));
-app.set('view engine', 'ejs');
+// app.set('view engine', 'ejs');
 
 //Set Route
-require('./routes/web.js')(app);
+// require('./routes/web.js')(app);
 
 let number, halfCnt = 0;
 let connections = [];

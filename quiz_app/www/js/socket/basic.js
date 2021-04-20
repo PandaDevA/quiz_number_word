@@ -52,3 +52,28 @@ Client.socket.on('update_userdata',function(data){
     if(game.scene.isActive('HomeScreen'))
         game.scene.getScene('HomeScreen').update_userData();
 });
+
+function toast_error(scene, error){
+    var toast = scene.rexUI.add.toast({
+        x: 540,
+        y: 840,
+
+        background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, 0xffffff),
+        text: scene.add.text(0, 0, '', {
+            fontSize: '64px'
+        }),
+        space: {
+            left: 50,
+            right: 50,
+            top: 80,
+            bottom: 80,
+        },
+
+        duration: {
+            in: 250,
+            hold: 1000,
+            out: 250,
+        },
+    })
+    .show(error)
+}

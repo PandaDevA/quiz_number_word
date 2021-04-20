@@ -54,9 +54,9 @@ Client.socket.on('invite_request',function(data){
     {
         if(!data.from)
         {
-            if(game.scene.isAcive('BattleScreen'))
+            if(game.scene.isActive('BattleScreen'))
             {
-                game.scene.getScene('BattleScreen').invite_request_failed();
+                game.scene.getScene('BattleScreen').invite_request_failed(data.error);
             }
         }
     }
