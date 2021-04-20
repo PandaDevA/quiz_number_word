@@ -114,6 +114,9 @@ class HomeScreen extends Phaser.Scene{
             Client.tournament_in();
         });
         this.daily_game = this.add.image(540,1390,'DailyGame');
+        this.daily_game.setInteractive().on('pointerdown', () => {
+            Client.daily_start();
+        });
 
         this.turn_earn = this.add.image(540,1570,'TurnEarn');
         this.turn_earn.setInteractive().on('pointerdown', () => {

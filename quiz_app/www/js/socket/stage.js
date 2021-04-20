@@ -2,12 +2,9 @@ Client.stage_start = function(){
     Client.socket.emit('stage_start', {username : userData.userName});
 };
 
-Client.stage_cancel = function(){
-    Client.socket.emit('stage_cancel', {username : userData.userName});
-};
-
 Client.stage_end = function(isWin){
-    Client.socket.emit('standalone_end', {username : userData.userName, result:{isWin:isWin, point:cur_point, coin:1}});
+    if(isWin)
+        Client.socket.emit('standalone_end', {username : userData.userName, heart:1, point:cur_point, coin:1});
 };
 
 Client.socket.on('stage_start',function(data){
@@ -35,8 +32,6 @@ Client.socket.on('stage_start',function(data){
             game.scene.stop('EndScreen');
             game.scene.start('NumberGameScreen');
         }
-        else
-            Client.stage_cancel();
         console.log(data);
     }
     else

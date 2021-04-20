@@ -239,6 +239,10 @@ class NumberGameScreen extends Phaser.Scene{
                 Client.stage_end(false);
                 game_state = "failed";
             }
+            else if(game_type == "daily"){
+                Client.daily_end(false);
+                game_state = "failed";
+            }
             else if(game_type == "tournament")
                 Client.tournament_end(false);
             else if(game_type == "battle")
@@ -265,6 +269,11 @@ class NumberGameScreen extends Phaser.Scene{
             if(game_type == "stage")
             {
                 Client.stage_end(false);
+                game_state = "failed";
+            }
+            else if(game_type == "daily")
+            {
+                Client.daily_end(false);
                 game_state = "failed";
             }
             else if(game_type == "tournament")

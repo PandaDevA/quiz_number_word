@@ -225,7 +225,7 @@ const exportedMethods = {
                 console.log('daily_start request recevied');
                 // get curDay
                 const now = new Date();
-                users.delUserValue(data.username, {now_day: now.getDay()}).then((user) => {
+                users.delUserValue(data.username, {now_day: now.getDate()}).then((user) => {
                     if (user.result) {
                         const numData = puzzle.getNumberData();
                         puzzle.getWordData().then((wordData) => {
@@ -242,17 +242,6 @@ const exportedMethods = {
                     }
                 });
             });
-
-            // socket.on('daily_end', (data) => {
-            //     // REQUIRE INFO: data.username and user value; data.coin or data.point
-            //     console.log('daily_end request recevied : ', data);
-
-            //     users.addUserValue(data.username, data).then((user) => {
-            //         if (user) socket.emit('update_userdata', {result: user});
-            //         else console.log(`${data.username} could not find while process daily_end`);
-            //     });
-            //     socket.handshake.session.status = 'Idle';
-            // });
 
             socket.on('tournament_list', () => {
                 // REQUIRE INFO:

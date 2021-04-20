@@ -133,6 +133,11 @@ class WordGameScreen extends Phaser.Scene{
                 Client.stage_end(false);
                 game_state = "failed";
             }
+            else if(game_type == "daily")
+            {
+                Client.daily_end(false);
+                game_state = "failed";
+            }
             else if(game_type == "tournament")
                 Client.tournament_end(false);
             else if(game_type == "battle")
@@ -145,6 +150,11 @@ class WordGameScreen extends Phaser.Scene{
             if(game_type == "stage")
             {
                 Client.stage_end(true);
+                game_state = "word";
+            }
+            else if(game_type == "daily")
+            {
+                Client.daily_end(true);
                 game_state = "word";
             }
             else if(game_type == "tournament")
@@ -167,6 +177,11 @@ class WordGameScreen extends Phaser.Scene{
             if(game_type == "stage")
             {
                 Client.stage_end(false);
+                game_state = "failed";
+            }
+            else if(game_type == "daily")
+            {
+                Client.daily_end(false);
                 game_state = "failed";
             }
             else if(game_type == "tournament")

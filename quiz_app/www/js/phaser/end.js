@@ -9,7 +9,7 @@ class EndScreen extends Phaser.Scene{
     }
 
     preload() {
-        if(game_type == "stage"){
+        if(game_type == "stage" || game_type == "daily"){
             if(game_state == "failed"){
                 this.load.image("Lose", "./images/lose.png");
                 this.load.image("MainPage", "./images/main_page.png");
@@ -29,7 +29,7 @@ class EndScreen extends Phaser.Scene{
     }
 
     create() {
-        if(game_type == "stage"){
+        if(game_type == "stage" || game_type == "daily"){
             if(game_state == "failed"){
                 this.lose = this.add.image(540,480,'Lose');
                 this.main_page = this.add.image(540,1140,'MainPage');
@@ -38,19 +38,35 @@ class EndScreen extends Phaser.Scene{
                     game.scene.start('HomeScreen');
                 });
         
-                this.play_again = this.add.image(540,1320,'PlayAgain');
-                this.play_again.setInteractive().on('pointerdown', () => {
-                    Client.stage_start();
-                });
+                if(game_type == "stage")
+                {
+                    this.play_again = this.add.image(540,1320,'PlayAgain');
+                    this.play_again.setInteractive().on('pointerdown', () => {
+                        Client.stage_start();
+                    });
+                }
 
-                this.lostText = this.add.text(540, 850, 'YOU CAN"T PASS\nTHE STAGE', { fixedWidth: 700, fixedHeight: 200, align:'center' })
-                .setStyle({
-                    fontSize: '80px',
-                    fontFamily: 'RR',
-                    fontWeight: 'bold',
-                    color: '#ffffff',
-                })
-                .setOrigin(0.5,0.5);
+                if(game_type == "stage")
+                {
+                    this.lostText = this.add.text(540, 850, 'YOU CAN"T PASS\nTHE STAGE', { fixedWidth: 700, fixedHeight: 200, align:'center' })
+                    .setStyle({
+                        fontSize: '80px',
+                        fontFamily: 'RR',
+                        fontWeight: 'bold',
+                        color: '#ffffff',
+                    })
+                    .setOrigin(0.5,0.5);
+                }
+                else{
+                    this.lostText = this.add.text(540, 850, 'YOU LOSE!\n\nTRY TOMORROW AGAIN!', { fixedWidth: 700, fixedHeight: 300, align:'center' })
+                    .setStyle({
+                        fontSize: '80px',
+                        fontFamily: 'RR',
+                        fontWeight: 'bold',
+                        color: '#ffffff',
+                    })
+                    .setOrigin(0.5,0.5);
+                }
             } else if(game_state == "number"){
                 this.win = this.add.image(540,480,'Win');
                 this.earnedPointText = this.add.text(420, 840, 'YOU\nEARNED\nPOINT', { fixedWidth: 150, fixedHeight: 120, align:'center' })
@@ -131,7 +147,7 @@ class EndScreen extends Phaser.Scene{
                     color: '#ffffff',
                 })
                 .setOrigin(0.5,0.5);
-                this.getPointText = this.add.text(800,890, 'GET ×3', { fixedWidth: 150, fixedHeight: 45, align:'center' })
+                this.getPointText = this.add.text(800,890, game_type == "stage" ? 'GET ×3' : 'GET ×8', { fixedWidth: 150, fixedHeight: 45, align:'center' })
                 .setStyle({
                     fontSize: '45px',
                     fontFamily: 'RR',
@@ -146,7 +162,7 @@ class EndScreen extends Phaser.Scene{
                     AdMob.showInterstitial();
                 });
 
-                this.coinText = this.add.text(410,1080, '1', { fixedWidth: 160, fixedHeight: 60, align:'center' })
+                this.coinText = this.add.text(410,1080, game_type == "stage" ? '1' : '3', { fixedWidth: 160, fixedHeight: 60, align:'center' })
                 .setStyle({
                     fontSize: '60px',
                     fontFamily: 'RR',
@@ -154,7 +170,7 @@ class EndScreen extends Phaser.Scene{
                     color: '#ffffff',
                 })
                 .setOrigin(0.5,0.5);
-                this.getCoinText = this.add.text(800,1080, 'GET ×2', { fixedWidth: 150, fixedHeight: 45, align:'center' })
+                this.getCoinText = this.add.text(800,1080, game_type == "stage" ? 'GET ×2' : 'GET ×3', { fixedWidth: 150, fixedHeight: 45, align:'center' })
                 .setStyle({
                     fontSize: '45px',
                     fontFamily: 'RR',
@@ -169,11 +185,13 @@ class EndScreen extends Phaser.Scene{
                     game.scene.start('HomeScreen');
                 });
         
-                this.next_stage = this.add.image(540,1495,'NextStage');
-                this.next_stage.setInteractive().on('pointerdown', () => {
-                    Client.stage_start();
-                });
-
+                if(game_type == "stage")
+                {
+                    this.next_stage = this.add.image(540,1495,'NextStage');
+                    this.next_stage.setInteractive().on('pointerdown', () => {
+                        Client.stage_start();
+                    });
+                }
             }
         }
     }
@@ -184,7 +202,7 @@ class EndScreen extends Phaser.Scene{
         let current_time = Number.parseInt(scene.timeText.text) - 1;
         if(current_time < 0)
         {
-            if(game_type == "stage")
+            if(game_type == "stage" || game_type == "daily")
             {
                 if(game_state == "number")
                 {
