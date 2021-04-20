@@ -9,8 +9,15 @@ class HomeScreen extends Phaser.Scene{
     }
 
     preload() {
+        this.load.scenePlugin({
+            key: 'rexuiplugin',
+            url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+            sceneKey: 'rexUI'
+        });
+
         this.load.image("Logo", "./images/logo.png");
         this.load.image("UserAvatar", "./images/avatar.png");
+        this.load.image("avatar_cover", "./images/avatar_cover.png");
         this.load.image("Life", "./images/life.png");
         this.load.image("Coin", "./images/coin.png");
         this.load.image("InfoPanel", "./images/user_detail.png");
@@ -20,13 +27,7 @@ class HomeScreen extends Phaser.Scene{
         this.load.image("DailyGame", "./images/daily_game.png");
         this.load.image("TurnEarn", "./images/turn_earn.png");
         this.load.image("Menu", "./images/menu.png");
-        // this.load.scenePlugin({
-        //     key: 'rexuiplugin',
-        //     url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
-        //     sceneKey: 'rexUI'
-        // });
 
-        // this.load.plugin('rextexteditplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rextexteditplugin.min.js', true);
         if(userData.avatar != "")
         {
             if(this.textures.exists('user_avatar'))
@@ -65,7 +66,7 @@ class HomeScreen extends Phaser.Scene{
         //         color: '#ffffff',
         //         align: 'center',
         //     });
-        this.info_panel = this.add.image(540,520,'InfoPanel');
+        this.info_panel = this.add.image(735,520,'InfoPanel');
         this.pointText = this.add.text(720,570,'Point', { fixedWidth: 180, fixedHeight: 50 })
         .setOrigin(0.5,0.5)
         .setStyle({
@@ -93,11 +94,12 @@ class HomeScreen extends Phaser.Scene{
         });
 
         if(userData.avatar == ""){
-            this.userAvatar = this.add.image(380,520,'UserAvatar');   
+            this.userAvatar = this.add.image(345,520,'UserAvatar');   
         }
         else{
-            this.userAvatar = this.add.image(380,520,'user_avatar');
-            this.userAvatar.setDisplaySize(330,340);
+            this.userAvatar = this.add.image(345,520,'user_avatar');
+            this.userAvatar.setDisplaySize(390,398);
+            this.userAvatar_cover = this.add.image(345,520,'avatar_cover').setDepth(5);
         }
 
         this.stage = this.add.image(540,850,'Stage');

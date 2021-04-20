@@ -31,7 +31,7 @@ const config = {
         height: 1680
     },
     transparent: true,
-    scene: [LoginScreen, HomeScreen,TournamentScreen, NumberGameScreen, EndScreen, WordGameScreen, BattleScreen, PassionScreen, RegisterScreen ],
+    scene: [LoginScreen, HomeScreen,TournamentScreen, NumberGameScreen, EndScreen, WordGameScreen, BattleScreen, PassionScreen, RegisterScreen, BattleWaitScreen ],
     dom: {
         createContainer: true
     },

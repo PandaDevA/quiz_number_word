@@ -443,13 +443,17 @@ const exportedMethods = {
                                             socket.join(`game_of_${data.roomId}`);
                                             socket.handshake.session.status = 'Battle';
                                             getMultiRandomData().then(({numDataList, wordDataList}) => {
-                                                socket.to(`game_of_${room._id}`).emit('online_start', {
-                                                    result: {roomId: String(room._id), timeOut: result.result.timeOut, prize: result.result.prize},
-                                                    gameData: { numData: numDataList, wordData: wordDataList }
-                                                });
-                                                socket.emit('online_start', {
-                                                    result: {roomId: String(room._id), timeOut: result.result.timeOut, prize: result.result.prize},
-                                                    gameData: { numData: numDataList, wordData: wordDataList }
+                                                users.getUserByName(data.waituser).then((user1) => {
+                                                    socket.to(`game_of_${room._id}`).emit('online_start', {
+                                                        result: {roomId: String(room._id), timeOut: result.result.timeOut, prize: result.result.prize},
+                                                        gameData: { numData: numDataList, wordData: wordDataList },
+                                                        oppoData: user,
+                                                    });
+                                                    socket.emit('online_start', {
+                                                        result: {roomId: String(room._id), timeOut: result.result.timeOut, prize: result.result.prize},
+                                                        gameData: { numData: numDataList, wordData: wordDataList },
+                                                        oppoData: user1,
+                                                    });
                                                 });
                                             });
                                         } else {

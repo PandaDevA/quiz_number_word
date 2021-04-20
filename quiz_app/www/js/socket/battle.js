@@ -32,32 +32,26 @@ Client.random_cancel = function(){
 
 
 Client.socket.on('invite_request',function(data){
+    let activeScene = game.scene.getScenes(true)[0];
     if(data.result)
     {
         if(data.from)
         {
             room_id = data.result.id;
-            invite_name = data.from;
-            if(game.scene.isActive('BattleScreen'))
-            {
-                let scene = game.scene.getScene('BattleScreen');
-                scene.invite_request();
-            }
+            invite_modal(activeScene, data.from);
         }
         else if(data.to)
         {
             room_id = data.result.id;
-            invite_name = data.to;
+            game.scene.stop(activeScene.scene.key);
+            game.scene.start('BattleWaitScreen');
         }
     }
     else
     {
         if(!data.from)
         {
-            if(game.scene.isActive('BattleScreen'))
-            {
-                game.scene.getScene('BattleScreen').invite_request_failed(data.error);
-            }
+            toast_error(activeScene, data.error);
         }
     }
 });

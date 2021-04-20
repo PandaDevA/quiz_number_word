@@ -3,75 +3,66 @@
  * E-mail: jerome.renaux@gmail.com
  */
 
-class BattleScreen extends Phaser.Scene{
+class BattleWaitScreen extends Phaser.Scene{
     constructor(){
-        super({key: "BattleScreen"});
+        super({key: "BattleWaitScreen"});
     } 
 
     preload() {
-        this.load.scenePlugin({
-            key: 'rexuiplugin',
-            url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
-            sceneKey: 'rexUI'
-        });
-        this.load.plugin('rexinputtextplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexinputtextplugin.min.js', true);
-
-        this.load.image("Invite", "./images/invite.png");
-        this.load.image("Random", "./images/random.png");
-        this.load.image("MainPage", "./images/main_page.png");
-
-        // this.load.plugin('rextexteditplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rextexteditplugin.min.js', true);
-        // this.load.spritesheet("Invite", "./images/invite.png", { frameWidth: 493, frameHeight: 146 });
-        // this.load.spritesheet("Cancel", "./images/cancel.png", { frameWidth: 493, frameHeight: 146 });
-        // this.load.image("Random", "./images/random.png");
-        // this.load.image("Back", "./images/back.png");
+        this.load.image("Cancel", "./images/cancel.png");
+        this.load.image("UserName", "./images/username.png");
+        this.load.image("EmptyUser", "./images/avatar_empty.png");
     }
 
     create() {
-        this.userNameImage = this.add.image(540,560,'InputBack');
-        this.userName = this.add.rexInputText(540, 560, 620, 70, 
-            {
-                text:'testuser',
-                type:'text',
-                fontSize: '64px',
-                fontFamily: 'RR',
-                color: '#000000',
-            })
-        .setOrigin(0.5,0.5);
-
-        this.userNameText = this.add.text(210, 495, 'Write your friend username', { fixedWidth: 800, fixedHeight: 32 })
-        .setStyle({
-            fontSize: '28px',
+        if(userData.avatar == ""){
+            this.userAvatar = this.add.image(540,400,'UserAvatar');   
+        }
+        else{
+            this.userAvatar = this.add.image(540,400,'user_avatar');
+            this.userAvatar.setDisplaySize(390,398);
+            this.userAvatar_cover = this.add.image(540,400,'avatar_cover').setDepth(5);
+        }
+        this.userNameBack = this.add.image(540,660,'UserName');
+        this.userName = this.add.text(540, 660, userData.userName, {
             fontFamily: 'RR',
             fontWeight: 'bold',
-            color: '#ffffff',
-        })
-        .setOrigin(0,0.5);
-
-        this.inviteButton = this.add.image(540,700,'Invite');
-        this.inviteButton.setInteractive().on('pointerdown', () => {
-            Client.invite_request(this.userName.text);
-        });
-
-        this.userNameText = this.add.text(540, 900, 'OR', { fixedWidth: 800, fixedHeight: 70 })
-        .setStyle({
             fontSize: '64px',
+            color: "#106eac",
+            aligh: "center"
+        }).setOrigin(0.5, 0.5);
+
+        this.vs = this.add.text(540, 790, 'VS', {
             fontFamily: 'RR',
             fontWeight: 'bold',
-            color: '#ffffff',
-            align: 'center',
-        })
-        .setOrigin(0.5,0.5);
+            fontSize: '120px',
+            color: "#ffffff",
+            align: "center"
+        }).setOrigin(0.5, 0.5);
 
-        this.randomButton = this.add.image(540,1100,'Random');
-        this.randomButton.setInteractive().on('pointerdown', () => {
-            Client.random_request();
-        });
+        this.oppoAvatar = this.add.image(540,1080,'EmptyUser');   
+        this.oppoWaiting = this.add.text(540, 1080, 'WAITING\nOPPONENT', {
+            fontFamily: 'RR',
+            fontWeight: 'bold',
+            fontSize: '64px',
+            color: "#106eac",
+            align: "center"
+        }).setOrigin(0.5, 0.5);
 
-        this.mainPageButton = this.add.image(540,1550,'MainPage');
-        this.mainPageButton.setInteractive().on('pointerdown', () => {
-            game.scene.stop('BattleScreen');
-            game.scene.start('HomeScreen');
+        this.oppoNameBack = this.add.image(540,1340,'UserName');
+        this.oppoName = this.add.text(540, 660, '', {
+            fontFamily: 'RR',
+            fontWeight: 'bold',
+            fontSize: '64px',
+            color: "#106eac",
+            align: "center"
+        }).setOrigin(0.5, 0.5);
+
+        this.cancelButton = this.add.image(540,1550,'Cancel');
+        this.cancelButton.setInteractive().on('pointerdown', () => {
+            Client.invite_cancel();
+            game.scene.stop('BattleWaitScreen');
+            game.scene.start('BattleScreen');
         });
 
         // this.BackButton = this.add.image(50,50,'Back').setScale(0.2);
@@ -161,7 +152,6 @@ class BattleScreen extends Phaser.Scene{
     //     this.invite_cancel_Button.setAlpha(1.0);
     //     toast_inviting();
     // }
-
     // random_request(){
     //     this.randomButton.disableInteractive();
     //     this.random_cancel_Button.setInteractive().on('pointerdown', () => {
