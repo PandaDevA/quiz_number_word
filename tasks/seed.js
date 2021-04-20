@@ -9,26 +9,38 @@ async function main() {
 
 
     const db = await dbConnection();
-    // await db.dropDatabase();
+    await db.dropDatabase();
 
-    await words.addWord({word: 'ROCKET', matchArray: ['OK', 'OCR']});
-    await words.addWord({word: 'COMPUTER', matchArray: ['COM', 'PUT', 'POT', 'ROM', 'ROME']});
-    await words.addWord({word: 'NATION', matchArray: ['NAT', 'NIT', 'NOT', 'TON', 'NAN']});
+    await words.addWord({
+        "word": "COMPUTER",
+        "matchArray": ["COMPUTER", "COMPUTE", "COMPUT", "COMPU"]
+    });
+    await words.addWord({
+        "word": "PASSWORD",
+        "matchArray": ["PASSWORD", "PASSWOR", "PASSWO", "PASSW"]
+    });
+    await words.addWord({
+        "word": "MONSTERS",
+        "matchArray": ["MONSTERS", "MONSTER", "MONSTE", "MONST"]
+    });
     // await words.removeword('Rocket');
 
-    // let isAdded = await users.addUser({username: "testuser", password: "1234", email: "testuser@gmail.com"});
-    // if (isAdded) console.log('user Added');
-    // else console.log("user not added");
+    let isAdded = await users.addUser({username: "testuser", password: "1234", email: "testuser@gmail.com"});
+    if (isAdded) console.log('user Added');
+    else console.log("user not added");
 
-    // await users.startStage('testuser2');
+    isAdded = await users.addUser({username: "testuser2", password: "1234", email: "testuser2@gmail.com"});
+    if (isAdded) console.log('user Added');
+    else console.log("user not added");
 
-    // isAdded = await users.addUser({username: "testuser2", password: "1234", email: "testuser2@gmail.com"});
-    // if (isAdded) console.log('user Added');
-    // else console.log("user not added");
-
-    // let addedData = await rooms.createRoom('createuser');
-    // if (addedData) console.log(`room created: ${JSON.stringify(addedData)}`);
-    // else console.log('room not created');
+    let addedData = await rooms.createRoom({
+        userName: 'tournament',
+        joiningFee: 10,
+        startDateTime: new Date('4/20/2021 16:00:00'),
+        prize: 30,
+    });
+    if (addedData) console.log(`room created: ${JSON.stringify(addedData)}`);
+    else console.log('room not created');
 
     // let result = await rooms.getRooms();
     // if (result) console.log(result);

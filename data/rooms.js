@@ -278,7 +278,7 @@ const exportedMethods = {
 
         const newroom = {
             userName: data.username,
-            joinUsers: [{ userName: data.username, point: userInfo.point, isOver: false }],
+            joinUsers: [{ userName: data.username, point: 0, isOver: false }],
             winner: [],
             winnerPoint: [],
             joiningFee: 3,
