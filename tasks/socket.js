@@ -99,7 +99,6 @@ const exportedMethods = {
                 if (userNameInSession) {
                     // Get the room Id which this user is joined in
                     const joinedInfo = await rooms.getJoinRoomIdByUserName(userNameInSession);
-                    socket.leave(`game_of_${joinedInfo.roomId}`);
                     switch (socket.handshake.session.status) {
                         case 'Tournament':
                         case 'Battle':
@@ -133,16 +132,18 @@ const exportedMethods = {
                                             }).then((user) => {
                                                 socket.to(players[room.result.winner[0]]).emit('update_userdata', {result: user});
                                         });
-                                    io.sockets.clients(`game_of_${data.room_id}`).forEach(function(client){
-                                        client.leave(`game_of_${data.room_id}`);
+                                    io.sockets.clients(`game_of_${joinedInfo.roomId}`).forEach(function(client){
+                                        client.leave(`game_of_${joinedInfo.roomId}`);
                                         client.handshake.session.status = 'Idle';
                                     });
                                 }
                             }
-                            await rooms.removeRoom({room_id: data.room_id});
+                            await rooms.removeRoom({room_id: joinedInfo.roomId});
+                            socket.leave(`game_of_${joinedInfo.roomId}`);
                             break;
                         case 'Waiting':
                             await rooms.removeRoom({room_id: joinedInfo.roomId});
+                            socket.leave(`game_of_${joinedInfo.roomId}`);
                             break;
                     }
 

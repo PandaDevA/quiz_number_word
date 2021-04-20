@@ -50,5 +50,5 @@ Client.socket.on('register',function(data){
 Client.socket.on('update_userdata',function(data){
     userData = data.result;
     if(game.scene.isActive('HomeScreen'))
-        game.scene.getScene('HomeScreen').update();
+        game.scene.getScene('HomeScreen').update_userData();
 });

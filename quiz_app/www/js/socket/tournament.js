@@ -1,13 +1,13 @@
 Client.tournament_in = function(){
-    Client.socket.emit('tournament_in', {username : userData.username});
+    Client.socket.emit('tournament_in', {username : userData.userName});
 };
 
 Client.tournament_out = function(){
-    Client.socket.emit('tournament_out', {username : userData.username});
+    Client.socket.emit('tournament_out', {username : userData.userName});
 };
 
 Client.tournament_end = function(isAlive){
-    Client.socket.emit('tournament_end', {isAlive : isAlive, username : userData.username, point: cur_point});
+    Client.socket.emit('tournament_end', {isAlive : isAlive, username : userData.userName, point: cur_point});
 };
 
 Client.socket.on('tournament_in',function(data){

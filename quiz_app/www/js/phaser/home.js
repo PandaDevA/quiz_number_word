@@ -57,7 +57,7 @@ class HomeScreen extends Phaser.Scene{
                 align: 'center',
             });
 
-        // this.userName = this.add.text(150,160, userData.username, { fixedWidth: 150, fixedHeight: 36 })
+        // this.userName = this.add.text(150,160, userData.userName, { fixedWidth: 150, fixedHeight: 36 })
         //     .setOrigin(0.5,0.5)
         //     .setStyle({
         //         fontSize: '24px',
@@ -134,7 +134,7 @@ class HomeScreen extends Phaser.Scene{
         //     this.rexUI.edit(this.password)
         // });
     }
-    update(){
+    update_userData(){
         this.coinText.setText(userData.coin);
         this.lifeText.setText(userData.heart);
         this.points.setText(userData.point);

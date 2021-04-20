@@ -1,13 +1,13 @@
 Client.stage_start = function(){
-    Client.socket.emit('stage_start', {username : userData.username});
+    Client.socket.emit('stage_start', {username : userData.userName});
 };
 
 Client.stage_cancel = function(){
-    Client.socket.emit('stage_cancel', {username : userData.username});
+    Client.socket.emit('stage_cancel', {username : userData.userName});
 };
 
 Client.stage_end = function(isWin){
-    Client.socket.emit('stage_end', {username : userData.username, result:{isWin:isWin, point:cur_point, coin:1}});
+    Client.socket.emit('standalone_end', {username : userData.userName, result:{isWin:isWin, point:cur_point, coin:1}});
 };
 
 Client.socket.on('stage_start',function(data){
@@ -42,26 +42,6 @@ Client.socket.on('stage_start',function(data){
     else
     {
         game.scene.getScene('HomeScreen').toast_stage_failed();
-        console.log('failed');
-    }
-});
-
-Client.socket.on('stage_end',function(data){
-    if(data.result)
-    {
-        if(game.scene.isActive('HomeScreen'))
-        {
-            userData = data.info;
-            game.scene.getScene('HomeScreen').update();
-        }
-        else
-        {
-            userData = data.info;
-        }
-        console.log(data);
-    }
-    else
-    {
         console.log('failed');
     }
 });
