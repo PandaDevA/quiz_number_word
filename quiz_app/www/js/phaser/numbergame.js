@@ -53,7 +53,7 @@ class NumberGameScreen extends Phaser.Scene{
         this.selected_index = -1;
         this.selected_operator = -1;
 
-        for(let i=0; i<6; i++)
+        for (let i=0; i<6; i++)
         {
             let numberImage = this.add.image(300 + (i%3)*240, 720 + Math.floor(i/3) * 250, 'Number', 0);
             let numberText = this.add.text(300 + (i%3)*240, 720 + Math.floor(i/3) * 250, gameData.numData[cur_number].array[i], { fixedWidth: 180, fixedHeight: 100 })
@@ -290,7 +290,7 @@ class NumberGameScreen extends Phaser.Scene{
 
     refreshNumbers(){
         this.selected_index = -1;
-        for(let i=0; i<6; i++)
+        for (let i=0; i<6; i++)
         {
             this.numberTexts[i].setText(gameData.numData[cur_number].array[i]);
             this.numberImages[i].setAlpha(1.0);

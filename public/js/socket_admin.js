@@ -12,7 +12,7 @@ $('#cur_race_info_save').click(function(){
     $('#cur_race_info_table').find(".info_color").each(function( index ) {
         color.push($( this ).val());
     });
-    for(let i=0; i<name.length; i++)
+    for (let i=0; i<name.length; i++)
         tabledata.push({name:name[i], sp:sp[i], color:color[i]});
     Client.socket.emit('cur_race_save', {tabledata: tabledata, time:$('#cur_race_time').val(), name:$('#cur_race_name').val()});
 });
@@ -23,7 +23,7 @@ Client.socket.on('cur_race_save', function(data){
         $('#cur_race_time').val(data.cur_race_time);
         $('#cur_race_name').val(data.cur_race_name);
         $('#cur_race_info_table').html('');
-        for(var i=0; i<data.dataArray.length; i++) { 
+        for (var i=0; i<data.dataArray.length; i++) { 
             $('#cur_race_info_table').append("<tr>"+
                 "<td class='border px-4 py-2 row_num'>"+
                     (i+1 )+
@@ -67,7 +67,7 @@ $('#next_race_info_current').click(function(){
     $('#next_race_info_table').find(".info_color").each(function( index ) {
         color.push($( this ).val());
     });
-    for(let i=0; i<name.length; i++)
+    for (let i=0; i<name.length; i++)
         tabledata.push({name:name[i], sp:sp[i], color:color[i]});
     Client.socket.emit('cur_race_save', {tabledata: tabledata, time:$('#next_race_time').val(), name:$('#next_race_name').val()});
 })
@@ -86,7 +86,7 @@ $('#next_race_info_save').click(function(){
     $('#next_race_info_table').find(".info_color").each(function( index ) {
         color.push($( this ).val());
     });
-    for(let i=0; i<name.length; i++)
+    for (let i=0; i<name.length; i++)
         tabledata.push({name:name[i], sp:sp[i], color:color[i]});
     Client.socket.emit('next_race_save', {tabledata: tabledata, time:$('#next_race_time').val(), name:$('#next_race_name').val()});
 });
@@ -138,7 +138,7 @@ $('#betting_info_save').click(function(){
     $('#betting_info_table').find(".info_text").each(function( index ) {
         text.push($( this ).val());
     });
-    for(let i=0; i<name.length; i++)
+    for (let i=0; i<name.length; i++)
         tabledata.push({time:time[i], name:name[i], text:text[i]});
     Client.socket.emit('betting_info_save', tabledata);
 });
@@ -171,7 +171,7 @@ $('#tips_info_save').click(function(){
     $('#tips_info_table').find(".info_notes").each(function( index ) {
         note.push($( this ).val());
     });
-    for(let i=0; i<race.length; i++)
+    for (let i=0; i<race.length; i++)
         tabledata.push({race:race[i], selection:selection[i], price:price[i], note:note[i]});
     Client.socket.emit('tips_info_save', {tabledata: tabledata, title:$('#tips_source').val()});
 });
@@ -212,7 +212,7 @@ $('#odds_info_save').click(function(){
     $('#odds_info_table').find(".info_morningurl").each(function( index ) {
         morningurl.push($( this ).val());
     });
-    for(let i=0; i<date.length; i++)
+    for (let i=0; i<date.length; i++)
         tabledata.push({date:date[i], meeting:meeting[i], overnight:overnight[i], overnighturl:overnighturl[i], morning:morning[i], morningurl:morningurl[i]});
     Client.socket.emit('odd_info_save', {tabledata: tabledata});
 });

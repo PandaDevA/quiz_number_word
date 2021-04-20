@@ -102,10 +102,12 @@ const exportedMethods = {
         if (data.coin) {
             if (updatedUserData.coin < data.coin) return {result: false, error: 'You need more coins'};
             updatedUserData.coin -= data.coin;
+            if ( updatedUserData.coin < 0 ) updatedUserData.coin = 0;
         }
         if (data.heart) {
             if (updatedUserData.heart < data.heart) return {result: false, error: 'Please wait until heart is supplied'};
             updatedUserData.heart -= data.heart;
+            if (updatedUserData.heart < 0) updatedUserData.heart = 0;
         }
 
         await userCollection.updateOne({ _id: user._id }, { $set: updatedUserData });

@@ -62,7 +62,7 @@ function update_user(filter, page, count){
             }
             $('#count_label').html('<label>' + data.pageInfo.count + ' of ' + data.totalNum + '</label>');
             $('#user_table').empty();
-            for(var i=0; i<data.result.length; i++) {
+            for (var i=0; i<data.result.length; i++) {
                 $('#user_table').append("<tr>"+
                     "<td class='border py-2 word_col text-center'>"+
                     "<input class='info_race info_text' type='text' value='" + data.result[i].word + "' placeholder='word' readonly/>"+

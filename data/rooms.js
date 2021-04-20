@@ -11,10 +11,12 @@ const exportedMethods = {
         const allRoom = await roomCollection.find().toArray();
 
         let idx;
-        for (room in allRoom) {
+        for (i in allRoom) {
+            const room = allRoom[i];
             if (room.isClosed) continue;
             idx = -1;
-            for (user in room.joinUsers) {
+            for (j in room.joinUsers) {
+                const user = room.joinUsers[j];
                 idx++;
                 if (user.userName == name) break;
             }
@@ -25,11 +27,11 @@ const exportedMethods = {
     },
 
     async joinRoom(data) {
-        const userInfo = await users.getUserInfo(data.username);
-        if (!userInfo) {
-            console.log(`${data.username} could not find while joinRoom`);
-            return {result: false, error: 'Could not find the user in server'};
-        }
+        // const userInfo = await users.getUserInfo(data.username);
+        // if (!userInfo) {
+        //     console.log(`${data.username} could not find while joinRoom`);
+        //     return {result: false, error: 'Could not find the user in server'};
+        // }
 
         let parsedId;
         try {
@@ -221,7 +223,8 @@ const exportedMethods = {
     async listTournament() {
         const roomCollection = await rooms();
         let room = await roomCollection.find({ userName: 'tournament' }).toArray();
-        for (data in room) {
+        for (i in room) {
+            const data = room[i];
             data['id'] = String(data._id);
         }
         return room;

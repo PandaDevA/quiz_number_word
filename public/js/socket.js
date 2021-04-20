@@ -9,7 +9,7 @@ Client.socket.emit('join', {joinTo: join_events});
 Client.socket.on('cur_race_update',function(data){
     $('#cur_race_title').html(data.time + " " + data.name);
     $('#cur_race_info_table').html('');
-    for(let i=0; i<data.dataArray.length; i++)
+    for (let i=0; i<data.dataArray.length; i++)
     {
         $('#cur_race_info_table').append("<tr><td class='border px-4 py-2 row_num'></td>"+
         "<td class='border px-4 py-2'>" + data.dataArray[i].name + "</td>"+
@@ -21,7 +21,7 @@ Client.socket.on('cur_race_update',function(data){
 Client.socket.on('next_race_update',function(data){
     $('#next_race_title').html(data.time + " " + data.name);
     $('#next_race_info_table').html('');
-    for(let i=0; i<data.dataArray.length; i++)
+    for (let i=0; i<data.dataArray.length; i++)
     {
         $('#next_race_info_table').append("<tr><td class='border px-4 py-2 row_num'></td>"+
         "<td class='border px-4 py-2'>" + data.dataArray[i].name + "</td>"+
@@ -61,7 +61,7 @@ Client.socket.on('feed_category_update',function(data){
 Client.socket.on('betting_info_update', function(data){
     var betting_panel = $('.bet_info_panel .panel_content').first();
     betting_panel.html('');
-    for(let i=0; i<data.length; i++) {
+    for (let i=0; i<data.length; i++) {
         betting_panel.append("<div class='bet_info_item'>" + 
             "<p>" + data[i].time + ' ' + data[i].name + ' ' + data[i].text + "</p>" +
             "</div>");
@@ -80,7 +80,7 @@ Client.socket.on('pdf_source_update', function(url){
 Client.socket.on('tips_info_update',function(data){
     $('#tip_source').html('Early information for racing at ' + data.title);
     $('#tips_info_table').html('');
-    for(let i=0; i<data.dataArray.length; i++)
+    for (let i=0; i<data.dataArray.length; i++)
     {
         $('#tips_info_table').append("<tr>"+
             "<td class='border px-4 py-2'>"+
@@ -100,7 +100,7 @@ Client.socket.on('tips_info_update',function(data){
 
 Client.socket.on('odd_info_update',function(data){
     $('#odds_info_table').html('');
-    for(let i=0; i<data.dataArray.length; i++)
+    for (let i=0; i<data.dataArray.length; i++)
     {
         let content = '';
         content += "<tr>"+

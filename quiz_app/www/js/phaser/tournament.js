@@ -86,7 +86,7 @@ class TournamentScreen extends Phaser.Scene{
         var sizer = this.user_list.getElement('panel');
         sizer.clear(true);
 
-        for(let i=0; i<tournamentData.length; i++){
+        for (let i=0; i<tournamentData.length; i++){
             sizer.add( this.add.text(0, 0, tournamentData[i].userName + ":" + tournamentData[i].point, { fontSize: 18 }));
         }
         this.user_list.layout();

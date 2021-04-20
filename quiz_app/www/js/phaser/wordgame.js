@@ -54,7 +54,7 @@ class WordGameScreen extends Phaser.Scene{
                 mix_word.unshift(character);
         }
 
-        for(let i=0; i<mix_word.length; i++)
+        for (let i=0; i<mix_word.length; i++)
         {
             let resultImage = this.add.image(135 + i*115, 700,'Letter');
             let resultText = this.add.text(135 + i*115, 700, '', { fixedWidth: 90, fixedHeight: 90 })
@@ -88,7 +88,7 @@ class WordGameScreen extends Phaser.Scene{
         this.refreshButton = this.add.image(640,1380,'Refresh', 1);
         this.refreshButton.setInteractive().on('pointerdown', () => {
             this.result = '';
-            for(var i=0; i<this.resultTexts.length; i++)
+            for (var i=0; i<this.resultTexts.length; i++)
                 this.resultTexts[i].setText('');
         });
 
