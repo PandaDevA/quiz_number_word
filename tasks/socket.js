@@ -358,7 +358,7 @@ const exportedMethods = {
                 if (players[data.inviteuser] === undefined) {
                     console.log('invite user is not connected.');
                     socket.emit('invite_request', {result: false, to: data.inviteuser, error: 'Invite user is offline.'});
-                } else if (socket.to(players[data.inviteuser]).handshake.session.status != 'Idle') {
+                } else if (io.sockets.sockets.get(players[data.inviteuser]).handshake.session.status != 'Idle') {
                     console.log('invite user is playing game now.');
                     socket.emit('invite_request', {result: false, to: data.inviteuser, error: 'Invite user is playing now.'});
                 } else {
