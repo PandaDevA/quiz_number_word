@@ -9,6 +9,12 @@ class BattleWaitScreen extends Phaser.Scene{
     } 
 
     preload() {
+        this.load.scenePlugin({
+            key: 'rexuiplugin',
+            url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+            sceneKey: 'rexUI'
+        });
+
         this.load.image("Cancel", "./images/cancel.png");
         this.load.image("UserName", "./images/username.png");
         this.load.image("EmptyUser", "./images/avatar_empty.png");
@@ -50,7 +56,7 @@ class BattleWaitScreen extends Phaser.Scene{
         }).setOrigin(0.5, 0.5);
 
         this.oppoNameBack = this.add.image(540,1340,'UserName');
-        this.oppoName = this.add.text(540, 660, '', {
+        this.oppoName = this.add.text(540, 1340, '', {
             fontFamily: 'RR',
             fontWeight: 'bold',
             fontSize: '64px',
@@ -65,139 +71,81 @@ class BattleWaitScreen extends Phaser.Scene{
             game.scene.start('BattleScreen');
         });
 
-        // this.BackButton = this.add.image(50,50,'Back').setScale(0.2);
-        // this.BackButton.setInteractive().on('pointerdown', () => {
-        //     game.scene.stop('BattleScreen');
-        //     game.scene.start('HomeScreen');
-        // });
-
-        // this.invite_battle = this.add.text(150, 100, 'Invite Battle', { fixedHeight: 32 })
-        // .setStyle({
-        //     fontSize: '32px',
-        //     fontFamily: 'Arial',
-        //     color: '#fdb63a',
-        // }).setOrigin(0.5,0);
-
-        // this.userNameImage = this.add.image(150,200,'UserName').setScale(0.3);
-        // this.userName = this.add.text(155, 200, 'testuser', { fixedWidth: 100, fixedHeight: 18 })
-        // .setStyle({
-        //     fontSize: '18px',
-        //     fontFamily: 'Arial',
-        //     color: '#000000',
-        // })
-        // .setOrigin(0,0.5);
-        // this.userName.setInteractive().on('pointerdown', () => {
-        //     this.rexUI.edit(this.userName)
-        // });
-
-        // this.inviteButton = this.add.image(100,280,'Invite', 0).setScale(0.2);
-        // this.inviteButton.setInteractive().on('pointerdown', () => {
-        //     Client.invite_request(this.userName.text);
-        //     this.BackButton.disableInteractive();
-        //     this.BackButton.setAlpha(0.5);
-        //     this.randomButton.disableInteractive();
-        //     this.randomButton.setAlpha(0.5);
-        //     this.inviteButton.disableInteractive();
-        //     this.inviteButton.setAlpha(0.5);
-        //     this.invite_cancel_Button.setInteractive();
-        //     this.invite_cancel_Button.setAlpha(1.0);
-        // });
-
-        // this.invite_cancel_Button = this.add.image(200,280,'Cancel', 0).setScale(0.2);
-        // this.invite_cancel_Button.on('pointerdown', () => {
-        //     Client.invite_cancel();
-        //     this.invite_request_failed();
-        // });
-        // this.invite_cancel_Button.disableInteractive();
-        // this.invite_cancel_Button.setAlpha(0.5);
-
-
-        // this.random_battle = this.add.text(150, 350, 'Random Battle', { fixedHeight: 32 })
-        // .setStyle({
-        //     fontSize: '32px',
-        //     fontFamily: 'Arial',
-        //     color: '#fdb63a',
-        // }).setOrigin(0.5,0);
-
-        // this.randomButton = this.add.image(100,450,'Random').setScale(0.2);
-        // this.randomButton.setInteractive().on('pointerdown', () => {
-        //     Client.random_request();
-        // });
-
-        // this.random_cancel_Button = this.add.image(200,450,'Cancel', 0).setScale(0.2);
-        // this.random_cancel_Button.disableInteractive();
-        // this.random_cancel_Button.setAlpha(0.5);
+        if(oppoData != "")
+        {
+            this.startGame();
+        }
     }
     update(){
     }
 
-    // invite_request(){
-    //     this.userName.setText(invite_name);
-    //     this.inviteButton.setFrame(1);
-    //     this.inviteButton.setInteractive().on('pointerdown', () => {
-    //         Client.invite_accept();
-    //     });
-    //     this.invite_cancel_Button.setFrame(1);
-    //     this.invite_cancel_Button.setInteractive().on('pointerdown', () => {
-    //         Client.invite_reject();
-    //         this.invite_request_failed();
-    //     });
-    //     this.BackButton.disableInteractive();
-    //     this.BackButton.setAlpha(0.5);
-    //     this.randomButton.disableInteractive();
-    //     this.randomButton.setAlpha(0.5);
-    //     this.inviteButton.setInteractive();
-    //     this.inviteButton.setAlpha(1.0);
-    //     this.invite_cancel_Button.setInteractive();
-    //     this.invite_cancel_Button.setAlpha(1.0);
-    //     toast_inviting();
-    // }
-    // random_request(){
-    //     this.randomButton.disableInteractive();
-    //     this.random_cancel_Button.setInteractive().on('pointerdown', () => {
-    //         Client.random_cancel();
-    //         this.BackButton.setInteractive();
-    //         this.BackButton.setAlpha(1.0);
-    //         this.randomButton.setInteractive();
-    //         this.randomButton.setAlpha(1.0);
-    //         this.inviteButton.setInteractive();
-    //         this.inviteButton.setAlpha(1.0);
-    //         this.random_cancel_Button.disableInteractive();
-    //         this.random_cancel_Button.setAlpha(0.5);
-    //     });
+    startGame(){
+        this.oppoWaiting.destroy();
 
-    //     this.BackButton.disableInteractive();
-    //     this.BackButton.setAlpha(0.5);
-    //     this.randomButton.disableInteractive();
-    //     this.randomButton.setAlpha(0.5);
-    //     this.inviteButton.disableInteractive();
-    //     this.inviteButton.setAlpha(0.5);
-    //     this.random_cancel_Button.setInteractive();
-    //     this.random_cancel_Button.setAlpha(1.0);
-    // }
+        if(oppoData.avatar)
+        {
+            if(this.textures.exists('oppo_avatar'))
+                this.textures.remove('oppo_avatar');
+            var scene = this;
+            this.textures.on('onload', function(key, texture){
+                if(key == "oppo_avatar")
+                {
+                    scene.oppoAvatar.setTexture('oppo_avatar');
+                    scene.oppoAvatar.setDisplaySize(390,398);
+                    scene.oppoAvatar_cover = scene.add.image(540,1080,'avatar_cover').setDepth(5);
+                }
+            });
+            this.textures.addBase64('oppo_avatar', oppoData.avatar);
+        }
+        else{
+            this.oppoAvatar.setTexture('UserAvatar');
+        }
 
-    // toast_inviting(){
-    //     var toast = this.rexUI.add.toast({
-    //         x: 150,
-    //         y: 550,
+        this.oppoName.setText(oppoData.userName);
+        this.cancelButton.destroy();
 
-    //         background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 20, 0xcc4040),
-    //         text: this.add.text(0, 0, '', {
-    //             fontSize: '18px'
-    //         }),
-    //         space: {
-    //             left: 20,
-    //             right: 20,
-    //             top: 20,
-    //             bottom: 20,
-    //         },
+        this.graphics = this.add.graphics();
+        // // this.graphics.lineStyle(4, '#ffffff', 1);
+        // this.graphics.fillStyle(0xffffff, 1);
+        // this.graphics.fillRoundedRect(100,1050,880,490, 10);
+        // this.gameStartText = this.add.text(540,1130, 'WORD GAME WILL START', { fixedWidth: 780, fixedHeight: 60, align:'center' })
+        // .setStyle({
+        //     fontSize: '60px',
+        //     fontFamily: 'RR',
+        //     fontWeight: 'bold',
+        //     color: '#106ead',
+        // })
+        // .setOrigin(0.5,0.5);
+        this.graphics.fillStyle(0xfa5c00, 1);
+        this.graphics.fillRoundedRect(410,1400,260,200, 10);
+        this.timeText = this.add.text(540,1500, '5', { fixedWidth: 170, fixedHeight: 170, align:'center' })
+        .setStyle({
+            fontSize: '160px',
+            fontFamily: 'RR',
+            fontWeight: 'bold',
+            color: '#ffffff',
+        })
+        .setOrigin(0.5,0.5);
 
-    //         duration: {
-    //             in: 250,
-    //             hold: 1000,
-    //             out: 250,
-    //         },
-    //     })
-    //     .show(invite_name + ' is inviting you...')
-    // }
+        this.timer = this.time.addEvent({
+            delay: 1000,
+            callback: this.updateTimer,
+            args: [this],
+            loop: true
+        });
+    }
+
+    updateTimer(scene){
+        let current_time = Number.parseInt(scene.timeText.text) - 1;
+        if(current_time < 0)
+        {
+            scene.timer.remove();
+            scene.time.removeEvent(scene.timer);
+            game.scene.stop('BattleWaitScreen');
+            game.scene.start('NumberGameScreen');
+        }
+        else{
+            scene.timeText.setText(current_time);
+        }
+    }
 }

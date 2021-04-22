@@ -159,13 +159,20 @@ const exportedMethods = {
 
         const updatedRoomData = room;
         let joinusers = updatedRoomData.joinUsers;
-        
+
+        if (updatedRoomData.remainNum + data.step != 2) {
+            console.log('Invalid end Data is received');
+            return {result: false, error: 'Invalid data with current step'};
+        }
+                
         let idxOfUser = -1,
             allIsOver = true,
             allIsEnd = false;
+
         joinusers.map((user, index) => {
             if(user.userName == data.username) {
                 idxOfUser = index;
+                joinusers[index].point = data.point;
                 joinusers[index].isOver = true;
             } else if (!user.isOver) allIsOver = false;
         });
@@ -182,7 +189,7 @@ const exportedMethods = {
             winners.push(data.username);
             winnerPoints.push(data.point);
         } else {
-            var i;
+            let i;
             for (i = 0; i < winners.length; i++) {
                 if(data.point > winnerPoints[i]) {
                     winners.splice(i, 0, data.username);
@@ -194,7 +201,7 @@ const exportedMethods = {
                     break;
                 }
             }
-            if (i < winners.length) {
+            if (i == winners.length && i < 3) {
                 winners.push(data.username);
                 winnerPoints.push(data.point);
             }
@@ -208,6 +215,9 @@ const exportedMethods = {
                 updatedRoomData.isClosed = true;
                 allIsEnd = true;
             } else updatedRoomData.remainNum--;
+            for (let i=0; i < joinusers.length; i++) {
+                joinusers[i].isOver = false;
+            }
         }
 
         const updatedInfo = await roomCollection.updateOne({ _id: room._id }, { $set: updatedRoomData });
@@ -272,7 +282,7 @@ const exportedMethods = {
         }
         if (room.joinUsers.length == 0) return { result: false, error: 'no one joined the tournament. it counld not start any more'};
 
-        return {result: {timeOut: room.timeOut, prize: room.prize, joiningFee: room.joiningFee, joinUsers: room.joinUsers}};
+        return {result: {prize: room.prize, joiningFee: room.joiningFee, joinUsers: room.joinUsers}};
     },
 
     async createRoom(data) {
@@ -285,10 +295,9 @@ const exportedMethods = {
             winner: [],
             winnerPoint: [],
             joiningFee: 3,
-            timeOut: 30,
             startDateTime: new Date(),
             prize: 9,
-            remainNum: 1, // 5,
+            remainNum: 1, // 9,
             isStarted: false,
             isClosed: false,
         };
@@ -296,7 +305,6 @@ const exportedMethods = {
         if (data.joiningFee != undefined) newroom.joiningFee = data.joiningFee;
         if (data.startDateTime != undefined) newroom.startDateTime = data.startDateTime;
         if (data.prize != undefined) newroom.prize = data.prize;
-        if (data.timeOut != undefined) newroom.timeOut = data.timeOut;
 
         const newInsertInformation = await roomCollection.insertOne(newroom);
         if (newInsertInformation.insertedCount === 0) {

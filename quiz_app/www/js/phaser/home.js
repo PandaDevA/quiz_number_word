@@ -37,6 +37,8 @@ class HomeScreen extends Phaser.Scene{
     }
 
     create() {
+        oppoData = "";
+
         this.logo = this.add.image(540,120,'Logo');
 
         this.coin = this.add.image(820,120,'Coin');

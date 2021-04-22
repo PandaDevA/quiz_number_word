@@ -53,33 +53,34 @@ Client.socket.on('update_userdata',function(data){
         game.scene.getScene('HomeScreen').update_userData();
 });
 
-function invite_modal(scene, invite_name){
-    var createLabel = function (scene, text) {
-        return scene.rexUI.add.label({
-            width: 280,
-            height: 140,
-    
-            background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 20, 0xfa5c00),
-    
-            text: scene.add.text(0, 0, text, {
-                fontFamily: 'RR',
-                fontWeight: 'bold',
-                fontSize: '90px',
-                color: "#ffffff",
-                align: "center"
-            }),
-    
-            space: {
-                left: 10,
-                right: 10,
-                top: 10,
-                bottom: 10
-            },
+var createLabel = function (scene, text) {
+    return scene.rexUI.add.label({
+        width: 280,
+        height: 140,
 
+        background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 20, 0xfa5c00),
+
+        text: scene.add.text(0, 0, text, {
+            fontFamily: 'RR',
+            fontWeight: 'bold',
+            fontSize: '90px',
+            color: "#ffffff",
             align: "center"
-        });
-    }
-    
+        }),
+
+        space: {
+            left: 10,
+            right: 10,
+            top: 10,
+            bottom: 10
+        },
+
+        align: "center"
+    });
+}
+
+function invite_modal(scene){
+    var cover = scene.add.rectangle(-1000,-1000,2080,2680,0x000000, 0.2).setOrigin(0,0).setDepth(1).setInteractive();
     var dialog = scene.rexUI.add.dialog({
         x: 540,
         y: 800,
@@ -115,7 +116,7 @@ function invite_modal(scene, invite_name){
         expand: {
             content: false, // Content is a pure text object
         }
-    })
+    }).setDepth(2)
         .layout()
         // .drawBounds(scene.add.graphics(), 0xff0000)
         .popUp(1000);
@@ -130,7 +131,64 @@ function invite_modal(scene, invite_name){
             {
                 Client.invite_reject();
             }
+            cover.destroy();
             dialog.destroy();
+        })
+        .on('button.over', function (button, groupName, index) {
+            // button.getElement('background').setStrokeStyle(1, 0xffffff);
+        })
+        .on('button.out', function (button, groupName, index) {
+            // button.getElement('background').setStrokeStyle();
+        });
+}
+
+function reject_modal(scene){
+    var cover = scene.add.rectangle(-1000,-1000,2080,2680,0x000000, 0.2).setOrigin(0,0).setDepth(1).setInteractive();
+    var dialog = scene.rexUI.add.dialog({
+        x: 540,
+        y: 800,
+
+        background: scene.rexUI.add.roundRectangle(0, 0, 100, 100, 20, 0xffffff),
+        content: scene.add.text(0, 0, 'OPPONENT\nREJECTED TO\nPLAY WITH YOU.', {
+            fontFamily: 'RR',
+            fontWeight: 'bold',
+            fontSize: '64px',
+            color: "#106eac",
+            align: "center"
+        }),
+
+        actions: [
+            createLabel(scene, 'OK'),
+        ],
+
+        space: {
+            content: 25,
+            action: 15,
+
+            left: 60,
+            right: 60,
+            top: 40,
+            bottom: 40,
+        },
+
+        align: {
+            actions: 'center', // 'center'|'left'|'right'
+        },
+
+        expand: {
+            content: false, // Content is a pure text object
+        }
+    }).setDepth(2)
+        .layout()
+        // .drawBounds(scene.add.graphics(), 0xff0000)
+        .popUp(1000);
+
+    dialog
+        .on('button.click', function (button, groupName, index) {
+            cover.destroy();
+            dialog.destroy();
+            game.scene.stop(scene.scene.key);
+            game.scene.start('BattleScreen');
         })
         .on('button.over', function (button, groupName, index) {
             // button.getElement('background').setStrokeStyle(1, 0xffffff);
@@ -150,7 +208,8 @@ function toast_error(scene, error){
             fontFamily: 'RR',
             fontWeight: 'bold',
             fontSize: '64px',
-            color: "#106eac"
+            color: "#106eac",
+            align: "center",
         }),
         space: {
             left: 50,

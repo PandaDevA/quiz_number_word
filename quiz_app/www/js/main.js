@@ -4,6 +4,7 @@
 //noinspection JSCheckFunctionSignatures,JSCheckFunctionSignatures,JSCheckFunctionSignatures
 
 var userData = {};
+var oppoData = {};
 var tournamentData = {};
 var tournamentTime = "";
 var gameData = {};
@@ -17,7 +18,8 @@ var cur_word = 0;
 
 var cur_point = 0;
 
-var winner_name = "";
+var winner_name_list = [];
+var winner_point_list = [];
 var invite_name = "";
 var room_id = "";
 

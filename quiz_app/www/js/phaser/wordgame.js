@@ -18,6 +18,7 @@ class WordGameScreen extends Phaser.Scene{
     }
 
     create() {
+        this.point = undefined;
         this.logo = this.add.image(540,120,'Logo');
 
         this.graphics = this.add.graphics();
@@ -110,63 +111,45 @@ class WordGameScreen extends Phaser.Scene{
     checkResult(){
         let bPass = false;
         let match_index = gameData.wordData[cur_word].matchArray.indexOf(this.result);
+        this.point = 0;
         if(match_index != -1)
         {
             bPass = true;
             let word_length = gameData.wordData[cur_word].matchArray[match_index].length;
             if(word_length == 8){
-                cur_point += 10 + Number.parseInt(this.timeText.text);
+                this.point = 10 + Number.parseInt(this.timeText.text);
             }
             else if(word_length == 7){
-                cur_point += 5;
+                this.point = 5;
             }
             else if(word_length == 6){
-                cur_point += 2;
+                this.point = 2;
             }
         }
         
-        this.timer.remove();
-        this.time.removeEvent(this.timer);
-        if(!bPass){
-            if(game_type == "stage")
-            {
-                Client.stage_end(false);
-                game_state = "failed";
-            }
-            else if(game_type == "daily")
-            {
-                Client.daily_end(false);
-                game_state = "failed";
-            }
-            else if(game_type == "tournament")
-                Client.tournament_end(false);
-            else if(game_type == "battle")
-                Client.battle_end(false);
-            game.scene.stop('WordGameScreen');
-            game.scene.start('EndScreen');
-        }
-        else if(cur_word == gameData.wordData.length-1)
+        if(!bPass && (game_type == "stage" || game_type == "daily"))
+            game_state = "failed";
+        else
+            game_state = "pass";
+
+        if(game_type == "stage" || game_type == "daily")
         {
-            if(game_type == "stage")
-            {
-                Client.stage_end(true);
-                game_state = "word";
+            this.timer.remove();
+            this.time.removeEvent(this.timer);
+            cur_point += this.point;
+            if(game_type == "stage"){
+                Client.stage_end(bPass);
             }
-            else if(game_type == "daily")
-            {
-                Client.daily_end(true);
-                game_state = "word";
+            else if(game_type == "daily"){
+                Client.daily_end(bPass);
             }
-            else if(game_type == "tournament")
-                Client.tournament_end(true);
-            else if(game_type == "battle")
-                Client.battle_end(true);
+            cur_word++;
             game.scene.stop('WordGameScreen');
             game.scene.start('EndScreen');
         }
-        else{
-            cur_word++;
-            this.scene.restart();
+        else if(game_type == "battle")
+        {
+            Client.online_end(this.point);
         }
     }
 
@@ -174,25 +157,34 @@ class WordGameScreen extends Phaser.Scene{
         let current_time = Number.parseInt(scene.timeText.text) - 1;
         if(current_time < 0)
         {
-            if(game_type == "stage")
-            {
-                Client.stage_end(false);
+            if(game_type == "stage" || game_type == "daily")
                 game_state = "failed";
-            }
-            else if(game_type == "daily")
-            {
-                Client.daily_end(false);
-                game_state = "failed";
-            }
-            else if(game_type == "tournament")
-                Client.tournament_end(false);
-            else if(game_type == "battle")
-                Client.battle_end(false);
+            else
+                game_state = "pass";
 
-            scene.timer.remove();
-            scene.time.removeEvent(scene.timer);
-            game.scene.stop('WordGameScreen');
-            game.scene.start('EndScreen');
+            if(game_type == "stage" || game_type == "daily")
+            {
+                scene.timer.remove();
+                scene.time.removeEvent(scene.timer);
+                cur_point += scene.point;
+                if(game_type == "stage"){
+                    Client.stage_end(false);
+                }
+                else if(game_type == "daily"){
+                    Client.daily_end(false);
+                }
+                cur_word++;
+                game.scene.stop('NumberGameScreen');
+                game.scene.start('EndScreen');
+            }
+            else if(game_type == "battle")
+            {
+                if(scene.point == undefined)
+                {
+                    scene.point = 0;
+                    Client.online_end(scene.point);
+                }
+            }
         }
         else{
             scene.timeText.setText(current_time);

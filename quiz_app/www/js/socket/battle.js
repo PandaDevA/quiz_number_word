@@ -3,7 +3,7 @@ Client.invite_request = function(friend_name){
 };
 
 Client.invite_accept = function(){
-    Client.socket.emit('invite_accept', {roomId : room_id, inviteuser : invite_name});
+    Client.socket.emit('invite_accept', {roomId : room_id, waituser : invite_name, inviteuser:userData.userName});
 };
 
 Client.invite_reject = function(){
@@ -18,8 +18,8 @@ Client.invite_cancel = function(){
     invite_name = "";
 };
 
-Client.battle_end = function(isAlive){
-    Client.socket.emit('battle_end', {roomId: room_id, isAlive : isAlive, username : userData.userName, point: cur_point});
+Client.online_end = function(point){
+    Client.socket.emit('online_end', {room_id: room_id, username : userData.userName, point: (cur_point + point), step: cur_number+cur_word+1 });
 };
 
 Client.random_request = function(){
@@ -37,12 +37,13 @@ Client.socket.on('invite_request',function(data){
     {
         if(data.from)
         {
-            room_id = data.result.id;
-            invite_modal(activeScene, data.from);
+            room_id = data.result.roomId;
+            invite_name = data.from;
+            invite_modal(activeScene);
         }
         else if(data.to)
         {
-            room_id = data.result.id;
+            room_id = data.result.roomId;
             game.scene.stop(activeScene.scene.key);
             game.scene.start('BattleWaitScreen');
         }
@@ -61,11 +62,8 @@ Client.socket.on('invite_accept',function(data){
     {
         room_id = "";
         invite_name = "";
-        if(game.scene.isAcive('BattleScreen'))
-        {
-            game.scene.getScene('BattleScreen').invite_request_failed();
-        }
-        console.log(data.error);
+        let activeScene = game.scene.getScenes(true)[0];
+        toast_error(activeScene, data.error);
     }
 });
 
@@ -74,9 +72,33 @@ Client.socket.on('invite_reject',function(data){
     {
         room_id = "";
         invite_name = "";
-        if(game.scene.isAcive('BattleScreen'))
+        let activeScene = game.scene.getScenes(true)[0];
+        reject_modal(activeScene);
+    }
+});
+
+Client.socket.on('online_start',function(data){
+    if(data.result)
+    {
+        room_id = data.result.roomId;
+        if(data.oppoData)
         {
-            game.scene.getScene('BattleScreen').invite_request_failed();
+            game_type = "battle";
+            oppoData = data.oppoData;
+        }
+        game_state = "";
+        gameData = data.gameData;
+        cur_number = 0;
+        cur_word = 0;
+        cur_point = 0;
+        let activeScene = game.scene.getScenes(true)[0];
+        if(activeScene.scene.key != 'BattleWaitScreen')
+        {
+            game.scene.stop(activeScene.scene.key);
+            game.scene.start('BattleWaitScreen');
+        }
+        else{
+            activeScene.startGame();
         }
     }
     else
@@ -85,43 +107,19 @@ Client.socket.on('invite_reject',function(data){
     }
 });
 
-Client.socket.on('invite_cancel',function(data){
-    console.log(data);
-});
-
-Client.socket.on('battle_start',function(data){
+Client.socket.on('online_end',function(data){
     if(data.result)
     {
-        room_id = data.result;
-        game_type = "battle";
-        game_state = "";
-        gameData = data.gameData;
-        cur_number = 0;
-        cur_word = 0;
-        cur_point = 0;
-        if(game.scene.isActive('BattleScreen'))
-            game.scene.stop('BattleScreen');
-        if(game.scene.isActive('HomwScreen'))
-            game.scene.stop('HomeScreen');
-        game.scene.start('NumberGameScreen');
-        console.log(data);
-    }
-    else
-    {
-        console.log('failed');
-    }
-});
-
-Client.socket.on('battle_end',function(data){
-    if(data.result)
-    {
-        winner_name = data.winner;
-        winner_point = data.winner_point;
-        if(game.scene.isActive('EndScreen'))
-            game.scene.getScene('EndScreen').updateResult();
-        else if(game.scene.isActive('HomeScreen'))
-            game.scene.getScene('HomeScreen').update();
-        console.log(data);
+        let activeScene = game.scene.getScenes(true)[0];
+        cur_point += activeScene.point;
+        winner_name_list = data.winner;
+        winner_point_list = data.winnerPoint;
+        if(cur_number != gameData.numData.length)
+            cur_number++;
+        else
+            cur_word++;
+        game.scene.stop(activeScene.scene.key);
+        game.scene.start('EndScreen');
     }
     else
     {

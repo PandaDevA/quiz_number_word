@@ -60,12 +60,12 @@ const exportedMethods = {
                         if(result.result) {
                             result.result.joinUsers.map(async(user, index) => {
                                 users.delUserValue(user.userName, {coin: result.result.joiningFee, heart: 1}).then((userData) => {
-                                    io.sockets.sockets.get(players[user.userName]).emit('update_userdata', {result: userData.result});
+                                    io.to(players[user.userName]).emit('update_userdata', {result: userData.result});
                                 });
                             });
                             getMultiRandomData().then(({numDataList, wordDataList}) => {
-                                io.to(`game_of_${room._id}`).emit('online_start', {
-                                    result: {roomId: String(room._id), timeOut: result.result.timeOut, prize: result.result.prize},
+                                io.in(`game_of_${room._id}`).emit('online_start', {
+                                    result: {roomId: String(room._id), prize: result.result.prize},
                                     gameData: { numData: numDataList, wordData: wordDataList }
                                 });
                             });
@@ -131,7 +131,7 @@ const exportedMethods = {
                                                 coin: room.result.prize,
                                                 heart: 1,
                                             }).then((user) => {
-                                                io.sockets.sockets.get(players[room.result.winner[0]]).emit('update_userdata', {result: user});
+                                                io.to(players[room.result.winner[0]]).emit('update_userdata', {result: user});
                                         });
                                     io.sockets.clients(`game_of_${joinedInfo.roomId}`).forEach(function(client){
                                         client.leave(`game_of_${joinedInfo.roomId}`);
@@ -313,29 +313,19 @@ const exportedMethods = {
             });
 
             socket.on('online_end', (data) => {
-                // REQUIRE INFO: data.username, data.room_id, data.point, (data.coin, data.heart)OPTIONAL
+                // REQUIRE INFO: data.username, data.room_id, data.point, data.step(1~10), (data.coin, data.heart)OPTIONAL
                 console.log('online_end request received');
                 rooms.endRoom(data).then(async(room) => {
                     if (room.result) {
                         if(room.allIsOver) {
-                            socket.to(`game_of_${data.room_id}`).emit('online_end', {
-                                result: true,
-                                winner: room.result.winner,
-                                winnerPoint: room.result.winnerPoint
-                            });
-                            socket.emit('online_end', {
+                            io.in(`game_of_${data.room_id}`).emit('online_end', {
                                 result: true,
                                 winner: room.result.winner,
                                 winnerPoint: room.result.winnerPoint
                             });
                             // console.log('All users are overed');
                         } else if (room.allIsEnd) {
-                            socket.to(`game_of_${data.room_id}`).emit('online_end', {
-                                result: true,
-                                winner: room.result.winner,
-                                winnerPoint: room.result.winnerPoint
-                            });
-                            socket.emit('online_end', {
+                            io.in(`game_of_${data.room_id}`).emit('online_end', {
                                 result: true,
                                 winner: room.result.winner,
                                 winnerPoint: room.result.winnerPoint
@@ -347,7 +337,7 @@ const exportedMethods = {
                                         coin: room.result.prize,
                                         heart: 1,
                                     }).then((user) => {
-                                        io.sockets.sockets.get(players[room.result.winner[0]]).emit('update_userdata', {result: user});
+                                        io.to(players[room.result.winner[0]]).emit('update_userdata', {result: user});
                                 });
                             io.sockets.clients(`game_of_${data.room_id}`).forEach(function(client){
                                 client.leave(`game_of_${data.room_id}`);
@@ -389,9 +379,9 @@ const exportedMethods = {
                                     if (result) {
                                         console.log('invite_request is sent.');
                                         socket.join(`game_of_${result.id}`);
-                                        socket.emit('invite_request', {result: result, to: data.inviteuser});
+                                        socket.emit('invite_request', {result: {roomId: result.id}, to: data.inviteuser});
                                         if(players[data.inviteuser])
-                                            io.sockets.sockets.get(players[data.inviteuser]).emit('invite_request', {result: result, from: data.waituser});
+                                            io.to(players[data.inviteuser]).emit('invite_request', {result: {roomId: result.id}, from: data.waituser});
                                         socket.handshake.session.status = 'Battle';
                                     } else {
                                         socket.emit('invite_request', { result: false, to: data.inviteuser, error: 'Could not create room.' });
@@ -423,12 +413,12 @@ const exportedMethods = {
                                 console.log('Need more coin or heart is zero');
                                 socket.emit('invite_request', {result: false, to: data.inviteuser, error: 'Need more coin or heart is zero'});
                             } else {
-                                rooms.joinRoom({room_id: data.roomId, username: data.inviteuser}).then((result) => {
-                                    if (result.error) {
-                                        socket.emit('invite_accept', { result: false, error: result.error });
+                                rooms.joinRoom({room_id: data.roomId, username: data.inviteuser}).then((room) => {
+                                    if (room.error) {
+                                        socket.emit('invite_accept', { result: false, error: room.error });
                                         if(players[data.waituser]) {
-                                            io.sockets.sockets.get(players[data.waituser]).leave(`game_of_${data.roomId}`);
-                                            io.sockets.sockets.get(players[data.waituser]).emit('invite_accept', { result: false, error: result.error });
+                                            io.to(players[data.waituser]).leave(`game_of_${data.roomId}`);
+                                            io.to(players[data.waituser]).emit('invite_accept', { result: false, error: room.error });
                                         }
                                         console.log(`invite_accept request of ${data.inviteuser} is failed`);
                                     }
@@ -437,20 +427,20 @@ const exportedMethods = {
                                         if (result.result) {
                                             result.result.joinUsers.map(async(user, index) => {
                                                 users.delUserValue(user.userName, {coin: result.result.joiningFee, heart: 1}).then((userData) => {
-                                                    io.sockets.sockets.get(players[user.userName]).emit('update_userdata', {result: userData.result});
+                                                    io.to(players[user.userName]).emit('update_userdata', {result: userData.result});
                                                 });
                                             });
                                             socket.join(`game_of_${data.roomId}`);
                                             socket.handshake.session.status = 'Battle';
                                             getMultiRandomData().then(({numDataList, wordDataList}) => {
                                                 users.getUserByName(data.waituser).then((user1) => {
-                                                    socket.to(`game_of_${room._id}`).emit('online_start', {
-                                                        result: {roomId: String(room._id), timeOut: result.result.timeOut, prize: result.result.prize},
+                                                    socket.to(`game_of_${data.roomId}`).emit('online_start', {
+                                                        result: {roomId: String(data.roomId)},
                                                         gameData: { numData: numDataList, wordData: wordDataList },
                                                         oppoData: user,
                                                     });
                                                     socket.emit('online_start', {
-                                                        result: {roomId: String(room._id), timeOut: result.result.timeOut, prize: result.result.prize},
+                                                        result: {roomId: String(data.roomId)},
                                                         gameData: { numData: numDataList, wordData: wordDataList },
                                                         oppoData: user1,
                                                     });
@@ -459,8 +449,8 @@ const exportedMethods = {
                                         } else {
                                             socket.emit('invite_accept', { result: false });
                                             if(players[data.waituser]) {
-                                                io.sockets.sockets.get(players[data.waituser]).leave(`game_of_${data.roomId}`);
-                                                io.sockets.sockets.get(players[data.waituser]).emit('invite_accept', { result: false, error: result.error });
+                                                io.to(players[data.waituser]).leave(`game_of_${data.roomId}`);
+                                                io.to(players[data.waituser]).emit('invite_accept', { result: false, error: result.error });
                                             }
                                             console.log('the room could not start');
                                         }
@@ -480,8 +470,8 @@ const exportedMethods = {
                         // socket.emit('invite_reject', { result: true });
                         socket.to(`game_of_${data.roomId}`).emit('invite_reject', { result: true });
                         if(players[data.waituser] && io.sockets.sockets.get(players[data.waituser]).handshake.session.status == 'Battle') {
-                            io.sockets.sockets.get(players[data.waituser]).leave(`game_of_${data.roomId}`);
-                            io.sockets.sockets.get(players[data.waituser]).emit('invite_reject', { result: true });
+                            io.to(players[data.waituser]).leave(`game_of_${data.roomId}`);
+                            io.to(players[data.waituser]).emit('invite_reject', { result: true });
                             io.sockets.sockets.get(players[data.waituser]).handshake.session.status = 'Idle';
                         }
                     } else {
@@ -501,7 +491,7 @@ const exportedMethods = {
                         socket.leave(`game_of_${data.roomId}`);
                         socket.handshake.session.status = 'Idle';
                         // if(players[data.inviteuser])
-                        //     io.sockets.sockets.get(players[data.inviteuser]).leave(`game_of_${data.roomId}`);
+                        //     io.to(players[data.inviteuser]).leave(`game_of_${data.roomId}`);
                     } else {
                         // socket.emit('invite_cancel', { result: false });
                         console.log(`invite_cancel request of ${data.waituser} is failed`);
@@ -534,9 +524,9 @@ const exportedMethods = {
                                         getMultiRandomData().then(({numDataList, wordDataList}) => { 
                                             io.sockets.sockets.get(players[username]).handshake.session.status = 'Battle';
                                             socket.handshake.session.status = 'Battle';
-                                            socket.emit('battle_start', { result: roomId, gameData: { numData: numDataList, wordData: wordDataList } });
+                                            socket.emit('battle_start', { result: {roomId}, gameData: { numData: numDataList, wordData: wordDataList } });
                                             socket.to(`game_of_${roomId}`)
-                                                .emit('battle_start', { result: roomId, gameData: { numData: numDataList, wordData: wordDataList } });
+                                                .emit('battle_start', { result: {roomId}, gameData: { numData: numDataList, wordData: wordDataList } });
                                         });
                                         return;
                                     }
@@ -547,7 +537,7 @@ const exportedMethods = {
                                 if (result) {
                                     console.log('random_request is sent.');
                                     socket.join(`game_of_${result.id}`);
-                                    socket.emit('random_request', {result: result.id});
+                                    socket.emit('random_request', {result: {roomId: result.id}});
                                     socket.handshake.session.status = 'Waiting';
                                     socket.handshake.session.createdRoomId = result.id;
                                 } else {

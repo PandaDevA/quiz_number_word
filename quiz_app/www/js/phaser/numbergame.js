@@ -22,6 +22,7 @@ class NumberGameScreen extends Phaser.Scene{
     }
 
     create() {
+        this.point = undefined;
         this.logo = this.add.image(540,120,'Logo');
 
         this.graphics = this.add.graphics();
@@ -217,71 +218,79 @@ class NumberGameScreen extends Phaser.Scene{
     checkResult(){
         if(this.selected_index == -1)
             return;
+
         let bPass = false;
         let target = Number.parseInt(this.targetNumber.text);
         let result = Number.parseInt(this.numberTexts[this.selected_index].text);
+        this.point = 0;
         if(target == result)
         {
             bPass = true;
-            cur_point += 10 + Number.parseInt(this.timeText.text);
+            this.point = 10 + Number.parseInt(this.timeText.text);
         }
         else if(Math.abs(target-result) == 1)
         {
             bPass = true;
-            cur_point += 5;
+            this.point = 5;
         }
 
-        this.timer.remove();
-        this.time.removeEvent(this.timer);
-        if(!bPass)
+        if(!bPass && (game_type == "stage" || game_type == "daily"))
+            game_state = "failed";
+        else
+            game_state = "pass";
+
+        if(game_type == "stage" || game_type == "daily")
         {
+            this.timer.remove();
+            this.time.removeEvent(this.timer);
+            cur_point += this.point;
             if(game_type == "stage"){
-                Client.stage_end(false);
-                game_state = "failed";
+                Client.stage_end(bPass);
             }
             else if(game_type == "daily"){
-                Client.daily_end(false);
-                game_state = "failed";
+                Client.daily_end(bPass);
             }
-            else if(game_type == "tournament")
-                Client.tournament_end(false);
-            else if(game_type == "battle")
-                Client.battle_end(false);
-            game.scene.stop('NumberGameScreen');
-            game.scene.start('EndScreen');
-        }
-        else if(cur_number == gameData.numData.length-1){
-            game.scene.stop('NumberGameScreen');
-            game_state = "number";
-            game.scene.start('EndScreen');
-        }
-        else{
             cur_number++;
-            this.scene.restart();
+            game.scene.stop('NumberGameScreen');
+            game.scene.start('EndScreen');
+        }
+        else if(game_type == "battle")
+        {
+            Client.online_end(this.point);
         }
     }
     updateTimer(scene){
         let current_time = Number.parseInt(scene.timeText.text) - 1;
         if(current_time < 0)
         {
-            scene.timer.remove();
-            scene.time.removeEvent(scene.timer);
-            if(game_type == "stage")
-            {
-                Client.stage_end(false);
+            if(game_type == "stage" || game_type == "daily")
                 game_state = "failed";
-            }
-            else if(game_type == "daily")
+            else
+                game_state = "pass";
+
+            if(game_type == "stage" || game_type == "daily")
             {
-                Client.daily_end(false);
-                game_state = "failed";
+                scene.timer.remove();
+                scene.time.removeEvent(scene.timer);
+                cur_point += scene.point;
+                if(game_type == "stage"){
+                    Client.stage_end(false);
+                }
+                else if(game_type == "daily"){
+                    Client.daily_end(false);
+                }
+                cur_number++;
+                game.scene.stop('NumberGameScreen');
+                game.scene.start('EndScreen');
             }
-            else if(game_type == "tournament")
-                Client.tournament_end(false);
             else if(game_type == "battle")
-                Client.battle_end(false);
-            game.scene.stop('NumberGameScreen');
-            game.scene.start('EndScreen');
+            {
+                if(scene.point == undefined)
+                {
+                    scene.point = 0;
+                    Client.online_end(scene.point);
+                }
+            }
         }
         else{
             scene.timeText.setText(current_time);
