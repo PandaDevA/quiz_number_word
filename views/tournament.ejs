@@ -1,0 +1,56 @@
+<section id="features order px-12 py-12" class="features">
+    <div class="container">
+        <div class="col-lg-12 mt-4 mt-lg-0">
+            <div class="tab-content">
+                <div class="tab-pane show active" id="tab-1">
+                    <div class="row">
+                        <div class="col-lg-12 details order-2 order-lg-1">
+                            <h3>Tournament Information</h3>
+                            <table class="w-full table-auto bg-white full-width">
+                                <thead>
+                                    <tr>
+                                        <th class="border py-2 word_col">No</th>
+                                        <th class="border py-2 text_col">Start</th>
+                                        <th class="border py-2 text_col">Fee</th>
+                                        <th class="border py-2 text_col">Prize</th>
+                                        <th class="border py-2 text_col">ID</th>
+                                        <th class="border py-2 button_col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="room_table">
+                                    <% for (var i=0; i<rooms.result.length; i++) { %>
+                                        <tr data-room_id="<%= rooms.result[i].id %>">
+                                            <td class="border py-2 text-center"><%= i+1 %></td>
+                                            <td class="border py-2 time_col text-center">
+                                                <input class="start info_race info_text" type="text" value="<%= rooms.result[i].startDateTimeString %>" placeholder="when does start the tournament" readonly/>
+                                            </td>
+                                            <td class="border py-2 number_col text-center">
+                                                <input class="fee info_race info_text" type="number" value="<%= rooms.result[i].joiningFee %>" placeholder="joining fee" readonly/>
+                                            </td>
+                                            <td class="border py-2 number_col text-center">
+                                                <input class="prize info_race info_text" type="number" value="<%= rooms.result[i].prize %>" placeholder="winner prize" readonly/>
+                                            </td>
+                                            <td class="border py-2 text_col text-center">
+                                                <span class="room_id info_race info_text"><%= rooms.result[i].id %></span>
+                                            </td>
+                                            <td class="border py-2 button_col text-center" data-room_id="<%= rooms.result[i].id %>">
+                                                <button type="button" class="Room-Delete mt-2">Delete</button>
+                                            </td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                            <div class="row action-area py-4">
+                                <!-- <button class="offset-lg-3 col-lg-3" type="button" id="tips_info_clear">Clear</button> -->
+                                <button class="col-lg-2 mr-2 ml-2" type="button" id="tournament_add">Add</button>
+                                <button class="col-lg-2 mr-2 ml-2" type="button" id="tournament_save">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- </div>
+</section> -->

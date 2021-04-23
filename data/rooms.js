@@ -233,11 +233,19 @@ const exportedMethods = {
     async listTournament() {
         const roomCollection = await rooms();
         let room = await roomCollection.find({ userName: 'tournament' }).toArray();
+        let resData = [];
         for (i in room) {
-            const data = room[i];
-            data['id'] = String(data._id);
+            const data = {
+                id: String(room[i]._id),
+                _id: room[i]._id,
+                startDateTime: room[i].startDateTime,
+                startDateTimeString: room[i].startDateTime.toLocaleString(),
+                prize: room[i].prize,
+                joiningFee: room[i].joiningFee
+            };
+            resData.push(data);
         }
-        return room;
+        return resData;
     },
 
     async startRoom(data) {
@@ -290,13 +298,13 @@ const exportedMethods = {
         const roomCollection = await rooms();
 
         const newroom = {
-            userName: data.username,
-            joinUsers: [{ userName: data.username, point: 0, isOver: false }],
+            userName: data.username || 'tournament',
+            joinUsers: data.username ? [{ userName: data.username, point: 0, isOver: false }] : [],
             winner: [],
             winnerPoint: [],
-            joiningFee: 3,
-            startDateTime: new Date(),
-            prize: 9,
+            joiningFee: data.joiningFee || 3,
+            startDateTime: data.startDateTime || new Date(),
+            prize: data.prize || 9,
             remainNum: 1, // 9,
             isStarted: false,
             isClosed: false,
@@ -320,7 +328,7 @@ const exportedMethods = {
         try {
             parsedId = ObjectId(data.room_id);
         } catch (error) {
-            console.log('room_id is not valid while rejectroom');
+            console.log('room_id is not valid while removeroom');
             return {result: false, error: 'Room id is not valid'};
         }
 
@@ -337,11 +345,9 @@ const exportedMethods = {
             return {result: false, error: 'Room is already running'};
         }
 
-        if (room.userName == 'tournament') return {result: true};
-
         const deletionInfo = await roomCollection.removeOne({ _id: parsedId });
         if (deletionInfo.deletedCount === 0) {
-            console.log('could not end the room while rejectroom');
+            console.log('could not end the room while removeroom');
             return {result: false, error: 'Could not remove room.'};
         }
 

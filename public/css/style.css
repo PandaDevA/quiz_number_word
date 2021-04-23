@@ -344,6 +344,22 @@ button{
     width: 90px;
 }
 
+.time_col {
+    width: 250px;
+}
+
+.time_col input {
+    width: 200px;
+}
+
+.number_col {
+    width: 100px;
+}
+
+.number_col input {
+    width: 50px;
+}
+
 .button_col button {
     width: 70px;
 }

@@ -202,4 +202,110 @@ $('body').on('click', '.Word-Update', function(){
     }
 })
 
+$('#tournament_add').click(function(){
+    if($('tr').length > 1 && $('tr:last').find('.room_id').first().text() == '') return;
+    var no = $('tr').length;
+    $('#room_table').append(
+        "<tr data-room_id=''>" +
+            "<td class='border py-2 text-center'>" + no + "</td>" +
+            "<td class='border py-2 time_col text-center'>" +
+                "<input class='start info_race info_text' type='text' value='' placeholder='MM/DD/YYYY, hh:mm:ss PM/AM'/>" +
+            "</td>" +
+            "<td class='border py-2 number_col text-center'>" +
+                "<input class='fee info_race info_text' type='number' value='0'/>" +
+            "</td>" +
+            "<td class='border py-2 number_col text-center'>" +
+                "<input class='prize info_race info_text' type='number' value='0'/>" +
+            "</td>" +
+            "<td class='border py-2 text_col text-center'>" +
+                "<span class='room_id info_race info_text'></span>" +
+            "</td>" +
+            "<td class='border py-2 button_col text-center' data-room_id=''>" +
+                "<button type='button' class='Room-Delete mt-2'>Delete</button>" +
+            "</td>" +
+        "</tr>"
+    );
+})
+
+var lastDelRoomId;
+
+$('body').on('click', '.Room-Delete', function(){
+    var roomId = $(this).closest('td').data('room_id');
+    if(roomId == '') {
+        $(this).closest('tr').remove(); return;}
+    var returnVal = confirm("Are you sure?");
+    if(returnVal) {
+        lastDelRoomId = roomId;
+        $.blockUI({ message: '<h1><img src="/img/busy.gif" /> Just a moment...</h1>' });
+        $.ajax({
+            url : '/tournament/delete',
+            type : 'POST',
+            data : {
+                room_id: roomId,
+            },
+            success : function(data) {
+                for (var i = 0; i < $('tr').length; i++) {
+                    if ( $('tr').eq(i).data('room_id') == lastDelRoomId ) $('tr').eq(i).remove();
+                };
+            },
+            error: function(data){
+                if(data.error) alert("Error occured..."+data.error);
+                else alert("Error occured...");
+            }
+        });
+    }
+})
+
+var oldData = {start: '', fee: '', prize: ''};
+
+$('#tournament_save').click(function(){
+    var newData = {
+        start: $('tr:last').find('.start').first().val(),
+        fee: $('tr:last').find('.fee').first().val(),
+        prize: $('tr:last').find('.prize').first().val(),
+        room_id: $('tr:last').find('.room_id').first().text()
+    };
+
+    if (newData.room_id != '') return;
+    console.log(newData);
+
+    if(newData.start == '' || newData.fee < 0 || newData.prize < 0) {
+        $('tr:last').find('.start').first().val('');
+        $('tr:last').find('.fee').first().val(0);
+        $('tr:last').find('.prize').first().val(0);
+        alert("Input value is invalid. Try again.");
+        return;
+    }
+
+    var newStartDate = new Date(newData.start);
+    if (isNaN(newStartDate)) {
+        $('tr:last').find('.start').first().val('');
+        $('tr:last').find('.fee').first().val(0);
+        $('tr:last').find('.prize').first().val(0);
+        alert("Invalid DateTime input. Try again.");
+        return;
+    };
+
+    var returnVal = confirm("Are you sure?");
+    if(returnVal) {
+        $.blockUI({ message: '<h1><img src="/img/busy.gif" /> Just a moment...</h1>' });
+        $.ajax({
+            url : '/tournament/add',
+            type : 'POST',
+            data : newData,
+            success : function(data) {
+                $('tr:last').find('input').attr('readonly', true);
+                $('tr:last').data('room_id', data.result);
+                $('tr:last').find('td:last').data('room_id', data.result);
+                $('tr:last').find('.room_id').first().text(data.result);
+            },
+            error: function(data){
+                if(data.error) alert("Error occured..."+data.error);
+                else alert("Error occured...");
+                $('tr:last').remove();
+            }
+        });
+    }
+})
+
 $(document).ajaxStop($.unblockUI);

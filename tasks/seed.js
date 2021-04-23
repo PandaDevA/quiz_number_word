@@ -34,41 +34,13 @@ async function main() {
     else console.log("user not added");
 
     let addedData = await rooms.createRoom({
-        userName: 'tournament',
+        username: 'tournament',
         joiningFee: 10,
         startDateTime: new Date('4/20/2021 16:00:00'),
         prize: 30,
     });
     if (addedData) console.log(`room created: ${JSON.stringify(addedData)}`);
     else console.log('room not created');
-
-    // let result = await rooms.getRooms();
-    // if (result) console.log(result);
-
-    // result = await rooms.joinRoom(addedData.id, 'joinuser');
-    // if (result) console.log(`user joined: ${JSON.stringify(result)}`);
-    // else console.log('user is not joined');
-
-    // result = await rooms.getRooms();
-    // if (result) console.dir(result, { 'maxArrayLength': null, depth: null });
-
-    // result = await rooms.readyUser(addedData.id, 'joinuser');
-    // if (result) console.log(`user id ready: ${JSON.stringify(result)}`);
-    // else console.log('user is not ready');
-
-    // result = await rooms.getRooms();
-    // if (result) console.dir(result, { 'maxArrayLength': null, depth: null });
-
-    // result = await rooms.startRoom(addedData.id);
-    // if (result) console.log(`room started: ${JSON.stringify(result)}`);
-    // else console.log('room is not started');
-
-    // result = await rooms.getRooms();
-    // if (result) console.log(result);
-
-    // result = await rooms.removeRoom(addedData[0].id);
-    // if (result) console.log('room removed');
-    // else console.log('room is not removed');
 
     console.log('Done seeding database');
 
