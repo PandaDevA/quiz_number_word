@@ -481,20 +481,20 @@ const exportedMethods = {
                 });
             });
 
-            socket.on('invite_cancel', (data) => {
-                // REQUIRE INFO: data.waituser(waiting user), data.roomId
-                console.log('invite_cancel request received');
+            socket.on('battle_cancel', (data) => {
+                // REQUIRE INFO: data.roomId
+                console.log('battle_cancel request received');
                 rooms.removeRoom({room_id: data.roomId}).then((result) => {
                     if (result.result) {
-                        // socket.emit('invite_cancel', { result: true });
-                        // socket.to(`game_of_${data.roomId}`).emit('invite_cancel', { result: true });
+                        // socket.emit('battle_cancel', { result: true });
+                        // socket.to(`game_of_${data.roomId}`).emit('battle_cancel', { result: true });
                         socket.leave(`game_of_${data.roomId}`);
                         socket.handshake.session.status = 'Idle';
                         // if(players[data.inviteuser])
                         //     io.to(players[data.inviteuser]).leave(`game_of_${data.roomId}`);
                     } else {
-                        // socket.emit('invite_cancel', { result: false });
-                        console.log(`invite_cancel request of ${data.waituser} is failed`);
+                        // socket.emit('battle_cancel', { result: false });
+                        console.log(`battle_cancel request of is failed`);
                     }
                 });
             });
@@ -512,7 +512,7 @@ const exportedMethods = {
                             socket.emit('invite_request', {result: false, to: data.username, error: 'Need more coin or heart is zero'});
                         } else {
                             for (i in players) {
-                                const username = players[i];
+                                const username = i;
                                 if(username == data.username || !players[username]) continue;
                                 if(io.sockets.sockets.get(players[username]).handshake.session.status == 'Waiting') {
                                     //join to players[username];
@@ -522,11 +522,14 @@ const exportedMethods = {
                                         socket.join(`game_of_${roomId}`);
                                         await rooms.startRoom({room_id: roomId});
                                         getMultiRandomData().then(({numDataList, wordDataList}) => { 
-                                            io.sockets.sockets.get(players[username]).handshake.session.status = 'Battle';
-                                            socket.handshake.session.status = 'Battle';
-                                            socket.emit('battle_start', { result: {roomId}, gameData: { numData: numDataList, wordData: wordDataList } });
-                                            socket.to(`game_of_${roomId}`)
-                                                .emit('battle_start', { result: {roomId}, gameData: { numData: numDataList, wordData: wordDataList } });
+                                            users.getUserByName(username).then(async(user1) => {
+
+                                                io.sockets.sockets.get(players[username]).handshake.session.status = 'Battle';
+                                                socket.handshake.session.status = 'Battle';
+                                                socket.emit('online_start', { result: {roomId}, oppoData: user1, gameData: { numData: numDataList, wordData: wordDataList } });
+                                                socket.to(`game_of_${roomId}`)
+                                                    .emit('online_start', { result: {roomId}, oppoData: user, gameData: { numData: numDataList, wordData: wordDataList } });
+                                            });
                                         });
                                         return;
                                     }
@@ -546,22 +549,6 @@ const exportedMethods = {
                                 }
                             });
                         }
-                    }
-                });
-            });
-
-            socket.on('random_cancel', (data) => {
-                // REQUIRE INFO: data.username(waiting user), data.roomId
-                console.log('random_cancel is received');
-                rooms.removeRoom({room_id: data.roomId}).then((result) => {
-                    if (result) {
-                        console.log('random_cancel is sent.');
-                        socket.leave(`game_of_${data.roomId}`);
-                        // socket.emit('random_cancel', {result: true});
-                        socket.handshake.session.status = 'Idle';
-                    } else {
-                        // socket.emit('random_cancel', { result: false });
-                        console.log(`random_cancel request of ${data.username} is failed`);
                     }
                 });
             });

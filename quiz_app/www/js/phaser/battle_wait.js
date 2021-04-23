@@ -66,7 +66,7 @@ class BattleWaitScreen extends Phaser.Scene{
 
         this.cancelButton = this.add.image(540,1550,'Cancel');
         this.cancelButton.setInteractive().on('pointerdown', () => {
-            Client.invite_cancel();
+            Client.battle_cancel();
             game.scene.stop('BattleWaitScreen');
             game.scene.start('BattleScreen');
         });

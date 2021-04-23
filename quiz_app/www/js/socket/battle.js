@@ -12,8 +12,8 @@ Client.invite_reject = function(){
     invite_name = "";
 };
 
-Client.invite_cancel = function(){
-    Client.socket.emit('invite_cancel', {roomId : room_id, waituser : invite_name});
+Client.battle_cancel = function(){
+    Client.socket.emit('battle_cancel', {roomId : room_id, waituser : invite_name});
     room_id = "";
     invite_name = "";
 };
@@ -25,11 +25,6 @@ Client.online_end = function(point){
 Client.random_request = function(){
     Client.socket.emit('random_request', {username : userData.userName});
 };
-
-Client.random_cancel = function(){
-    Client.socket.emit('random_cancel', {username : userData.userName});
-};
-
 
 Client.socket.on('invite_request',function(data){
     let activeScene = game.scene.getScenes(true)[0];
@@ -128,16 +123,15 @@ Client.socket.on('online_end',function(data){
 });
 
 Client.socket.on('random_request',function(data){
+    let activeScene = game.scene.getScenes(true)[0];
     if(data.result)
     {
-        if(game.scene.isActive('BattleScreen'))
-        {
-            let scene = game.scene.getScene('BattleScreen');
-            scene.random_request();
-        }
+        room_id = data.result.roomId;
+        game.scene.stop(activeScene.scene.key);
+        game.scene.start('BattleWaitScreen');
     }
     else
     {
-        console.log(data);
+        toast_error(activeScene, data.error);
     }
 });
