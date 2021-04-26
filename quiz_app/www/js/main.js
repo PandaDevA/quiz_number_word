@@ -5,9 +5,9 @@
 
 var userData = {};
 var oppoData = {};
-var tournamentData = {};
-var tournamentTime = "";
 var gameData = {};
+
+var tournament_list = [];
 
 var game_type = "";
 var game_state = "";
@@ -17,6 +17,7 @@ var cur_number = 0;
 var cur_word = 0;
 
 var cur_point = 0;
+var cur_prize = 0;
 
 var winner_name_list = [];
 var winner_point_list = [];
@@ -33,7 +34,7 @@ const config = {
         height: 1680
     },
     transparent: true,
-    scene: [LoginScreen, HomeScreen,TournamentScreen, NumberGameScreen, EndScreen, WordGameScreen, BattleScreen, PassionScreen, RegisterScreen, BattleWaitScreen ],
+    scene: [LoginScreen, HomeScreen,TournamentScreen, NumberGameScreen, EndScreen, WordGameScreen, BattleScreen, PassionScreen, RegisterScreen, BattleWaitScreen. TournamentWaitScreen ],
     dom: {
         createContainer: true
     },

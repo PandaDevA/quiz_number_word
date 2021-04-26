@@ -9,7 +9,7 @@ class EndScreen extends Phaser.Scene{
     }
 
     preload() {
-        if(cur_word == gameData.wordData.length)
+        if(cur_word == gameData.wordData.length || game_type == "passion")
             this.bEnd = true;
         else
             this.bEnd = false;
@@ -113,9 +113,6 @@ class EndScreen extends Phaser.Scene{
                         color: '#ffffff',
                     })
                     .setOrigin(0.5,0.5);
-
-
-
                     this.user2name = this.add.text(540, 700, winner_name_list[1], { fixedWidth: 700, fixedHeight: 100, align:'center' })
                     .setStyle({
                         fontSize: '80px',
@@ -165,7 +162,7 @@ class EndScreen extends Phaser.Scene{
                     loop: true
                 });
             } else {
-                if(game_type == "stage" || game_type == "daily")
+                if(game_type == "stage" || game_type == "daily" || game_type == "passion")
                 {
                     this.win = this.add.image(540,400,'Win');
                     this.gameFinishText = this.add.text(540,700, 'YOU FINISHED STAGE!', { fixedWidth: 700, fixedHeight: 50, align:'center' })
@@ -177,9 +174,9 @@ class EndScreen extends Phaser.Scene{
                     })
                     .setOrigin(0.5,0.5);
                 }
-                else{
+                else if( game_type == "battle" || game_type == "tournament"){
                     let bWin = winner_name_list[0] == userData.userName;
-                    this.gameFinishText = this.add.text(540,700, bWin ? 'YOU WIN!' : 'YOU LOSE!', { fixedWidth: 700, fixedHeight: 120, align:'center' })
+                    this.gameFinishText = this.add.text(540,game_type == "battle" ? 700 : 990, bWin ? 'YOU WIN!' : 'YOU LOSE!', { fixedWidth: 700, fixedHeight: 120, align:'center' })
                     .setStyle({
                         fontSize: '120px',
                         fontFamily: 'RR',
@@ -187,62 +184,44 @@ class EndScreen extends Phaser.Scene{
                         color: '#ffffff',
                     })
                     .setOrigin(0.5,0.5);
-                    this.yourPointText = this.add.text(370,280, 'YOU', { fixedWidth: 700, fixedHeight: 120, align:'center' })
-                    .setStyle({
-                        fontSize: '120px',
-                        fontFamily: 'RR',
-                        fontWeight: 'bold',
-                        color: '#ffffff',
-                    })
-                    .setOrigin(0.5,0.5);
-                    this.yourPointBack = this.add.image(370,400,'Orange');
-                    this.yourPointText = this.add.text(370,400, bWin? winner_point_list[0] : winner_point_list[1], { fixedWidth: 160, fixedHeight: 110, align:'center' })
-                    .setStyle({
-                        fontSize: '110px',
-                        fontFamily: 'RR',
-                        fontWeight: 'bold',
-                        color: '#ffffff',
-                    })
-                    .setOrigin(0.5,0.5);
-                    this.oppoPointText = this.add.text(710,280, 'OPP', { fixedWidth: 700, fixedHeight: 120, align:'center' })
-                    .setStyle({
-                        fontSize: '120px',
-                        fontFamily: 'RR',
-                        fontWeight: 'bold',
-                        color: '#ffffff',
-                    })
-                    .setOrigin(0.5,0.5);
-                    this.oppoPointBack = this.add.image(710,400,'Orange');
-                    this.oppoPointText = this.add.text(710,400, bWin? winner_point_list[1] : winner_point_list[0], { fixedWidth: 160, fixedHeight: 110, align:'center' })
-                    .setStyle({
-                        fontSize: '110px',
-                        fontFamily: 'RR',
-                        fontWeight: 'bold',
-                        color: '#ffffff',
-                    })
-                    .setOrigin(0.5,0.5);
+                    if( game_type == "battle"){
+                        this.yourPointText = this.add.text(370,280, 'YOU', { fixedWidth: 700, fixedHeight: 120, align:'center' })
+                        .setStyle({
+                            fontSize: '120px',
+                            fontFamily: 'RR',
+                            fontWeight: 'bold',
+                            color: '#ffffff',
+                        })
+                        .setOrigin(0.5,0.5);
+                        this.yourPointBack = this.add.image(370,400,'Orange');
+                        this.yourPointText = this.add.text(370,400, bWin? winner_point_list[0] : winner_point_list[1], { fixedWidth: 160, fixedHeight: 110, align:'center' })
+                        .setStyle({
+                            fontSize: '110px',
+                            fontFamily: 'RR',
+                            fontWeight: 'bold',
+                            color: '#ffffff',
+                        })
+                        .setOrigin(0.5,0.5);
+                        this.oppoPointText = this.add.text(710,280, 'OPP', { fixedWidth: 700, fixedHeight: 120, align:'center' })
+                        .setStyle({
+                            fontSize: '120px',
+                            fontFamily: 'RR',
+                            fontWeight: 'bold',
+                            color: '#ffffff',
+                        })
+                        .setOrigin(0.5,0.5);
+                        this.oppoPointBack = this.add.image(710,400,'Orange');
+                        this.oppoPointText = this.add.text(710,400, bWin? winner_point_list[1] : winner_point_list[0], { fixedWidth: 160, fixedHeight: 110, align:'center' })
+                        .setStyle({
+                            fontSize: '110px',
+                            fontFamily: 'RR',
+                            fontWeight: 'bold',
+                            color: '#ffffff',
+                        })
+                        .setOrigin(0.5,0.5);
+                    }
                 }
-                this.pointAds = this.add.image(540,890,'PointAds');
-                this.pointAds.setInteractive().on('pointerdown', () => {
-                    console.log('Point Interstitial');
-                    // AdMob.showInterstitial();
-                    // AdMob.prepareInterstitial({
-                    //     adId: admobid.interstitial,
-                    //     autoShow:false,
-                    //     isTesting: true,
-                    // });
                 
-                });
-        
-                this.pointText = this.add.text(410,890, cur_point, { fixedWidth: 160, fixedHeight: 60, align:'center' })
-                .setStyle({
-                    fontSize: '60px',
-                    fontFamily: 'RR',
-                    fontWeight: 'bold',
-                    color: '#ffffff',
-                })
-                .setOrigin(0.5,0.5);
-
                 let getText1 = '';
                 let getText2 = 'GET ×2';
                 let coinText = 1;
@@ -262,18 +241,46 @@ class EndScreen extends Phaser.Scene{
                         getText1 = 'GET\nBACK';
                         getText2 = 'GET\nBACK';
                     }
+                } else if (game_type == "tournament"){
+                    coinText = 3;
+                    if(winner_name_list[0] != userData.userName){
+                        getText2 = 'GET\nBACK';
+                    }
                 }
 
-                this.getPointText = this.add.text(800,890, getText1, { fixedWidth: 150, fixedHeight: 45, align:'center' })
-                .setStyle({
-                    fontSize: '45px',
-                    fontFamily: 'RR',
-                    fontWeight: 'bold',
-                    color: '#fa5c00',
-                })
-                .setOrigin(0.5,0.5);
+                if(game_type != "tournament" && game_type != "passion"){
+                    this.pointAds = this.add.image(540,890,'PointAds');
+                    this.pointAds.setInteractive().on('pointerdown', () => {
+                        console.log('Point Interstitial');
+                        // AdMob.showInterstitial();
+                        // AdMob.prepareInterstitial({
+                        //     adId: admobid.interstitial,
+                        //     autoShow:false,
+                        //     isTesting: true,
+                        // });
+                    
+                    });
+            
+                    this.pointText = this.add.text(410,890, cur_point, { fixedWidth: 160, fixedHeight: 60, align:'center' })
+                    .setStyle({
+                        fontSize: '60px',
+                        fontFamily: 'RR',
+                        fontWeight: 'bold',
+                        color: '#ffffff',
+                    })
+                    .setOrigin(0.5,0.5);
     
-                this.coinAds = this.add.image(540,1080,'CoinAds');
+                    this.getPointText = this.add.text(800,890, getText1, { fixedWidth: 150, fixedHeight: 45, align:'center' })
+                    .setStyle({
+                        fontSize: '45px',
+                        fontFamily: 'RR',
+                        fontWeight: 'bold',
+                        color: '#fa5c00',
+                    })
+                    .setOrigin(0.5,0.5);
+                }
+    
+                this.coinAds = this.add.image(540,game_type == "tournament" ? 1140 : 1080,'CoinAds');
                 this.coinAds.setInteractive().on('pointerdown', () => {
                     console.log('Coin Interstitial');
                     // AdMob.showInterstitial();
@@ -284,7 +291,7 @@ class EndScreen extends Phaser.Scene{
                     // });
                 });
     
-                this.coinText = this.add.text(410,1080, coinText, { fixedWidth: 160, fixedHeight: 60, align:'center' })
+                this.coinText = this.add.text(410,game_type == "tournament" ? 1140 : 1080, coinText, { fixedWidth: 160, fixedHeight: 60, align:'center' })
                 .setStyle({
                     fontSize: '60px',
                     fontFamily: 'RR',
@@ -292,7 +299,7 @@ class EndScreen extends Phaser.Scene{
                     color: '#ffffff',
                 })
                 .setOrigin(0.5,0.5);
-                this.getCoinText = this.add.text(800,1080, getText2, { fixedWidth: 150, fixedHeight: 45, align:'center' })
+                this.getCoinText = this.add.text(800,game_type == "tournament" ? 1140 : 1080, getText2, { fixedWidth: 150, fixedHeight: 45, align:'center' })
                 .setStyle({
                     fontSize: '45px',
                     fontFamily: 'RR',
@@ -314,6 +321,63 @@ class EndScreen extends Phaser.Scene{
                         Client.stage_start();
                     });
                 }
+            }
+        }
+
+        if(game_type == "tournament"){
+            this.fieldUsernameText = this.add.text(360, 280, 'Username', {
+                fontFamily: 'RR',
+                fontWeight: 'bold',
+                fontSize: '80px',
+                color: "#ffffff",
+            }).setOrigin(0.5, 0.5);
+            this.fieldPointText = this.add.text(800, 280, 'Point', {
+                fontFamily: 'RR',
+                fontWeight: 'bold',
+                fontSize: '80px',
+                color: "#ffffff",
+            }).setOrigin(0.5, 0.5);
+            let bInRank = false;
+            for(var i=0; i<winner_name_list.length; i++){
+                let bEqual = false;
+                if(winner_name_list[i] == userData.userName)
+                {
+                    bEqual = true;
+                }
+                this.graphics = this.add.graphics();
+                this.graphics.fillStyle(bEqual ? 0xfa5c00 : 0xffffff, 1);
+                this.graphics.fillRoundedRect(180,334 + 132*i,760,128, 10);
+                this.rankNameText = this.add.text(360, 334 + 132*i, winner_name_list[i], {
+                    fontFamily: 'RR',
+                    fontWeight: 'bold',
+                    fontSize: '80px',
+                    color: bEqual ? "#ffffff" : "#106ead",
+                }).setOrigin(0.5, 0.5);
+                this.rankPointText = this.add.text(800, 334 + 132*i, winner_point_list[i], {
+                    fontFamily: 'RR',
+                    fontWeight: 'bold',
+                    fontSize: '80px',
+                    color: bEqual ? "#ffffff" : "#106ead",
+                }).setOrigin(0.5, 0.5);
+                if(bEqual)
+                    bInRank = true;
+            }
+            if(!bInRank){
+                this.graphics = this.add.graphics();
+                this.graphics.fillStyle(0xfa5c00, 1);
+                this.graphics.fillRoundedRect(180,334 + 132*i,760,128, 10);
+                this.rankNameText = this.add.text(360, 334 + 132*i, winner_name_list[i], {
+                    fontFamily: 'RR',
+                    fontWeight: 'bold',
+                    fontSize: '80px',
+                    color: "#106ead",
+                }).setOrigin(0.5, 0.5);
+                this.rankPointText = this.add.text(800, 334 + 132*i, winner_point_list[i], {
+                    fontFamily: 'RR',
+                    fontWeight: 'bold',
+                    fontSize: '80px',
+                    color: "#106ead",
+                }).setOrigin(0.5, 0.5);
             }
         }
     }

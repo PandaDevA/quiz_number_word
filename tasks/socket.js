@@ -9,11 +9,11 @@ const getDateTimeString = (date) => {
 
     const pad = (s) => (s < 10 ? '0' + s : s);
     const dateString = [
-        date.getFullYear(),
-        pad(date.getMonth() + 1),
         pad(date.getDate()),
-    ].join('-');
-    const timeString = date.toLocaleTimeString();
+        pad(date.getMonth() + 1),
+        date.getFullYear(),
+    ].join('/');
+    const timeString = [pad(date.getHours()), pad(date.getMinutes())].join(':');
 
     return dateString + ' ' + timeString;
 }
@@ -56,19 +56,28 @@ const exportedMethods = {
                     if (startDateTime.getDate() != curDateTime.getDate())continue;
                     if (startDateTime.getHours() != curDateTime.getHours())continue;
                     if (startDateTime.getMinutes() != curDateTime.getMinutes())continue;
-                    rooms.startRoom({room_id: String(room._id)}).then((result) => {
+                    rooms.startRoom({room_id: String(room._id)}).then(async(result) => {
                         if(result.result) {
-                            result.result.joinUsers.map(async(user, index) => {
-                                users.delUserValue(user.userName, {coin: result.result.joiningFee, heart: 1}).then((userData) => {
-                                    io.to(players[user.userName]).emit('update_userdata', {result: userData.result});
+                            // result.result.joinUsers.map(async(user, index) => {
+                            //     users.delUserValue(user.userName, {coin: result.result.joiningFee, heart: 1}).then((userData) => {
+                            //         io.to(players[user.userName]).emit('update_userdata', {result: userData.result});
+                            //     });
+                            // });
+                            joinusers = result.result.joinUsers;
+                            if (joinusers.length == 0) { console.log('No one is joined tournament'); }
+                            else {
+                                for (j in joinusers) {
+                                    if (players[joinusers[j].userName] == undefined) {
+                                        await rooms.leaveRoom({username: joinusers[j].userName, room_id: result.result._id});
+                                    }
+                                }
+                                getMultiRandomData().then(({numDataList, wordDataList}) => {
+                                    io.in(`game_of_${room._id}`).emit('online_start', {
+                                        result: {roomId: String(room._id)},
+                                        gameData: { numData: numDataList, wordData: wordDataList }
+                                    });
                                 });
-                            });
-                            getMultiRandomData().then(({numDataList, wordDataList}) => {
-                                io.in(`game_of_${room._id}`).emit('online_start', {
-                                    result: {roomId: String(room._id), prize: result.result.prize},
-                                    gameData: { numData: numDataList, wordData: wordDataList }
-                                });
-                            });
+                            }
                         }
                         else {
                             console.log("Tournament automatically closed because it's not ready yet");
@@ -86,11 +95,17 @@ const exportedMethods = {
             // Auto login if the socket has session with username
             const userNameInSession = socket.handshake.session.username;
             if (userNameInSession) {
-                players[userNameInSession] = {
-                    socketId: socket.id,
-                };
+                players[userNameInSession] = socket.id;
                 socket.handshake.session.status = 'Idle';
                 socket.emit('update_userdata', { isRefresh: true });
+                rooms.listTournament().then((roomList) => {
+                    if (roomList.length != 0) {
+                        for ( i in roomList) {
+                            const room = roomList[i];
+                            if (room.joinUsers.indexOf(userNameInSession) != -1) socket.join(`game_of_${room._id}`);
+                        }
+                    }
+                });
             }
 
             socket.on('disconnect', async() => {
@@ -104,10 +119,10 @@ const exportedMethods = {
                         case 'Tournament':
                         case 'Battle':
                             // If tournament is not started yet, perform leave from tournament
-                            if (!joinedInfo.isStarted) {
-                                await rooms.leaveRoom({username: userNameInSession, room_id: joinedInfo.roomId});
-                                break;
-                            }
+                            // if (!joinedInfo.isStarted) {
+                            //     await rooms.leaveRoom({username: userNameInSession, room_id: joinedInfo.roomId});
+                            //     break;
+                            // }
                             // REQUIRE INFO: data.username, data.room_id, data.point, (data.coin, data.heart)OPTIONAL
                             const room = await rooms.endRoom({username: userNameInSession, room_id: joinedInfo.roomId, point: 0});
                             if (room.result) {
@@ -164,6 +179,14 @@ const exportedMethods = {
                         socket.handshake.session.username = data.username;
                         socket.emit('login', { result: result });
                         // console.log(`${data.username} is logged`);
+                        rooms.listTournament().then((roomList) => {
+                            if (roomList.length != 0) {
+                                for ( i in roomList) {
+                                    const room = roomList[i];
+                                    if (room.joinUsers.indexOf(userNameInSession) != -1) socket.join(`game_of_${room._id}`);
+                                }
+                            }
+                        });
                     } else {
                         socket.emit('login', { result: false });
                         // console.log(`${data.username} is not logged`);
@@ -252,16 +275,23 @@ const exportedMethods = {
                     if (!roomList.length) {
                         socket.emit('tournament_list', { result: false });
                     } else {
-                        let list = [];
+                        let joinList = [];
+                        let resData = [];
                         for ( i in roomList) {
                             const room = roomList[i];
-                            list.push({
-                                joiningFee: room.joiningFee,
-                                startDateTime: getDateTimeString(room.startDateTime),
+                            const data = {
+                                id: String(room._id),
+                                _id: room._id,
+                                startDateTime: room.startDateTime,
+                                startDateTimeString: getDateTimeString(room.startDateTime),
                                 prize: room.prize,
-                            });
+                                joiningFee: room.joiningFee,
+                                joinUsers: room.joinUsers
+                            };
+                            resData.push(data);
+                            if (room.joinUsers.indexOf(socket.handshake.session.username) != -1) joinList.push(i);
                         }
-                        socket.emit('tournament_list', { result: list});
+                        socket.emit('tournament_list', { result: resData, joinList});
                     }
                 });
             });
@@ -272,20 +302,17 @@ const exportedMethods = {
 
                 rooms.joinRoom(data).then((room) => {
                     if (!room.error) {
-                        users.getUserByName(data.username).then((user) => {
-                            if (!user) {
-                                socket.emit('tournament_in', { result: false, error: 'Could not find user' });
-                                console.log(`${ data.username } couldn 't join tournament because could not find user`);
+                        users.delUserValue(data.username, {coin: room.result.joiningFee, heart: 1}).then(async(userData) => {
+                            if (!userData.result) {
+                                await rooms.leaveRoom(data);
+                                socket.emit('tournament_in', { result: false, error: userData.error });
+                                console.log(`${ data.username } couldn 't join tournament because ${userData.error}`);
                             } else {
-                                if (user.heart == 0 || user.coin < room.joiningFee) {
-                                    socket.emit('tournament_in', { result: false, error: 'Need more coin or heart' });
-                                    console.log(`${ data.username } couldn 't join tournament because Need more coin or heart`);
-                                } else {
-                                    socket.handshake.session.status = 'Tournament';
-                                    socket.emit('tournament_in', { result: true });
-                                    socket.join(`game_of_${data.room_id}`);
-                                    console.log(`${data.username} is joined tournament`);
-                                }
+                                socket.emit('update_userdata', {result: userData.result});
+                                // socket.handshake.session.status = 'Tournament';
+                                socket.emit('tournament_in', { result: true, room_id: data.room_id });
+                                socket.join(`game_of_${data.room_id}`);
+                                console.log(`${data.username} is joined tournament`);
                             }
                         });
                     } else {
@@ -301,10 +328,18 @@ const exportedMethods = {
 
                 rooms.leaveRoom(data).then((room) => {
                     if (!room.error) {
-                        socket.emit('tournament_out', { result: true });
-                        socket.leave(`game_of_${data.room_id}`);
-                        console.log(`${data.username} is leaved tournament`);
-                        socket.handshake.session.status = 'Idle';
+                        users.addUserValue(data.username, {coin: room.result.joiningFee, heart: 1}).then((userData) => {
+                            if (!userData.result) {
+                                socket.emit('tournament_out', { result: false, error: userData.error });
+                                console.log(`${ data.username } couldn 't leave tournament because ${userData.error}`);
+                            } else {
+                                socket.emit('update_userdata', {result: userData.result});
+                                socket.emit('tournament_out', { result: true, room_id: data.room_id });
+                                socket.leave(`game_of_${data.room_id}`);
+                                console.log(`${data.username} is leaved tournament`);
+                                socket.handshake.session.status = 'Idle';
+                            }
+                        });
                     } else {
                         socket.emit('tournament_out', { result: false, error: room.error });
                         console.log(`${ data.username } couldn 't leave tournament because ${room.error}`);

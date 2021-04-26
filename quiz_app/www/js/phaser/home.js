@@ -115,7 +115,7 @@ class HomeScreen extends Phaser.Scene{
         });
         this.tournament = this.add.image(540,1210,'Tournament');
         this.tournament.setInteractive().on('pointerdown', () => {
-            Client.tournament_in();
+            Client.tournament_list();
         });
         this.daily_game = this.add.image(540,1390,'DailyGame');
         this.daily_game.setInteractive().on('pointerdown', () => {
@@ -124,8 +124,7 @@ class HomeScreen extends Phaser.Scene{
 
         this.turn_earn = this.add.image(540,1570,'TurnEarn');
         this.turn_earn.setInteractive().on('pointerdown', () => {
-            game.scene.stop('HomeScreen');
-            game.scene.start('PassionScreen');
+            Client.passion_start();
         });
 
         this.menu = this.add.image(960,1570,'Menu');

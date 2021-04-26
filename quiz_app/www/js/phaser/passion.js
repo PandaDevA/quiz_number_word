@@ -13,7 +13,6 @@ class PassionScreen extends Phaser.Scene{
         this.load.image("Turn", "./images/turn.png");
         this.load.image("Stop", "./images/stop.png");
         this.load.image("Indicator", "./images/passion_picker.png");
-        this.load.image("Back", "./images/back.png");
         this.angle_speed = 0.05;
         this.angle = 0.0;
         this.bStop = false;
@@ -21,14 +20,6 @@ class PassionScreen extends Phaser.Scene{
     }
 
     create() {
-        this.BackButton = this.add.image(50,50,'Back').setScale(0.2);
-        this.BackButton.setInteractive().on('pointerdown', () => {
-            game.scene.stop('PassionScreen');
-            game.scene.start('HomeScreen');
-        });
-
-        this.result = this.add.text(150,20,'');
-
         this.passion_flower = this.add.image(150,200,'Passion');
         let angle = Number.parseInt(Math.random()*360);
         this.angle = angle;
@@ -81,7 +72,12 @@ class PassionScreen extends Phaser.Scene{
         {
             scene.timer.remove();
             scene.time.removeEvent(scene.timer);
-            scene.result.setText((12-Number.parseInt(scene.angle/45))%8);
+            cur_prize = (12-Number.parseInt(scene.angle/45))%8;
+            Client.passion_end();
+            game_type == "passion";
+            game_state = "pass";
+            game.scene.stop("PassionScreen");
+            game.scene.start("EndScreen");
         }
         scene.angle = scene.angle + scene.angle_speed;
         if(scene.angle>360)

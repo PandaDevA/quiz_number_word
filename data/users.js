@@ -78,7 +78,7 @@ const exportedMethods = {
 
         await userCollection.updateOne({ _id: user._id }, { $set: updatedUserData });
 
-        return updatedUserData;
+        return {result: updatedUserData};
     },
 
     async delUserValue(username, data) {

@@ -1,94 +1,60 @@
-Client.tournament_in = function(){
-    Client.socket.emit('tournament_in', {username : userData.userName});
+Client.tournament_list = function(){
+    Client.socket.emit('tournament_list', {});
 };
 
-Client.tournament_out = function(){
-    Client.socket.emit('tournament_out', {username : userData.userName});
+Client.tournament_in = function(roomId){
+    Client.socket.emit('tournament_in', {username : userData.userName, room_id: roomId});
+};
+
+Client.tournament_out = function(roomId){
+    Client.socket.emit('tournament_out', {username : userData.userName, room_id: roomId});
 };
 
 Client.tournament_end = function(isAlive){
     Client.socket.emit('tournament_end', {isAlive : isAlive, username : userData.userName, point: cur_point});
 };
 
-Client.socket.on('tournament_in',function(data){
+Client.socket.on('tournament_list',function(data){
+    let activeScene = game.scene.getScenes(true)[0];
     if(data.result)
     {
-        if(data.time)
+        tournament_list = data.result;
+        if(tournament_list.length>0)
         {
-            tournamentData = data.result;
-            tournamentTime = data.time;
-            game.scene.stop('HomeScreen');
+            game.scene.stop(activeScene.scene.key);
             game.scene.start('TournamentScreen');
         }
-        else{
-            if(game.scene.isActive('TournamentScreen'))
-            {
-                let scene = game.scene.getScene('TournamentScreen');
-                scene.add_user(data.result);
-            }
-        }
-        console.log('success');
     }
     else
     {
-        game.scene.getScene('HomeScreen').toast_tournament_failed();
-        console.log('failed');
+        toast_error(activeScene, "THERE IS\nNO TOURNAMENT\nPLANED");
+    }
+});
+
+Client.socket.on('tournament_in',function(data){
+    let activeScene = game.scene.getScenes(true)[0];
+    if(data.result)
+    {
+        if(game.scene.isActive('TournamentScreen')){
+            activeScene.updateJoin(data.room_id, true);
+        }
+    }
+    else
+    {
+        toast_error(activeScene, "CAN NOT JOIN\nIN TOURNAMENT");
     }
 });
 
 Client.socket.on('tournament_out',function(data){
+    let activeScene = game.scene.getScenes(true)[0];
     if(data.result)
     {
-        tournamentData = data.result;
-        if(game.scene.isActive('RoomScreen'))
-        {
-            game.scene.getScene('RoomScreen').update();
+        if(game.scene.isActive('TournamentScreen')){
+            activeScene.updateJoin(data.room_id, false);
         }
-        else if(game.scene.isActive('ListScreen'))
-        {
-            game.scene.stop('ListScreen');
-            game.scene.start('RoomScreen');
-        }
-        console.log(data);
     }
     else
     {
-        console.log('failed');
-    }
-});
-
-Client.socket.on('tournament_start',function(data){
-    if(data.result)
-    {
-        game_type = "tournament";
-        game_state = "";
-        gameData = data.gameData;
-        cur_number = 0;
-        cur_word = 0;
-        cur_point = 0;
-        game.scene.stop('TournamentScreen');
-        game.scene.start('NumberGameScreen');
-        console.log(data);
-    }
-    else
-    {
-        console.log('failed');
-    }
-});
-
-Client.socket.on('tournament_end',function(data){
-    if(data.result)
-    {
-        winner_name = data.winner;
-        winner_point = data.winner_point;
-        if(game.scene.isActive('EndScreen'))
-            game.scene.getScene('EndScreen').updateResult();
-        else if(game.scene.isActive('HomeScreen'))
-            game.scene.getScene('HomeScreen').update();
-        console.log(data);
-    }
-    else
-    {
-        console.log('failed');
+        toast_error(activeScene, "CAN NOT JOIN\nOUT TOURNAMENT");
     }
 });

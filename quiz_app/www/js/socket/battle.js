@@ -80,6 +80,8 @@ Client.socket.on('online_start',function(data){
         {
             game_type = "battle";
             oppoData = data.oppoData;
+        } else{
+            game_type = "tournament";
         }
         game_state = "";
         gameData = data.gameData;
@@ -87,13 +89,19 @@ Client.socket.on('online_start',function(data){
         cur_word = 0;
         cur_point = 0;
         let activeScene = game.scene.getScenes(true)[0];
-        if(activeScene.scene.key != 'BattleWaitScreen')
-        {
-            game.scene.stop(activeScene.scene.key);
-            game.scene.start('BattleWaitScreen');
+        if(game_type == "battle"){
+            if(activeScene.scene.key != 'BattleWaitScreen')
+            {
+                game.scene.stop(activeScene.scene.key);
+                game.scene.start('BattleWaitScreen');
+            }
+            else{
+                activeScene.startGame();
+            }
         }
-        else{
-            activeScene.startGame();
+        else if(game_type == "tournament"){
+            game.scene.stop(activeScene.scene.key);
+            game.scene.start('TournamentWaitScreen');
         }
     }
     else

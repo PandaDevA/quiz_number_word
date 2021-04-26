@@ -233,19 +233,7 @@ const exportedMethods = {
     async listTournament() {
         const roomCollection = await rooms();
         let room = await roomCollection.find({ userName: 'tournament' }).toArray();
-        let resData = [];
-        for (i in room) {
-            const data = {
-                id: String(room[i]._id),
-                _id: room[i]._id,
-                startDateTime: room[i].startDateTime,
-                startDateTimeString: room[i].startDateTime.toLocaleString(),
-                prize: room[i].prize,
-                joiningFee: room[i].joiningFee
-            };
-            resData.push(data);
-        }
-        return resData;
+        return room;
     },
 
     async startRoom(data) {
@@ -299,7 +287,7 @@ const exportedMethods = {
 
         const newroom = {
             userName: data.username || 'tournament',
-            joinUsers: data.username ? [{ userName: data.username, point: 0, isOver: false }] : [],
+            joinUsers: data.username && data.username != 'tournament' ? [{ userName: data.username, point: 0, isOver: false }] : [],
             winner: [],
             winnerPoint: [],
             joiningFee: data.joiningFee || 3,
