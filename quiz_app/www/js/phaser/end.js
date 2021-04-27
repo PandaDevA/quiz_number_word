@@ -9,7 +9,7 @@ class EndScreen extends Phaser.Scene{
     }
 
     preload() {
-        if(cur_word == gameData.wordData.length || game_type == "passion")
+        if((gameData.wordData != undefined && cur_word == gameData.wordData.length) || game_type == "passion")
             this.bEnd = true;
         else
             this.bEnd = false;
@@ -164,8 +164,15 @@ class EndScreen extends Phaser.Scene{
             } else {
                 if(game_type == "stage" || game_type == "daily" || game_type == "passion")
                 {
+                    let showText = "";
+                    if(game_type == "stage")
+                        showText = 'YOU FINISHED STAGE';
+                    else if(game_type == "daily")
+                        showText = 'YOU FINISHED DAILY GAME';
+                    else if(game_type == "passion")
+                        showText = 'YOU EARN COIN';
                     this.win = this.add.image(540,400,'Win');
-                    this.gameFinishText = this.add.text(540,700, 'YOU FINISHED STAGE!', { fixedWidth: 700, fixedHeight: 50, align:'center' })
+                    this.gameFinishText = this.add.text(540,700, showText, { fixedWidth: 700, fixedHeight: 50, align:'center' })
                     .setStyle({
                         fontSize: '50px',
                         fontFamily: 'RR',
@@ -246,6 +253,8 @@ class EndScreen extends Phaser.Scene{
                     if(winner_name_list[0] != userData.userName){
                         getText2 = 'GET\nBACK';
                     }
+                } else if (game_type == "passion") {
+                    coinText = cur_prize;
                 }
 
                 if(game_type != "tournament" && game_type != "passion"){
@@ -325,18 +334,18 @@ class EndScreen extends Phaser.Scene{
         }
 
         if(game_type == "tournament"){
-            this.fieldUsernameText = this.add.text(360, 280, 'Username', {
+            this.fieldUsernameText = this.add.text(190, 280, 'Username', {
                 fontFamily: 'RR',
                 fontWeight: 'bold',
                 fontSize: '80px',
                 color: "#ffffff",
-            }).setOrigin(0.5, 0.5);
-            this.fieldPointText = this.add.text(800, 280, 'Point', {
+            }).setOrigin(0, 0.5);
+            this.fieldPointText = this.add.text(890, 280, 'Point', {
                 fontFamily: 'RR',
                 fontWeight: 'bold',
                 fontSize: '80px',
                 color: "#ffffff",
-            }).setOrigin(0.5, 0.5);
+            }).setOrigin(1, 0.5);
             let bInRank = false;
             for(var i=0; i<winner_name_list.length; i++){
                 let bEqual = false;
@@ -347,18 +356,18 @@ class EndScreen extends Phaser.Scene{
                 this.graphics = this.add.graphics();
                 this.graphics.fillStyle(bEqual ? 0xfa5c00 : 0xffffff, 1);
                 this.graphics.fillRoundedRect(180,334 + 132*i,760,128, 10);
-                this.rankNameText = this.add.text(360, 334 + 132*i, winner_name_list[i], {
+                this.rankNameText = this.add.text(190, 400 + 132*i, winner_name_list[i], {
                     fontFamily: 'RR',
                     fontWeight: 'bold',
                     fontSize: '80px',
                     color: bEqual ? "#ffffff" : "#106ead",
-                }).setOrigin(0.5, 0.5);
-                this.rankPointText = this.add.text(800, 334 + 132*i, winner_point_list[i], {
+                }).setOrigin(0, 0.5);
+                this.rankPointText = this.add.text(890, 400 + 132*i, winner_point_list[i], {
                     fontFamily: 'RR',
                     fontWeight: 'bold',
                     fontSize: '80px',
                     color: bEqual ? "#ffffff" : "#106ead",
-                }).setOrigin(0.5, 0.5);
+                }).setOrigin(1, 0.5);
                 if(bEqual)
                     bInRank = true;
             }
@@ -366,18 +375,18 @@ class EndScreen extends Phaser.Scene{
                 this.graphics = this.add.graphics();
                 this.graphics.fillStyle(0xfa5c00, 1);
                 this.graphics.fillRoundedRect(180,334 + 132*i,760,128, 10);
-                this.rankNameText = this.add.text(360, 334 + 132*i, winner_name_list[i], {
+                this.rankNameText = this.add.text(190, 400 + 132*i, winner_name_list[i], {
                     fontFamily: 'RR',
                     fontWeight: 'bold',
                     fontSize: '80px',
                     color: "#106ead",
-                }).setOrigin(0.5, 0.5);
-                this.rankPointText = this.add.text(800, 334 + 132*i, winner_point_list[i], {
+                }).setOrigin(0, 0.5);
+                this.rankPointText = this.add.text(890, 400 + 132*i, winner_point_list[i], {
                     fontFamily: 'RR',
                     fontWeight: 'bold',
                     fontSize: '80px',
                     color: "#106ead",
-                }).setOrigin(0.5, 0.5);
+                }).setOrigin(1, 0.5);
             }
         }
     }

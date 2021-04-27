@@ -133,7 +133,7 @@ const exportedMethods = {
             // return false;
         }
 
-        return { result: true };
+        return { result: updatedRoomData };
     },
 
     async endRoom(data) {

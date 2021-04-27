@@ -72,7 +72,7 @@ const exportedMethods = {
                                     }
                                 }
                                 getMultiRandomData().then(({numDataList, wordDataList}) => {
-                                    io.in(`game_of_${room._id}`).emit('online_start', {
+                                    io.in(`game_of_${String(room._id)}`).emit('online_start', {
                                         result: {roomId: String(room._id)},
                                         gameData: { numData: numDataList, wordData: wordDataList }
                                     });
@@ -102,7 +102,11 @@ const exportedMethods = {
                     if (roomList.length != 0) {
                         for ( i in roomList) {
                             const room = roomList[i];
-                            if (room.joinUsers.indexOf(userNameInSession) != -1) socket.join(`game_of_${room._id}`);
+                            for(j in room.joinUsers) {
+                                if (room.joinUsers[j].userName == userNameInSession){
+                                    socket.join(`game_of_${String(room._id)}`);
+                                } 
+                            }
                         }
                     }
                 });
@@ -146,7 +150,7 @@ const exportedMethods = {
                                                 coin: room.result.prize,
                                                 heart: 1,
                                             }).then((user) => {
-                                                io.to(players[room.result.winner[0]]).emit('update_userdata', {result: user});
+                                                io.to(players[room.result.winner[0]]).emit('update_userdata', {result: user.result});
                                         });
                                     io.sockets.clients(`game_of_${joinedInfo.roomId}`).forEach(function(client){
                                         client.leave(`game_of_${joinedInfo.roomId}`);
@@ -183,7 +187,11 @@ const exportedMethods = {
                             if (roomList.length != 0) {
                                 for ( i in roomList) {
                                     const room = roomList[i];
-                                    if (room.joinUsers.indexOf(userNameInSession) != -1) socket.join(`game_of_${room._id}`);
+                                    for(j in room.joinUsers) {
+                                        if (room.joinUsers[j].userName == data.username){
+                                            socket.join(`game_of_${String(room._id)}`);
+                                        } 
+                                    }
                                 }
                             }
                         });
@@ -238,7 +246,7 @@ const exportedMethods = {
                 console.log('standalone_end request recevied : ', data);
 
                 users.addUserValue(data.username, data).then((user) => {
-                    if (user) socket.emit('update_userdata', {result: user});
+                    if (user) socket.emit('update_userdata', {result: user.result});
                     else console.log(`${data.username} could not find while process standalone_end`);
                 });
                 socket.handshake.session.status = 'Idle';
@@ -328,18 +336,25 @@ const exportedMethods = {
 
                 rooms.leaveRoom(data).then((room) => {
                     if (!room.error) {
-                        users.addUserValue(data.username, {coin: room.result.joiningFee, heart: 1}).then((userData) => {
-                            if (!userData.result) {
-                                socket.emit('tournament_out', { result: false, error: userData.error });
-                                console.log(`${ data.username } couldn 't leave tournament because ${userData.error}`);
-                            } else {
-                                socket.emit('update_userdata', {result: userData.result});
-                                socket.emit('tournament_out', { result: true, room_id: data.room_id });
-                                socket.leave(`game_of_${data.room_id}`);
-                                console.log(`${data.username} is leaved tournament`);
-                                socket.handshake.session.status = 'Idle';
-                            }
-                        });
+                        if ( room.result === true) {
+                            socket.emit('tournament_out', { result: true, room_id: data.room_id });
+                            socket.leave(`game_of_${data.room_id}`);
+                            console.log(`${data.username} is leaved tournament`);
+                            socket.handshake.session.status = 'Idle';
+                        } else {
+                            users.addUserValue(data.username, {coin: room.result.joiningFee, heart: 1}).then((userData) => {
+                                if (!userData.result) {
+                                    socket.emit('tournament_out', { result: false, error: userData.error });
+                                    console.log(`${ data.username } couldn 't leave tournament because ${userData.error}`);
+                                } else {
+                                    socket.emit('update_userdata', {result: userData.result});
+                                    socket.emit('tournament_out', { result: true, room_id: data.room_id });
+                                    socket.leave(`game_of_${data.room_id}`);
+                                    console.log(`${data.username} is leaved tournament`);
+                                    socket.handshake.session.status = 'Idle';
+                                }
+                            });
+                        }
                     } else {
                         socket.emit('tournament_out', { result: false, error: room.error });
                         console.log(`${ data.username } couldn 't leave tournament because ${room.error}`);
@@ -372,7 +387,7 @@ const exportedMethods = {
                                         coin: room.result.prize,
                                         heart: 1,
                                     }).then((user) => {
-                                        io.to(players[room.result.winner[0]]).emit('update_userdata', {result: user});
+                                        io.to(players[room.result.winner[0]]).emit('update_userdata', {result: user.result});
                                 });
                             io.sockets.clients(`game_of_${data.room_id}`).forEach(function(client){
                                 client.leave(`game_of_${data.room_id}`);

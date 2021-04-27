@@ -20,18 +20,18 @@ class PassionScreen extends Phaser.Scene{
     }
 
     create() {
-        this.passion_flower = this.add.image(150,200,'Passion');
+        this.passion_flower = this.add.image(540,690,'Passion');
         let angle = Number.parseInt(Math.random()*360);
         this.angle = angle;
         this.passion_flower.setAngle(angle);
-        this.indicator = this.add.image(150,300,'Indicator');
+        this.indicator = this.add.image(540,1180,'Indicator');
 
-        this.turnButton = this.add.image(100,500,'Turn', 0).setScale(0.2);
+        this.turnButton = this.add.image(280,1440,'Turn', 0);
         this.turnButton.setInteractive().on('pointerdown', () => {
             this.turn();
         });
 
-        this.stopButton = this.add.image(200,500,'Stop', 0).setScale(0.2).setAlpha(0.5);
+        this.stopButton = this.add.image(800,1440,'Stop', 0).setAlpha(0.5);
         this.stopButton.disableInteractive();        
     }
     update(){
@@ -74,7 +74,7 @@ class PassionScreen extends Phaser.Scene{
             scene.time.removeEvent(scene.timer);
             cur_prize = (12-Number.parseInt(scene.angle/45))%8;
             Client.passion_end();
-            game_type == "passion";
+            game_type = "passion";
             game_state = "pass";
             game.scene.stop("PassionScreen");
             game.scene.start("EndScreen");

@@ -147,7 +147,7 @@ class WordGameScreen extends Phaser.Scene{
             game.scene.stop('WordGameScreen');
             game.scene.start('EndScreen');
         }
-        else if(game_type == "battle")
+        else if(game_type == "battle" || game_type == "tournament")
         {
             Client.online_end(this.point);
         }
@@ -177,7 +177,7 @@ class WordGameScreen extends Phaser.Scene{
                 game.scene.stop('NumberGameScreen');
                 game.scene.start('EndScreen');
             }
-            else if(game_type == "battle")
+            else if(game_type == "battle" || game_type == "tournament")
             {
                 if(scene.point == undefined)
                 {

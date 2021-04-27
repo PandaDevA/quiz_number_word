@@ -2,7 +2,7 @@ const mainController = require('../app/mainController');
 const roomController = require('../app/roomController');
 
 function initRoute(app) {
-    app.get('/', mainController().index);
+    app.get('/editor', mainController().index);
     app.post('/setting/word', mainController().word);
     app.post('/setting/add', mainController().add);
     app.post('/setting/update', mainController().update);

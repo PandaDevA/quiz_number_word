@@ -33,7 +33,7 @@ const baseUrl = '192.168.104.55';
 // const baseUrl = '192.168.104.56';
 // const baseUrl = 'quizpuzzle.chileracing.net'
 
-// app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/quiz_app/www'));
 
 app.use(session);
@@ -47,10 +47,10 @@ app.get('/', (req, res) => {
 //Set Template Engine
 app.use(expressLayouts);
 app.use(express.urlencoded({ extended: true }));
-// app.set('view engine', 'ejs');
+app.set('view engine', 'ejs');
 
 //Set Route
-// require('./routes/web.js')(app);
+require('./routes/web.js')(app);
 
 let number, halfCnt = 0;
 let connections = [];
