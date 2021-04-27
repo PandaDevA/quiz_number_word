@@ -8,35 +8,21 @@ Client.stage_end = function(isWin){
 };
 
 Client.socket.on('stage_start',function(data){
+    let activeScene = game.scene.getScenes(true)[0];
     if(data.result)
     {
-        if(game.scene.isActive('HomeScreen'))
-        {
-            gameData = data.gameData;
-            game_type = "stage";
-            game_state = "";
-            cur_number = 0;
-            cur_word = 0;
-            cur_point = 0;
-            game.scene.stop('HomeScreen');
-            game.scene.start('NumberGameScreen');
-        }
-        else if(game.scene.isActive('EndScreen'))
-        {
-            gameData = data.gameData;
-            game_type = "stage";
-            game_state = "";
-            cur_number = 0;
-            cur_word = 0;
-            cur_point = 0;
-            game.scene.stop('EndScreen');
-            game.scene.start('NumberGameScreen');
-        }
+        gameData = data.gameData;
+        game_type = "stage";
+        game_state = "";
+        cur_number = 0;
+        cur_word = 0;
+        cur_point = 0;
+        game.scene.stop(activeScene.scene.key);
+        game.scene.start('NumberGameScreen');
         console.log(data);
     }
     else
     {
-        game.scene.getScene('HomeScreen').toast_stage_failed();
-        console.log('failed');
+        toast_error(activeScene, "CAN NOT PLAY\nSTAGE GAME!");
     }
 });

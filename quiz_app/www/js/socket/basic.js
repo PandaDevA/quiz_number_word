@@ -23,12 +23,10 @@ Client.socket.on('login',function(data){
         userData = data.result;
         game.scene.stop('LoginScreen');
         game.scene.start('HomeScreen');
-        console.log('success');
     }
     else
     {
-        game.scene.getScene('LoginScreen').toast_failed();
-        console.log('failed');
+        toast_error(game.scene.getScene('LoginScreen'), 'Login Failed');
     }
 });
 
@@ -37,13 +35,11 @@ Client.socket.on('register',function(data){
     {
         game.scene.stop('RegisterScreen');
         game.scene.start('LoginScreen');
-        game.scene.getScene('LoginScreen').toast_register_succeed();
-        console.log('success');
+        toast_error(game.scene.getScene('LoginScreen'), 'Register Succeed...');
     }
     else
     {
-        game.scene.getScene('RegisterScreen').toast_failed();
-        console.log('failed');
+        toast_error(game.scene.getScene('RegisterScreen'), 'Register failed\nUserName Duplicated.');
     }
 });
 

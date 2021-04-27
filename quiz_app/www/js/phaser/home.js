@@ -128,71 +128,15 @@ class HomeScreen extends Phaser.Scene{
         });
 
         this.menu = this.add.image(960,1570,'Menu');
+        this.menu.setInteractive().on('pointerdown', () => {
+            game.scene.stop('HomeScreen');
+            game.scene.start('MenuScreen');
+        });
 
-        // this.userName = this.add.text(100, 100, 'testuser', { fixedWidth: 150, fixedHeight: 36 });
-        // this.password = this.add.text(100, 200, '123', { fixedWidth: 150, fixedHeight: 36 });
-    
-        // this.userName.setInteractive().on('pointerdown', () => {
-        //     this.rexUI.edit(this.userName)
-        // });
-
-        // this.password.setInteractive().on('pointerdown', () => {
-        //     this.rexUI.edit(this.password)
-        // });
     }
     update_userData(){
         this.coinText.setText(userData.coin);
         this.lifeText.setText(userData.heart);
         this.points.setText(userData.point);
-    }
-
-    toast_tournament_failed(){
-        var toast = this.rexUI.add.toast({
-            x: 150,
-            y: 550,
-
-            background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 20, 0xcc4040),
-            text: this.add.text(0, 0, '', {
-                fontSize: '18px'
-            }),
-            space: {
-                left: 20,
-                right: 20,
-                top: 20,
-                bottom: 20,
-            },
-
-            duration: {
-                in: 250,
-                hold: 1000,
-                out: 250,
-            },
-        })
-        .show('Can not take part in tournament...')
-    }
-
-    toast_stage_failed(){
-        var toast = this.rexUI.add.toast({
-            x: 150,
-            y: 550,
-
-            background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 20, 0xcc4040),
-            text: this.add.text(0, 0, '', {
-                fontSize: '18px'
-            }),
-            space: {
-                left: 20,
-                right: 20,
-                top: 20,
-                bottom: 20,
-            },
-
-            duration: {
-                in: 250,
-                hold: 1000,
-                out: 250,
-            },
-        })
-        .show('Can not play stage...')
     }
 }
