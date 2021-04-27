@@ -95,7 +95,7 @@ class TournamentScreen extends Phaser.Scene{
     updateJoin(roomId, bJoin){
         for(let i=0; i<this.room_id_list.length; i++){
             if(this.room_id_list[i] != roomId)
-                return;
+                continue;
             this.button_list[i].setData('isJoin', bJoin);
             this.button_list[i].removeListener('pointerdown');
             this.button_list[i].on('pointerdown', () => {

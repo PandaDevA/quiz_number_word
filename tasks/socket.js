@@ -69,6 +69,8 @@ const exportedMethods = {
                                 for (j in joinusers) {
                                     if (players[joinusers[j].userName] == undefined) {
                                         await rooms.leaveRoom({username: joinusers[j].userName, room_id: result.result._id});
+                                    } else {
+                                        io.sockets.sockets.get(players[joinusers[j].userName]).handshake.session.status = 'Tournament';
                                     }
                                 }
                                 getMultiRandomData().then(({numDataList, wordDataList}) => {
