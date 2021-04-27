@@ -39,10 +39,10 @@ app.use(express.static(__dirname + '/quiz_app/www'));
 app.use(session);
 io.use(sharedsession(session, {autoSave: true}));
 
-app.get('/', (req, res) => {
-    req.session.game_exists = false;
-    res.sendFile(__dirname + '/quiz_app/www/index.html');
-});
+// app.get('/', (req, res) => {
+//     req.session.game_exists = false;
+//     res.sendFile(__dirname + '/quiz_app/www/index.html');
+// });
 
 //Set Template Engine
 app.use(expressLayouts);

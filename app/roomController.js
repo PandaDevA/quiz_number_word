@@ -6,6 +6,12 @@ function roomController(){
         async index(req, res){
             console.log('ajax room get request is received');
             let result = await rooms.listTournament();
+            for (let i in result) {
+                const room = result[i];
+                room['id'] = String(room._id);
+                room['startDateTimeString'] = room.startDateTime.toLocaleString();
+                result[i] = room;
+            }
             let resData = {messages: {error: 'no error'}, rooms: {result: result}};
             console.log(result);
             res.render('tournament', resData);
