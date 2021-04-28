@@ -42,6 +42,7 @@ const exportedMethods = {
                 }
             });
         console.log('Hearts supplied.');
+        await users.updateUserRank();
     },
 
     async onTimeInteval(io) {
@@ -173,6 +174,14 @@ const exportedMethods = {
                     // Set PLAYERS value of this user as 'undefined' to remove the user from PLAYERS Object
                     players[userNameInSession] = undefined;
                 }
+            });
+
+            socket.on('logout', (data) => {
+                // REQUIRE INFO: data.username
+                console.log('logout request recevied');
+                // Set PLAYERS value of this user as 'undefined' to remove the user from PLAYERS Object
+                socket.handshake.session.username = undefined;
+                players[userNameInSession] = undefined;
             });
 
             socket.on('login', (data) => {

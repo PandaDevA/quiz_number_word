@@ -55,6 +55,8 @@ async function main() {
     if (isAdded) console.log('policy Added');
     else console.log("policy not added");
 
+    await users.updateUserRank();
+
     console.log('Done seeding database');
 
     await db.serverConfig.close();

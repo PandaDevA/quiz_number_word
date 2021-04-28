@@ -34,12 +34,20 @@ const exportedMethods = {
             return {result: false, error: 'The user is already registered'};
         }
 
+        let total = await userCollection.find({}).count();
+        if(!total) {
+            console.log('could not get the total of users');
+            total = 0;
+        }
+        else console.log(`page total is : ${total}`);
+
         const newuser = {
             userName: data.username,
             password: data.password,
             email: data.email,
             avatar: '',
             point: 1000,
+            rank: total + 1,
             heart: 3,
             coin: 50,
             lastDate: 0,
@@ -114,6 +122,33 @@ const exportedMethods = {
 
         return {result: updatedUserData};
     },
+
+    async updateUserRank() {
+
+        const userCollection = await users();
+        const userDatas = await userCollection.find().toArray();
+
+        if (!userDatas) {
+            // console.log(`Error: user "${username}" not exist while addUserValue`);
+            return ;
+        }
+
+        let updatedUserData = userDatas;
+        updatedUserData.sort((a, b) => (a.point < b.point) ? 1 : -1);
+        for ( let i = 0, idx = 1 ; i < updatedUserData.length; i++) {
+            updatedUserData[i].rank = idx;
+            if ( i == updatedUserData.length - 1 ) continue;
+            if ( updatedUserData[i].point == updatedUserData[i+1].point) continue;
+            idx++;
+        }
+
+        await userCollection.deleteMany();
+        await userCollection.insertMany(updatedUserData);
+
+        console.log('Users rank is updated');
+        return true;
+    },
+
 };
 
 module.exports = exportedMethods;
