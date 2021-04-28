@@ -644,6 +644,19 @@ const exportedMethods = {
             //     });
             //     socket.handshake.session.status = 'Idle';
             // });
+
+            socket.on('rank_list', () => {
+                // REQUIRE INFO:
+                console.log('rank_list request received');
+
+                users.getRankList().then((userList) => {
+                    if (!userList.length) {
+                        socket.emit('rank_list', { result: false });
+                    } else {
+                        socket.emit('rank_list', { result: userList });
+                    }
+                });
+            });
         });
     },
 };

@@ -103,6 +103,7 @@ class LoginScreen extends Phaser.Scene{
 
         this.googleButton = this.add.image(640,1170,'Google');
         this.googleButton.setInteractive().on('pointerdown', () => {
+            callGoogle();
         });
 
 

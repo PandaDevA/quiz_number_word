@@ -8,6 +8,12 @@ const exportedMethods = {
         return result;
     },
 
+    async getRankList() {
+        const userCollection = await users();
+        const result = await userCollection.find({rank: {$lt: 4}}).toArray();
+        return result;
+    },
+
     async getUserByName(username, password = undefined) {
         const userCollection = await users();
         const user = await userCollection.findOne({ userName: username });

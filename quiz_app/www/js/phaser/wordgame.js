@@ -174,7 +174,7 @@ class WordGameScreen extends Phaser.Scene{
                     Client.daily_end(false);
                 }
                 cur_word++;
-                game.scene.stop('NumberGameScreen');
+                game.scene.stop('WordGameScreen');
                 game.scene.start('EndScreen');
             }
             else if(game_type == "battle" || game_type == "tournament")
