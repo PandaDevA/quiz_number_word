@@ -306,6 +306,63 @@ $('#tournament_save').click(function(){
             }
         });
     }
-})
+});
+
+$('#rule_save').click(function(){
+    var returnVal = confirm("Are you sure?");
+    if(returnVal) {
+        $.blockUI({ message: '<h1><img src="/img/busy.gif" /> Just a moment...</h1>' });
+        $.ajax({
+            url : '/rule/save',
+            type : 'POST',
+            data : {rule:$('#rule_content').val()},
+            success : function(data) {
+                alert('Save succeed!');
+            },
+            error: function(data){
+                if(data.error) alert("Error occured..."+data.error);
+                else alert("Error occured...");
+            }
+        });
+    }
+});
+
+$('#method_save').click(function(){
+    var returnVal = confirm("Are you sure?");
+    if(returnVal) {
+        $.blockUI({ message: '<h1><img src="/img/busy.gif" /> Just a moment...</h1>' });
+        $.ajax({
+            url : '/method/save',
+            type : 'POST',
+            data : {method:$('#method_content').val()},
+            success : function(data) {
+                alert('Save succeed!');
+            },
+            error: function(data){
+                if(data.error) alert("Error occured..."+data.error);
+                else alert("Error occured...");
+            }
+        });
+    }
+});
+
+$('#policy_save').click(function(){
+    var returnVal = confirm("Are you sure?");
+    if(returnVal) {
+        $.blockUI({ message: '<h1><img src="/img/busy.gif" /> Just a moment...</h1>' });
+        $.ajax({
+            url : '/policy/save',
+            type : 'POST',
+            data : {policy:$('#policy_content').val()},
+            success : function(data) {
+                alert('Save succeed!');
+            },
+            error: function(data){
+                if(data.error) alert("Error occured..."+data.error);
+                else alert("Error occured...");
+            }
+        });
+    }
+});
 
 $(document).ajaxStop($.unblockUI);

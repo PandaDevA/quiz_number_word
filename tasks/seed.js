@@ -4,6 +4,7 @@ const puzzle = require('./puzzle');
 const users = data.users;
 const rooms = data.rooms;
 const words = data.words;
+const infos = data.infos;
 
 async function main() {
 
@@ -41,6 +42,18 @@ async function main() {
     });
     if (addedData) console.log(`room created: ${JSON.stringify(addedData)}`);
     else console.log('room not created');
+
+    isAdded = await infos.setRule('This is game Rule');
+    if (isAdded) console.log('rule Added');
+    else console.log("rule not added");
+
+    isAdded = await infos.setMethod('This is game Method');
+    if (isAdded) console.log('method Added');
+    else console.log("method not added");
+
+    isAdded = await infos.setPolicy('This is game Policy');
+    if (isAdded) console.log('policy Added');
+    else console.log("policy not added");
 
     console.log('Done seeding database');
 

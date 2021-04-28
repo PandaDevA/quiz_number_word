@@ -20,4 +20,5 @@ module.exports = {
   users: getCollectionFn('users'),
   rooms: getCollectionFn('rooms'),
   words: getCollectionFn('words'),
+  infos: getCollectionFn('infos'),
 };
