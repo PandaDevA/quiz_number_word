@@ -71,6 +71,7 @@ const exportedMethods = {
                                         await rooms.leaveRoom({username: joinusers[j].userName, room_id: result.result._id});
                                     } else {
                                         io.sockets.sockets.get(players[joinusers[j].userName]).handshake.session.status = 'Tournament';
+                                        io.sockets.sockets.get(players[joinusers[j].userName]).handshake.session.cur_step = 0;
                                     }
                                 }
                                 getMultiRandomData().then(({numDataList, wordDataList}) => {
@@ -129,8 +130,8 @@ const exportedMethods = {
                             //     await rooms.leaveRoom({username: userNameInSession, room_id: joinedInfo.roomId});
                             //     break;
                             // }
-                            // REQUIRE INFO: data.username, data.room_id, data.point, (data.coin, data.heart)OPTIONAL
-                            const room = await rooms.endRoom({username: userNameInSession, room_id: joinedInfo.roomId, point: 0});
+                            // REQUIRE INFO: data.username, data.room_id, data.point, data.step, (data.coin, data.heart)OPTIONAL
+                            const room = await rooms.endRoom({username: userNameInSession, room_id: joinedInfo.roomId, step: socket.handshake.session.cur_step + 1, point: 0});
                             if (room.result) {
                                 await rooms.leaveRoom({username: userNameInSession, room_id: joinedInfo.roomId}, /*isForce:*/true);
                                 if(room.allIsOver) {
@@ -369,6 +370,7 @@ const exportedMethods = {
                 console.log('online_end request received');
                 rooms.endRoom(data).then(async(room) => {
                     if (room.result) {
+                        socket.handshake.session.cur_step = data.step;
                         if(room.allIsOver) {
                             io.in(`game_of_${data.room_id}`).emit('online_end', {
                                 result: true,
@@ -480,10 +482,12 @@ const exportedMethods = {
                                             result.result.joinUsers.map(async(user, index) => {
                                                 users.delUserValue(user.userName, {coin: result.result.joiningFee, heart: 1}).then((userData) => {
                                                     io.to(players[user.userName]).emit('update_userdata', {result: userData.result});
+                                                    io.sockets.sockets.get(players[user.userName]).handshake.session.cur_step = 0;
                                                 });
                                             });
                                             socket.join(`game_of_${data.roomId}`);
                                             socket.handshake.session.status = 'Battle';
+                                            socket.handshake.session.cur_step = 0;
                                             getMultiRandomData().then(({numDataList, wordDataList}) => {
                                                 users.getUserByName(data.waituser).then((user1) => {
                                                     socket.to(`game_of_${data.roomId}`).emit('online_start', {
@@ -577,7 +581,9 @@ const exportedMethods = {
                                             users.getUserByName(username).then(async(user1) => {
 
                                                 io.sockets.sockets.get(players[username]).handshake.session.status = 'Battle';
+                                                io.sockets.sockets.get(players[username]).handshake.session.cur_step = 0;
                                                 socket.handshake.session.status = 'Battle';
+                                                socket.handshake.session.cur_step = 0;
                                                 socket.emit('online_start', { result: {roomId}, oppoData: user1, gameData: { numData: numDataList, wordData: wordDataList } });
                                                 socket.to(`game_of_${roomId}`)
                                                     .emit('online_start', { result: {roomId}, oppoData: user, gameData: { numData: numDataList, wordData: wordDataList } });

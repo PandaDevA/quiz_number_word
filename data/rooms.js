@@ -192,8 +192,13 @@ const exportedMethods = {
             let i;
             for (i = 0; i < winners.length; i++) {
                 if(data.point > winnerPoints[i]) {
-                    winners.splice(i, 0, data.username);
-                    winnerPoints.splice(i, 0, data.point);
+                    const idx = winners.indexOf(data.username);
+                    if (idx > -1) {
+                        winners.splice(idx, 1);
+                        winnerPoints.splice(idx, 1);
+                    }
+                    winners.splice(i - (idx > -1), 0, data.username);
+                    winnerPoints.splice(i - (idx > -1), 0, data.point);
                     if (winners.length > 3) {
                         winners.pop();
                         winnerPoints.pop();
