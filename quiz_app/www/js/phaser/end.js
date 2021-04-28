@@ -255,6 +255,8 @@ class EndScreen extends Phaser.Scene{
                     }
                 } else if (game_type == "passion") {
                     coinText = cur_prize;
+                    if(cur_prize == 0)
+                        getText2 = 'GET\n1 COIN';
                 }
 
                 if(game_type != "tournament" && game_type != "passion"){
@@ -279,12 +281,13 @@ class EndScreen extends Phaser.Scene{
                     })
                     .setOrigin(0.5,0.5);
     
-                    this.getPointText = this.add.text(800,890, getText1, { fixedWidth: 150, fixedHeight: 45, align:'center' })
+                    this.getPointText = this.add.text(800,890, getText1)
                     .setStyle({
                         fontSize: '45px',
                         fontFamily: 'RR',
                         fontWeight: 'bold',
                         color: '#fa5c00',
+                        align: 'center'
                     })
                     .setOrigin(0.5,0.5);
                 }
@@ -308,12 +311,13 @@ class EndScreen extends Phaser.Scene{
                     color: '#ffffff',
                 })
                 .setOrigin(0.5,0.5);
-                this.getCoinText = this.add.text(800,game_type == "tournament" ? 1140 : 1080, getText2, { fixedWidth: 150, fixedHeight: 45, align:'center' })
+                this.getCoinText = this.add.text(800,game_type == "tournament" ? 1140 : 1080, getText2)
                 .setStyle({
                     fontSize: '45px',
                     fontFamily: 'RR',
                     fontWeight: 'bold',
                     color: '#fa5c00',
+                    align: 'center'
                 })
                 .setOrigin(0.5,0.5);
     

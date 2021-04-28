@@ -59,7 +59,7 @@ class PassionScreen extends Phaser.Scene{
         if(scene.bStop)
             scene.angle_speed /= 1.05;
 
-        if(scene.angle_speed >= 20)
+        if(scene.angle_speed >= 40)
         {
             scene.bTurn = false;
             scene.stopButton.setInteractive().setAlpha(1.0).on('pointerdown', () => {
@@ -72,7 +72,8 @@ class PassionScreen extends Phaser.Scene{
         {
             scene.timer.remove();
             scene.time.removeEvent(scene.timer);
-            cur_prize = (12-Number.parseInt(scene.angle/45))%8;
+            let prize_list = [1,50,5,0,1,2,5,0,1,2,5,0];
+            cur_prize = prize_list[Number.parseInt((scene.angle+345)/30)%12];
             Client.passion_end();
             game_type = "passion";
             game_state = "pass";
