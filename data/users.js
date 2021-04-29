@@ -11,6 +11,10 @@ const exportedMethods = {
     async getRankList() {
         const userCollection = await users();
         const result = await userCollection.find({rank: {$lt: 4}}).toArray();
+        result.sort((a, b) => a.rank - b.rank);
+        result.map((e) => {
+            console.log(e.rank);
+        })
         return result;
     },
 

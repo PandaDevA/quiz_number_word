@@ -8,6 +8,7 @@ var oppoData = {};
 var gameData = {};
 
 var tournament_list = [];
+var rank_list = [];
 
 var game_type = "";
 var game_state = "";
@@ -34,10 +35,10 @@ const config = {
         height: 1680
     },
     transparent: true,
-    scene: [LoginScreen, HomeScreen,TournamentScreen, NumberGameScreen, 
+    scene: [LoginScreen, HomeScreen, TournamentScreen, NumberGameScreen, 
         EndScreen, WordGameScreen, BattleScreen, PassionScreen, 
         RegisterScreen, BattleWaitScreen, TournamentWaitScreen,
-        MenuScreen ],
+        MenuScreen, RankScreen ],
     dom: {
         createContainer: true
     },
