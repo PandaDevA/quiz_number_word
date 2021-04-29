@@ -5,7 +5,7 @@ function roomController(){
     return {
         async index(req, res){
             console.log('ajax room get request is received');
-            let result = await rooms.listTournament();
+            let result = await rooms.listTournament(false);
             for (let i in result) {
                 const room = result[i];
                 room['id'] = String(room._id);

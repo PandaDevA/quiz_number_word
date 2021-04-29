@@ -160,7 +160,7 @@ const exportedMethods = {
         const updatedRoomData = room;
         let joinusers = updatedRoomData.joinUsers;
 
-        if (updatedRoomData.remainNum + data.step != 2) {
+        if (updatedRoomData.remainNum + data.step != 10) {
             console.log('Invalid end Data is received');
             return {result: false, error: 'Invalid data with current step'};
         }
@@ -235,9 +235,16 @@ const exportedMethods = {
         return {result: {...updatedRoomData, id: String(parsedId)}, allIsOver, allIsEnd};
     },
 
-    async listTournament() {
+    async listTournament(less = true) {
         const roomCollection = await rooms();
-        let room = await roomCollection.find({ userName: 'tournament' }).toArray();
+        let query;
+        if (less) {
+            const now = new Date();
+            query = { userName: 'tournament', isStarted: false, startDateTime: {$gt: now.getTime()-100000} };
+        } else {
+            query = { userName: 'tournament' };
+        }
+        let room = await roomCollection.find(query).toArray();
         return room;
     },
 
@@ -298,7 +305,7 @@ const exportedMethods = {
             joiningFee: data.joiningFee || 3,
             startDateTime: data.startDateTime || new Date(),
             prize: data.prize || 9,
-            remainNum: 1, // 9,
+            remainNum: 9,
             isStarted: false,
             isClosed: false,
         };
