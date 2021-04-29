@@ -116,7 +116,7 @@ class WordGameScreen extends Phaser.Scene{
             bPass = true;
             let word_length = gameData.wordData[cur_word].matchArray[match_index].length;
             if(word_length == 8){
-                this.point = 10 + Number.parseInt(this.timeText.text);
+                this.point = 10 + Math.floor(Number.parseInt(this.timeText.text)/10);
             }
             else if(word_length == 7){
                 this.point = 5;
