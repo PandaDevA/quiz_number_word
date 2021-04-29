@@ -9,7 +9,7 @@ function roomController(){
             for (let i in result) {
                 const room = result[i];
                 room['id'] = String(room._id);
-                room['startDateTimeString'] = room.startDateTime.toLocaleString();
+                const start = new Date(room.startDateTime);
                 result[i] = room;
             }
             let resData = {messages: {error: 'no error'}, rooms: {result: result}};
@@ -32,9 +32,9 @@ function roomController(){
             console.log('ajax add request is received');
             let newData = req.body;
             let resData = {result: false};
-            let start = new Date(newData.start);
+            let start = newData.start;
 
-            const result = await rooms.createRoom({joiningFee: parseInt(newData.fee), prize: parseInt(newData.prize), startDateTime: start});
+            const result = await rooms.createRoom({joiningFee: parseInt(newData.fee), prize: parseInt(newData.prize), startDateTime: parseInt(start)});
             if(!result) res.status(500).send(resData);
             else {
                 resData = {result: result.id};

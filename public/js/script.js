@@ -14,6 +14,14 @@ $('#tips_info_add').click(function(){
         "</tr>");
 })
 
+$(document).ready(function() {
+    $(".start").each(function (e) {
+        var start = $(this).data("start");
+        var time = new Date(parseInt(start));
+        $(this).val(time.toLocaleString());
+    })
+})
+
 function update_user(filter, page, count){
     $.blockUI({ message: '<h1><img src="/img/busy.gif" /> Just a moment...</h1>' });
     $.ajax({
@@ -286,6 +294,7 @@ $('#tournament_save').click(function(){
         return;
     };
 
+    newData.start = newStartDate.getTime();
     var returnVal = confirm("Are you sure?");
     if(returnVal) {
         $.blockUI({ message: '<h1><img src="/img/busy.gif" /> Just a moment...</h1>' });
