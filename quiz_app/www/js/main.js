@@ -181,3 +181,16 @@ function disconnectUser() {
         }
     });
 }
+
+const getDateTimeString = (date) => {
+
+    const pad = (s) => (s < 10 ? '0' + s : s);
+    const dateString = [
+        pad(date.getDate()),
+        pad(date.getMonth() + 1),
+        date.getFullYear(),
+    ].join('/');
+    const timeString = [pad(date.getHours()), pad(date.getMinutes())].join(':');
+
+    return dateString + ' ' + timeString;
+}
