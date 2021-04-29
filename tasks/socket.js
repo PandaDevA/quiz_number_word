@@ -20,7 +20,7 @@ const getDateTimeString = (date) => {
 
  const getMultiRandomData = async () => {
     let numDataList = [], wordDataList = [];
-    for (let i = 0; i < /*5*/1; i++) {
+    for (let i = 0; i < 5; i++) {
         const numData = puzzle.getNumberData();
         const wordData = await puzzle.getWordData();
         numDataList.push(numData);
@@ -53,7 +53,7 @@ const exportedMethods = {
             if (roomList.length != 0) {
                 for ( i in roomList) {
                     const room = roomList[i];
-                    const startDateTime = room.startDateTime;
+                    const startDateTime = new Date(room.startDateTime);
                     if (startDateTime.getDate() != curDateTime.getDate())continue;
                     if (startDateTime.getHours() != curDateTime.getHours())continue;
                     if (startDateTime.getMinutes() != curDateTime.getMinutes())continue;
@@ -303,7 +303,6 @@ const exportedMethods = {
                                 id: String(room._id),
                                 _id: room._id,
                                 startDateTime: room.startDateTime,
-                                startDateTimeString: getDateTimeString(room.startDateTime),
                                 prize: room.prize,
                                 joiningFee: room.joiningFee,
                                 joinUsers: room.joinUsers

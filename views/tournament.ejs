@@ -22,7 +22,7 @@
                                         <tr data-room_id="<%= rooms.result[i].id %>">
                                             <td class="border py-2 text-center"><%= i+1 %></td>
                                             <td class="border py-2 time_col text-center">
-                                                <input class="start info_race info_text" type="text" value="<%= rooms.result[i].startDateTimeString %>" placeholder="when does start the tournament" readonly/>
+                                                <input class="start info_race info_text" type="text" value="" placeholder="when does start the tournament" data-start="<%= rooms.result[i].startDateTime%>" readonly/>
                                             </td>
                                             <td class="border py-2 number_col text-center">
                                                 <input class="fee info_race info_text" type="number" value="<%= rooms.result[i].joiningFee %>" placeholder="joining fee" readonly/>
