@@ -18,32 +18,26 @@ class RegisterScreen extends Phaser.Scene{
         // this.load.plugin('rextexteditplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rextexteditplugin.min.js', true);
         this.load.plugin('rexcanvasplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexcanvasplugin.min.js', true);
         this.load.plugin('rexfilechooserplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexfilechooserplugin.min.js', true);
+        this.load.plugin('rexinputtextplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexinputtextplugin.min.js', true);
 
-        this.load.image("Back", "./images/back.png");
-        this.load.image("Register", "./images/register.png");
-        this.load.image("UserName", "./images/username.png");
-        this.load.image("Email", "./images/email.png");
-        this.load.image("Password", "./images/password.png");
-        this.load.image("UserAvatar", "./images/avatar.png");
+        this.load.image("SignUp1", "./images/signup_button.png");
+        this.load.image("InputBack", "./images/input_back.png");
+        this.load.image("EmptyUser", "./images/avatar_empty.png");
+        this.load.image("avatar_cover", "./images/avatar_cover.png");
 
         this.avatar = "";
     }
 
     create() {
-        this.BackButton = this.add.image(50,50,'Back').setScale(0.2);
-        this.BackButton.setInteractive().on('pointerdown', () => {
-            game.scene.stop('RegisterScreen');
-            game.scene.start('LoginScreen');
-        });
-
         // Create button
-        var button = this.add.rectangle(150, 150, 120, 120, 0x4e342e).setStrokeStyle(2, 0x7b5e57);
+        var button = this.add.image(540,400,'EmptyUser').setOrigin(0.5,0.5);
         // Create canvas   
-        var canvas = this.add.rexCanvas(150, 150, 120, 120).fill('black');
+        var canvas = this.add.rexCanvas(540, 400, 300, 300).setOrigin(0.5,0.5);
         canvas.fitTo = (function (parent) {
             var newSize = FitTo(this, parent, true);
             this.setDisplaySize(newSize.width, newSize.height);
         }).bind(canvas)
+        this.userAvatar_cover = this.add.image(540,400,'avatar_cover').setDepth(5);
 
         var self = this;
         // Create a transparent file chooser
@@ -74,48 +68,86 @@ class RegisterScreen extends Phaser.Scene{
                 });
         });
         
-        this.userNameImage = this.add.image(150,250,'UserName').setScale(0.3);
-        this.userName = this.add.text(155, 250, 'testuser', { fixedWidth: 150, fixedHeight: 18 })
+        this.userNameImage = this.add.image(540,700,'InputBack');
+        this.userName = this.add.rexInputText(540, 700, 620, 70, 
+            {
+                text:'admin',
+                type:'text',
+                fontSize: '64px',
+                fontFamily: 'RR',
+                color: '#000000',
+            })
+        .setOrigin(0.5,0.5);
+
+        this.userNameText = this.add.text(210, 635, 'Username', { fixedWidth: 200, fixedHeight: 32 })
         .setStyle({
-            fontSize: '18px',
-            fontFamily: 'Arial',
-            color: '#000000',
+            fontSize: '28px',
+            fontFamily: 'RR',
+            fontWeight: 'bold',
+            color: '#ffffff',
         })
         .setOrigin(0,0.5);
 
-        this.emailImage = this.add.image(150,300,'Email').setScale(0.3);
-        this.email = this.add.text(155, 300, '1234', { fixedWidth: 100, fixedHeight: 18 })
+        this.emailImage = this.add.image(540,850,'InputBack');
+        this.email = this.add.rexInputText(540, 850, 620, 70, 
+            {
+                text:'',
+                type:'text',
+                fontSize: '64px',
+                fontFamily: 'RR',
+                color: '#000000',
+            })
+        .setOrigin(0.5,0.5);
+        this.emailText = this.add.text(210, 785, 'Email', { fixedWidth: 200, fixedHeight: 32 })
         .setStyle({
-            fontSize: '18px',
-            fontFamily: 'Arial',
-            color: '#000000',
+            fontSize: '28px',
+            fontFamily: 'RR',
+            fontWeight: 'bold',
+            color: '#ffffff',
         })
         .setOrigin(0,0.5);
 
-        this.passwordImage = this.add.image(150,350,'Password').setScale(0.3);
-        this.password = this.add.text(155, 350, '1234', { fixedWidth: 150, fixedHeight: 18 })
+        this.passwordImage = this.add.image(540,1000,'InputBack');
+        this.password = this.add.rexInputText(540, 1000, 620, 70, 
+            {
+                text:'1234',
+                type:'password',
+                fontSize: '64px',
+                fontFamily: 'RR',
+                color: '#000000',
+            })
+        .setOrigin(0.5,0.5);
+        this.passwordText = this.add.text(210, 935, 'Password', { fixedWidth: 200, fixedHeight: 32 })
         .setStyle({
-            fontSize: '18px',
-            fontFamily: 'Arial',
-            color: '#000000',
+            fontSize: '28px',
+            fontFamily: 'RR',
+            fontWeight: 'bold',
+            color: '#ffffff',
         })
         .setOrigin(0,0.5);
-    
-        this.userName.setInteractive().on('pointerdown', () => {
-            this.rexUI.edit(this.userName)
-        });
 
-        this.email.setInteractive().on('pointerdown', () => {
-            this.rexUI.edit(this.email)
-        });
-
-        this.password.setInteractive().on('pointerdown', () => {
-            this.rexUI.edit(this.password)
-        });
-
-        this.RegisterButton = this.add.image(150,450,'Register').setScale(0.3);
-        this.RegisterButton.setInteractive().on('pointerdown', () => {
+        this.registerButton = this.add.image(540,1200,'SignUp1');
+        this.registerButton.setInteractive().on('pointerdown', () => {
             Client.register(this.userName.text, this.email.text, this.password.text, this.avatar);
+        });
+
+        this.loginText = this.add.text(540, 1500, 'Login Now', { fixedWidth: 500, fixedHeight: 120 })
+        .setStyle({
+            fontSize: '84px',
+            fontFamily: 'RR',
+            fontWeight: 'bold',
+            align: "center",
+            fill: '#000000',
+        })
+        .setOrigin(0.5,0.5);
+        this.loginText.stroke = "#f0fafe";
+        this.loginText.strokeThickness = 32;
+        //  Apply the shadow to the Stroke and the Fill (this is the default)
+        this.loginText.setShadow(10, 10, "#333333", 10, true, true);
+
+        this.loginText.setInteractive().on('pointerdown', () => {
+            game.scene.stop('RegisterScreen');
+            game.scene.start('LoginScreen');
         });
     }
 
