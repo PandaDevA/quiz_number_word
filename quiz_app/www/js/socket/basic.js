@@ -219,7 +219,7 @@ function toast_error(scene, error){
         x: 540,
         y: 840,
 
-        background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, 0xffffff),
+        background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, 0xffffff).setStrokeStyle(10, 0xff0000, 1),
         text: scene.add.text(0, 0, '', {
             fontFamily: 'RR',
             fontWeight: 'bold',

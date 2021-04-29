@@ -51,7 +51,7 @@ class TournamentWaitScreen extends Phaser.Scene{
         for(let i=0; i<tournament_list.length; i++){
             if(tournament_list[i].id == room_id){
                 let time = new Date(tournament_list[i].startDateTime);
-                this.text = this.add.text(540,1170, "START TIME: " + time.toLocaleString() + "\n" + "JOINING FEE: " + tournament_list[i].joiningFee + " COIN\nPRIZE: " + tournament_list[i].prize + " COIN", { fixedWidth: 800, fixedHeight: 200, align:'center' })
+                this.text = this.add.text(540,1170, "START TIME: " + getDateTimeString(time) + "\n" + "JOINING FEE: " + tournament_list[i].joiningFee + " COIN\nPRIZE: " + tournament_list[i].prize + " COIN", { fixedWidth: 800, fixedHeight: 200, align:'center' })
                 .setStyle({
                     fontSize: '48px',
                     fontFamily: 'RR',
