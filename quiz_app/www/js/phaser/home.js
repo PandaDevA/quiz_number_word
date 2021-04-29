@@ -94,6 +94,15 @@ class HomeScreen extends Phaser.Scene{
             color: '#ffffff',
             align: 'center',
         });
+        this.rank = this.add.text(720,465, userData.rank, { fixedWidth: 300, fixedHeight: 64 })
+        .setOrigin(0.5,0.5)
+        .setStyle({
+            fontSize: '60px',
+            fontFamily: 'RR',
+            color: '#ffffff',
+            align: 'center',
+        });
+
 
         if(userData.avatar == ""){
             this.userAvatar = this.add.image(345,520,'UserAvatar');   

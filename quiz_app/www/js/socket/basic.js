@@ -16,6 +16,10 @@ Client.register = function(username, email, password, avatar){
     Client.socket.emit('register', {username: username, email: email, password: password, avatar: avatar});
 };
 
+Client.rank_list = function(){
+    Client.socket.emit('rank_list', {});
+};
+
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -42,6 +46,20 @@ Client.socket.on('register',function(data){
     else
     {
         toast_error(game.scene.getScene('RegisterScreen'), 'Register failed\nUserName Duplicated.');
+    }
+});
+
+Client.socket.on('rank_list',function(data){
+    let activeScene = game.scene.getScenes(true)[0];
+    if(data.result)
+    {
+        rank_list = data.result;
+        game.scene.stop(activeScene.scene.key);
+        game.scene.start('RankScreen');
+    }
+    else
+    {
+        toast_error(activeScene, 'Failed to load rank');
     }
 });
 

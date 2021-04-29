@@ -41,7 +41,7 @@ class MenuScreen extends Phaser.Scene{
         .setOrigin(0.5,0.5);
         this.rankingText.setInteractive()
         .on('pointerdown', () => {
-            
+            Client.rank_list();
         });
         line = this.add.line(540, 450, 0, 0, 800, 0, 0xffffff, 1);
         line.setLineWidth(6,6);
