@@ -135,13 +135,7 @@ const exportedMethods = {
                             const room = await rooms.endRoom({username: userNameInSession, room_id: joinedInfo.roomId, step: socket.handshake.session.cur_step + 1, point: 0});
                             if (room.result) {
                                 await rooms.leaveRoom({username: userNameInSession, room_id: joinedInfo.roomId}, /*isForce:*/true);
-                                if(room.allIsOver) {
-                                    socket.to(`game_of_${joinedInfo.roomId}`).emit('online_end', {
-                                        result: true,
-                                        winner: room.result.winner,
-                                        winnerPoint: room.result.winnerPoint
-                                    });
-                                } else if (room.allIsEnd) {
+                                if (room.allIsEnd) {
                                     socket.to(`game_of_${joinedInfo.roomId}`).emit('online_end', {
                                         result: true,
                                         winner: room.result.winner,
@@ -156,9 +150,17 @@ const exportedMethods = {
                                             }).then((user) => {
                                                 io.to(players[room.result.winner[0]]).emit('update_userdata', {result: user.result});
                                         });
-                                    io.sockets.clients(`game_of_${joinedInfo.roomId}`).forEach(function(client){
+                                    for (joinuser of room.result.joinUsers) {
+                                        if (!players[joinuser]) continue;
+                                        const client = io.sockets.sockets.get(players[joinuser]);
                                         client.leave(`game_of_${joinedInfo.roomId}`);
                                         client.handshake.session.status = 'Idle';
+                                    }
+                                } else if(room.allIsOver) {
+                                    socket.to(`game_of_${joinedInfo.roomId}`).emit('online_end', {
+                                        result: true,
+                                        winner: room.result.winner,
+                                        winnerPoint: room.result.winnerPoint
                                     });
                                 }
                             }
@@ -379,36 +381,38 @@ const exportedMethods = {
                 rooms.endRoom(data).then(async(room) => {
                     if (room.result) {
                         socket.handshake.session.cur_step = data.step;
-                        if(room.allIsOver) {
+                        if (room.allIsEnd) {
+                            io.in(`game_of_${data.room_id}`).emit('online_end', {
+                                result: true,
+                                winner: room.result.winner,
+                                winnerPoint: room.result.winnerPoint
+                            });
+                            if (room.result.winner.length != 0) {
+                                const user = await users.addUserValue(room.result.winner[0],
+                                    {
+                                        point: room.result.winnerPoint[0],
+                                        coin: room.result.prize,
+                                        heart: 1,
+                                    });
+                                io.to(players[room.result.winner[0]]).emit('update_userdata', {result: user.result});
+                            }
+                            for( joinuser of room.result.joinUsers) {
+                                if (!players[joinuser]) continue;
+                                const client = io.sockets.sockets.get(players[joinuser]);
+                                client.leave(`game_of_${data.room_id}`);
+                                client.handshake.session.status = 'Idle';
+                            };
+                            socket.handshake.session.status = 'Idle';
+                            // console.log('All users are ended');
+
+                            await rooms.removeRoom({room_id: data.room_id});
+                        } else if(room.allIsOver) {
                             io.in(`game_of_${data.room_id}`).emit('online_end', {
                                 result: true,
                                 winner: room.result.winner,
                                 winnerPoint: room.result.winnerPoint
                             });
                             // console.log('All users are overed');
-                        } else if (room.allIsEnd) {
-                            io.in(`game_of_${data.room_id}`).emit('online_end', {
-                                result: true,
-                                winner: room.result.winner,
-                                winnerPoint: room.result.winnerPoint
-                            });
-                            if (room.result.winner.length != 0)
-                                users.addUserValue(room.result.winner[0],
-                                    {
-                                        point: room.result.winnerPoint[0],
-                                        coin: room.result.prize,
-                                        heart: 1,
-                                    }).then((user) => {
-                                        io.to(players[room.result.winner[0]]).emit('update_userdata', {result: user.result});
-                                });
-                            io.sockets.clients(`game_of_${data.room_id}`).forEach(function(client){
-                                client.leave(`game_of_${data.room_id}`);
-                                client.handshake.session.status = 'Idle';
-                            });
-                            socket.handshake.session.status = 'Idle';
-                            // console.log('All users are ended');
-
-                            await rooms.removeRoom({room_id: data.room_id});
                         }
                         console.log('end is processed');
                     } else {

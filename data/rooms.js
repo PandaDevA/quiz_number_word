@@ -206,7 +206,7 @@ const exportedMethods = {
                     break;
                 }
             }
-            if (i == winners.length && i < 3) {
+            if (i == winners.length && i < 3 && winners.indexOf(data.username) == -1) {
                 winners.push(data.username);
                 winnerPoints.push(data.point);
             }
