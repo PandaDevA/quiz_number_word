@@ -12,6 +12,7 @@ class WordGameScreen extends Phaser.Scene{
         this.load.image("Logo", "./images/logo.png");
         this.load.image("Time", "./images/time.png");
         this.load.image("Letter", "./images/letter.png");
+        this.load.image("Outline", "./images/game_outline.png");
         this.load.spritesheet("Number", "./images/number.png", { frameWidth: 211, frameHeight: 199 });
         this.load.spritesheet("Refresh", "./images/refresh.png", { frameWidth: 190, frameHeight: 178 });
         this.load.spritesheet("Check", "./images/check.png", { frameWidth: 190, frameHeight: 178 });
@@ -21,9 +22,7 @@ class WordGameScreen extends Phaser.Scene{
         this.point = undefined;
         this.logo = this.add.image(540,120,'Logo');
 
-        this.graphics = this.add.graphics();
-        this.graphics.lineStyle(4, '#000000', 1);
-        this.graphics.strokeRoundedRect(35,190,1010,1300, 10);
+        this.outline = this.add.image(540,840,'Outline');
 
         this.timeImage = this.add.image(540,350,'Time');
         this.timeText = this.add.text(540,390, '30', { fixedWidth: 350, fixedHeight: 110 })

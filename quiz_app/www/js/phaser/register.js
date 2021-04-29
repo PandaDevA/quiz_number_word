@@ -90,13 +90,13 @@ class RegisterScreen extends Phaser.Scene{
 
         this.emailImage = this.add.image(540,850,'InputBack');
         this.email = this.add.rexInputText(540, 850, 620, 70, 
-            {
-                text:'',
-                type:'text',
-                fontSize: '64px',
-                fontFamily: 'RR',
-                color: '#000000',
-            })
+        {
+            text:'',
+            type:'text',
+            fontSize: '64px',
+            fontFamily: 'RR',
+            color: '#000000',
+        })
         .setOrigin(0.5,0.5);
         this.emailText = this.add.text(210, 785, 'Email', { fixedWidth: 200, fixedHeight: 32 })
         .setStyle({

@@ -12,6 +12,7 @@ class NumberGameScreen extends Phaser.Scene{
         this.load.image("Logo", "./images/logo.png");
         this.load.image("Target", "./images/target.png");
         this.load.image("Time", "./images/time.png");
+        this.load.image("Outline", "./images/game_outline.png");
         this.load.spritesheet("Number", "./images/number.png", { frameWidth: 211, frameHeight: 199 });
         this.load.spritesheet("Multi", "./images/sign_multi.png", { frameWidth: 190, frameHeight: 178 });
         this.load.spritesheet("Plus", "./images/sign_plus.png", { frameWidth: 190, frameHeight: 178 });
@@ -25,9 +26,7 @@ class NumberGameScreen extends Phaser.Scene{
         this.point = undefined;
         this.logo = this.add.image(540,120,'Logo');
 
-        this.graphics = this.add.graphics();
-        this.graphics.lineStyle(4, '#000000', 1);
-        this.graphics.strokeRoundedRect(35,190,1010,1300, 10);
+        this.outline = this.add.image(540,840,'Outline');
 
         this.targetImage = this.add.image(320,350,'Target');
         this.targetNumber = this.add.text(320,390, gameData.numData[cur_number].result, { fixedWidth: 350, fixedHeight: 110 })
