@@ -9,6 +9,12 @@ class EndScreen extends Phaser.Scene{
     }
 
     preload() {
+        this.load.scenePlugin({
+            key: 'rexuiplugin',
+            url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+            sceneKey: 'rexUI'
+        });
+
         if((gameData.wordData != undefined && cur_word == gameData.wordData.length) || game_type == "passion")
             this.bEnd = true;
         else

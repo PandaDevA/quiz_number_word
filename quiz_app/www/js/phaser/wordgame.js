@@ -80,8 +80,11 @@ class WordGameScreen extends Phaser.Scene{
             this.resultTexts.push(resultText);
 
             characterImage.setInteractive().on('pointerdown', () => {
+                if(this.characterImages[i].alpha == 0.5)
+                    return;
                 this.result = this.result + this.characterTexts[i].text;
                 this.resultTexts[this.result.length-1].setText(this.characterTexts[i].text);
+                this.characterImages[i].setAlpha(0.5);
             });
         }
 
@@ -90,7 +93,9 @@ class WordGameScreen extends Phaser.Scene{
             this.result = '';
             for (var i=0; i<this.resultTexts.length; i++)
                 this.resultTexts[i].setText('');
-        });
+            for (var i=0; i<this.characterImages.length; i++)
+                this.characterImages[i].setAlpha(1);
+            });
 
         this.checkButton = this.add.image(440,1380,'Check', 1);
         this.checkButton.setInteractive().on('pointerdown', () => {
