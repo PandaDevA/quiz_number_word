@@ -56,10 +56,10 @@ const generatedNumber = () => {
 const exportedMethods = {
 
   getNumberData() {
-    let data = {array: [9, 3, 8, 2, 3, 75], result: 450};
-    // while(data == undefined || data == 0) {
-    //   data = generatedNumber()
-    // }
+    let data;// = {array: [9, 3, 8, 2, 3, 75], result: 450};
+    while(data == undefined || data == 0) {
+      data = generatedNumber()
+    }
     return data;
   },
 
