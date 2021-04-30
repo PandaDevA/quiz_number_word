@@ -3,9 +3,9 @@
  */
 
 var Client = {};
-// Client.socket = io("http://192.168.104.55:8081/");
+Client.socket = io("http://192.168.104.55:8081/");
 // Client.socket = io("http://192.168.104.56:8081/");
- Client.socket = io("http://quizpuzzle.chileracing.net/");
+// Client.socket = io("http://quizpuzzle.chileracing.net/");
 
 Client.login = function(username, password){
     Client.socket.emit('login', {username: username, password: password});
@@ -18,6 +18,18 @@ Client.register = function(username, email, password, avatar){
 
 Client.rank_list = function(){
     Client.socket.emit('rank_list', {});
+};
+
+Client.rule_content = function(){
+    Client.socket.emit('rule_content', {});
+};
+
+Client.method_content = function(){
+    Client.socket.emit('method_content', {});
+};
+
+Client.policy_content = function(){
+    Client.socket.emit('policy_content', {});
 };
 
 
@@ -60,6 +72,48 @@ Client.socket.on('rank_list',function(data){
     else
     {
         toast_error(activeScene, 'Failed to load rank');
+    }
+});
+
+Client.socket.on('rule_content',function(data){
+    let activeScene = game.scene.getScenes(true)[0];
+    if(data.result)
+    {
+        rule_content = data.result;
+        game.scene.stop(activeScene.scene.key);
+        game.scene.start('RuleScreen');
+    }
+    else
+    {
+        toast_error(activeScene, 'Failed to load rule');
+    }
+});
+
+Client.socket.on('policy_content',function(data){
+    let activeScene = game.scene.getScenes(true)[0];
+    if(data.result)
+    {
+        policy_content = data.result;
+        game.scene.stop(activeScene.scene.key);
+        game.scene.start('PolicyScreen');
+    }
+    else
+    {
+        toast_error(activeScene, 'Failed to load policy');
+    }
+});
+
+Client.socket.on('method_content',function(data){
+    let activeScene = game.scene.getScenes(true)[0];
+    if(data.result)
+    {
+        method_content = data.result;
+        game.scene.stop(activeScene.scene.key);
+        game.scene.start('MethodScreen');
+    }
+    else
+    {
+        toast_error(activeScene, 'Failed to load method');
     }
 });
 

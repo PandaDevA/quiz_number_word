@@ -56,7 +56,7 @@ class MenuScreen extends Phaser.Scene{
         .setOrigin(0.5,0.5);
         this.ruleText.setInteractive()
         .on('pointerdown', () => {
-            
+            Client.rule_content();
         });
         line = this.add.line(540, 630, 0, 0, 800, 0, 0xffffff, 1);
         line.setLineWidth(6,6);
@@ -71,7 +71,7 @@ class MenuScreen extends Phaser.Scene{
         .setOrigin(0.5,0.5);
         this.methodText.setInteractive()
         .on('pointerdown', () => {
-            
+            Client.method_content();
         });
         line = this.add.line(540, 810, 0, 0, 800, 0, 0xffffff, 1);
         line.setLineWidth(6,6);
@@ -86,7 +86,7 @@ class MenuScreen extends Phaser.Scene{
         .setOrigin(0.5,0.5);
         this.policyText.setInteractive()
         .on('pointerdown', () => {
-            
+            Client.policy_content();
         });
         line = this.add.line(540, 990, 0, 0, 800, 0, 0xffffff, 1);
         line.setLineWidth(6,6);

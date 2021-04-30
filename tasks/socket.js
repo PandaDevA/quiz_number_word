@@ -1,5 +1,6 @@
 const data = require('../data/');
 const puzzle = require('./puzzle');
+const infos = data.infos;
 const users = data.users;
 const rooms = data.rooms;
 
@@ -658,6 +659,33 @@ const exportedMethods = {
                     } else {
                         socket.emit('rank_list', { result: userList });
                     }
+                });
+            });
+
+            socket.on('rule_content', () => {
+                // REQUIRE INFO:
+                console.log('rule_content request received');
+
+                infos.getRule().then((rule_content) => {
+                    socket.emit('rule_content', { result: rule_content });
+                });
+            });
+
+            socket.on('method_content', () => {
+                // REQUIRE INFO:
+                console.log('method_content request received');
+
+                infos.getMethod().then((method_content) => {
+                    socket.emit('method_content', { result: method_content });
+                });
+            });
+
+            socket.on('policy_content', () => {
+                // REQUIRE INFO:
+                console.log('policy_content request received');
+
+                infos.getPolicy().then((policy_content) => {
+                    socket.emit('policy_content', { result: policy_content });
                 });
             });
         });

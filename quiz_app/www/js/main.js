@@ -9,6 +9,9 @@ var gameData = {};
 
 var tournament_list = [];
 var rank_list = [];
+var rule_content = "";
+var method_content = "";
+var policy_content = "";
 
 var game_type = "";
 var game_state = "";
@@ -38,7 +41,7 @@ const config = {
     scene: [LoginScreen, HomeScreen, TournamentScreen, NumberGameScreen, 
         EndScreen, WordGameScreen, BattleScreen, PassionScreen, 
         RegisterScreen, BattleWaitScreen, TournamentWaitScreen,
-        MenuScreen, RankScreen ],
+        MenuScreen, RankScreen, RuleScreen, MethodScreen, PolicyScreen ],
     dom: {
         createContainer: true
     },
