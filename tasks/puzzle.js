@@ -39,7 +39,7 @@ const generatedNumber = () => {
   let data = {array: []};
   for (let i = 0; i<5; i++)
     array.push(generateRandom(1, 9));
-  array.push(25*Math.ceil(generateRandom(26, 99)/25));
+  array.push(25*Math.ceil(generateRandom(26, 99)/25)-25);
   data.array = Array.from(array);
 
   let result = 0;
