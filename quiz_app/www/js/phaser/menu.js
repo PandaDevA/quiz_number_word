@@ -26,7 +26,8 @@ class MenuScreen extends Phaser.Scene{
         .setOrigin(0.5,0.5);
         this.profileText.setInteractive()
         .on('pointerdown', () => {
-            
+            game.scene.stop('MenuScreen');
+            game.scene.start('ProfileScreen');
         });
         let line = this.add.line(540, 270, 0, 0, 800, 0, 0xffffff, 1);
         line.setLineWidth(6,6);

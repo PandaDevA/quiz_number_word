@@ -41,7 +41,7 @@ const config = {
     scene: [LoginScreen, HomeScreen, TournamentScreen, NumberGameScreen, 
         EndScreen, WordGameScreen, BattleScreen, PassionScreen, 
         RegisterScreen, BattleWaitScreen, TournamentWaitScreen,
-        MenuScreen, RankScreen, RuleScreen, MethodScreen, PolicyScreen ],
+        MenuScreen, RankScreen, RuleScreen, MethodScreen, PolicyScreen, ProfileScreen ],
     dom: {
         createContainer: true
     },
