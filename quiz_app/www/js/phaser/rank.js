@@ -96,7 +96,7 @@ class RankScreen extends Phaser.Scene{
                 this.userAvatar_0 = this.add.image(340,820,'UserAvatar').setDisplaySize(190,190);   
             }
             else{
-                this.userAvatar_0 = this.add.image(340,820,'user_avatar_0');
+                this.userAvatar_0 = this.add.image(340,820,'user_avatar_1');
                 this.userAvatar_0.setDisplaySize(190,190);
                 this.userAvatar_0_cover = this.add.image(340,820,'avatar_cover').setDisplaySize(190,190).setDepth(5);
             }
@@ -127,7 +127,7 @@ class RankScreen extends Phaser.Scene{
                 this.userAvatar_0 = this.add.image(740,820,'UserAvatar').setDisplaySize(190,190);   
             }
             else{
-                this.userAvatar_0 = this.add.image(740,820,'user_avatar_0');
+                this.userAvatar_0 = this.add.image(740,820,'user_avatar_2');
                 this.userAvatar_0.setDisplaySize(190,190);
                 this.userAvatar_0_cover = this.add.image(740,820,'avatar_cover').setDisplaySize(190,190).setDepth(5);
             }

@@ -3,14 +3,17 @@
  */
 
 var Client = {};
-// Client.socket = io("http://192.168.104.55:8081/");
+Client.socket = io("http://192.168.104.55:8081/");
 // Client.socket = io("http://192.168.104.56:8081/");
-Client.socket = io("http://quizpuzzle.chileracing.net/");
+// Client.socket = io("http://quizpuzzle.chileracing.net/");
 
 Client.login = function(username, password){
     Client.socket.emit('login', {username: username, password: password});
 };
 
+Client.logout = function(){
+    Client.socket.emit('logout', {});
+};
 
 Client.register = function(username, email, password, avatar){
     Client.socket.emit('register', {username: username, email: email, password: password, avatar: avatar});
@@ -186,7 +189,7 @@ function invite_modal(scene){
         expand: {
             content: false, // Content is a pure text object
         }
-    }).setDepth(2)
+    }).setDepth(100)
         .layout()
         // .drawBounds(scene.add.graphics(), 0xff0000)
         .popUp(1000);
@@ -248,7 +251,7 @@ function reject_modal(scene){
         expand: {
             content: false, // Content is a pure text object
         }
-    }).setDepth(2)
+    }).setDepth(100)
         .layout()
         // .drawBounds(scene.add.graphics(), 0xff0000)
         .popUp(1000);
@@ -271,7 +274,7 @@ function reject_modal(scene){
 function toast_error(scene, error){
     var toast = scene.rexUI.add.toast({
         x: 540,
-        y: 840,
+        y: 300,
 
         background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, 0xffffff).setStrokeStyle(10, 0xff0000, 1),
         text: scene.add.text(0, 0, '', {
@@ -293,6 +296,6 @@ function toast_error(scene, error){
             hold: 3000,
             out: 250,
         },
-    })
+    }).setDepth(100)
     .show(error)
 }

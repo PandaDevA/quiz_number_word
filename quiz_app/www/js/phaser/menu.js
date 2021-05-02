@@ -101,7 +101,9 @@ class MenuScreen extends Phaser.Scene{
         .setOrigin(0.5,0.5);
         this.logoutText.setInteractive()
         .on('pointerdown', () => {
-            
+            Client.logout();
+            game.scene.stop('MenuScreen');
+            game.scene.start('LoginScreen');
         });
         line = this.add.line(540, 1170, 0, 0, 800, 0, 0xffffff, 1);
         line.setLineWidth(6,6);
