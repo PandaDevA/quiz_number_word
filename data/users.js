@@ -91,7 +91,12 @@ const exportedMethods = {
         if (data.point) updatedUserData.point += data.point;
         if (data.coin) updatedUserData.coin += data.coin;
         if (updatedUserData.coin > 1000) updatedUserData.coin = 1000;
-        if (data.heart) updatedUserData.heart += data.heart;
+        if (data.heart!=0){
+            updatedUserData.heart += data.heart;
+            var date = new Date();
+            var minutes = date.getMinutes();
+            updateduserData.revive = minutes;
+        }
         if (updatedUserData.heart > 3) updatedUserData.heart = 3;
 
         await userCollection.updateOne({ _id: user._id }, { $set: updatedUserData });

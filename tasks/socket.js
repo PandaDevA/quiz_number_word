@@ -36,7 +36,10 @@ const exportedMethods = {
         let result = await users.getAllUsers();
         if (result)
             result.map((user, index) => {
-                if (user.heart < 3) {
+                var date = new Date();
+                var minutes = date.getMinutes();
+                var old = (user.revive + 30) % 60;
+                if (user.heart < 3 && old <= minutes) {
                     const info = users.addUserValue(user.userName, { heart: 1 });
                     if (!info) console.log('Error occured whild addHeart');
                     else io.to(players[user.userName]).emit('update_userdata', {result: info});
