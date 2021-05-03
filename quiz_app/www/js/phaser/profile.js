@@ -14,22 +14,15 @@ class ProfileScreen extends Phaser.Scene{
             url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
             sceneKey: 'rexUI'
         });
-
-        // this.load.plugin('rextexteditplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rextexteditplugin.min.js', true);
         this.load.plugin('rexcanvasplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexcanvasplugin.min.js', true);
         this.load.plugin('rexfilechooserplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexfilechooserplugin.min.js', true);
         this.load.plugin('rexinputtextplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexinputtextplugin.min.js', true);
-
-        this.load.image("SignUp1", "./images/signup_button.png");
-        this.load.image("InputBack", "./images/input_back.png");
-        this.load.image("EmptyUser", "./images/avatar_empty.png");
-        this.load.image("avatar_cover", "./images/avatar_cover.png");
-        this.load.image("MainPage", "./images/main_page.png");
 
         this.avatar = "";
     }
 
     create() {
+        this.cameras.main.fadeIn(1000, 16, 110, 173);
         // Create button
         var button = this.add.image(540,400,'EmptyUser').setOrigin(0.5,0.5);
         // Create canvas   
@@ -134,8 +127,11 @@ class ProfileScreen extends Phaser.Scene{
 
         this.mainPageButton = this.add.image(540,1400,'MainPage');
         this.mainPageButton.setInteractive().on('pointerdown', () => {
-            game.scene.stop('ProfileScreen');
-            game.scene.start('HomeScreen');
+            this.cameras.main.fadeOut(1000, 16, 110, 173);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                game.scene.stop('ProfileScreen');
+                game.scene.start('HomeScreen');
+            });
         });
     }
 

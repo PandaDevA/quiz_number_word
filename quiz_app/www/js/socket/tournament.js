@@ -21,8 +21,11 @@ Client.socket.on('tournament_list',function(data){
         tournament_list = data.result;
         if(tournament_list.length>0)
         {
-            game.scene.stop(activeScene.scene.key);
-            game.scene.start('TournamentScreen');
+            activeScene.cameras.main.fadeOut(1000, 16, 110, 173);
+            activeScene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                game.scene.stop(activeScene.scene.key);
+                game.scene.start('TournamentScreen');
+            });
         }
     }
     else

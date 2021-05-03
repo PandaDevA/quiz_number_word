@@ -17,8 +17,11 @@ Client.socket.on('daily_start',function(data){
         cur_number = 0;
         cur_word = 0;
         cur_point = 0;
-        game.scene.stop(activeScene.scene.key);
-        game.scene.start('NumberGameScreen');
+        activeScene.cameras.main.fadeOut(1000, 16, 110, 173);
+        activeScene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+            game.scene.stop(activeScene.scene.key);
+            game.scene.start('NumberGameScreen');
+        });
     }
     else
     {

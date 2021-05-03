@@ -14,13 +14,10 @@ class BattleWaitScreen extends Phaser.Scene{
             url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
             sceneKey: 'rexUI'
         });
-
-        this.load.image("Cancel", "./images/cancel.png");
-        this.load.image("UserName", "./images/username.png");
-        this.load.image("EmptyUser", "./images/avatar_empty.png");
     }
 
     create() {
+        this.cameras.main.fadeIn(1000, 16, 110, 173);
         if(userData.avatar == ""){
             this.userAvatar = this.add.image(540,400,'UserAvatar');   
         }
@@ -67,8 +64,11 @@ class BattleWaitScreen extends Phaser.Scene{
         this.cancelButton = this.add.image(540,1550,'Cancel');
         this.cancelButton.setInteractive().on('pointerdown', () => {
             Client.battle_cancel();
-            game.scene.stop('BattleWaitScreen');
-            game.scene.start('BattleScreen');
+            this.cameras.main.fadeOut(1000, 16, 110, 173);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                game.scene.stop('BattleWaitScreen');
+                game.scene.start('BattleScreen');
+            });
         });
 
         if(oppoData != "")
@@ -141,8 +141,11 @@ class BattleWaitScreen extends Phaser.Scene{
         {
             scene.timer.remove();
             scene.time.removeEvent(scene.timer);
-            game.scene.stop('BattleWaitScreen');
-            game.scene.start('NumberGameScreen');
+            scene.cameras.main.fadeOut(1000, 16, 110, 173);
+            scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                game.scene.stop('BattleWaitScreen');
+                game.scene.start('NumberGameScreen');
+            });
         }
         else{
             scene.timeText.setText(current_time);

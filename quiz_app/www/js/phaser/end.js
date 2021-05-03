@@ -19,33 +19,19 @@ class EndScreen extends Phaser.Scene{
             this.bEnd = true;
         else
             this.bEnd = false;
-        if(game_state == "failed"){
-            this.load.image("Lose", "./images/lose.png");
-            this.load.image("MainPage", "./images/main_page.png");
-            this.load.image("PlayAgain", "./images/play_again.png");
-        } else if(game_state == "pass"){
-            if(!this.bEnd){
-                this.load.image("Win", "./images/win.png");
-                this.load.image("Orange", "./images/orange_back.png");
-            }
-            else{
-                this.load.image("Win", "./images/win.png");
-                this.load.image("Orange", "./images/orange_back.png");
-                this.load.image("MainPage", "./images/main_page.png");
-                this.load.image("NextStage", "./images/next_stage.png");
-                this.load.image("PointAds", "./images/win_earn_point_ads.png");
-                this.load.image("CoinAds", "./images/win_earn_coin_ads.png");
-            }
-        }
     }
 
     create() {
+        this.cameras.main.fadeIn(1000, 16, 110, 173);
         if(game_state == "failed"){
             this.lose = this.add.image(540,480,'Lose');
             this.main_page = this.add.image(540,1140,'MainPage');
             this.main_page.setInteractive().on('pointerdown', () => {
-                game.scene.stop('EndScreen');
-                game.scene.start('HomeScreen');
+                this.cameras.main.fadeOut(1000, 16, 110, 173);
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                    game.scene.stop('EndScreen');
+                    game.scene.start('HomeScreen');
+                });
             });
     
             if(game_type == "stage")
@@ -330,8 +316,11 @@ class EndScreen extends Phaser.Scene{
     
                 this.main_page = this.add.image(540,1310,'MainPage');
                 this.main_page.setInteractive().on('pointerdown', () => {
-                    game.scene.stop('EndScreen');
-                    game.scene.start('HomeScreen');
+                    this.cameras.main.fadeOut(1000, 16, 110, 173);
+                    this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                        game.scene.stop('EndScreen');
+                        game.scene.start('HomeScreen');
+                    });
                 });
         
                 if(game_type == "stage")
@@ -412,11 +401,14 @@ class EndScreen extends Phaser.Scene{
             {
                 scene.timer.remove();
                 scene.time.removeEvent(scene.timer);
-                game.scene.stop('EndScreen');
-                if(cur_number == cur_word)
-                    game.scene.start('NumberGameScreen');
-                else
-                    game.scene.start('WordGameScreen');
+                scene.cameras.main.fadeOut(1000, 16, 110, 173);
+                scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                    game.scene.stop('EndScreen');
+                    if(cur_number == cur_word)
+                        game.scene.start('NumberGameScreen');
+                    else
+                        game.scene.start('WordGameScreen');
+                });
             }
         }
         else{

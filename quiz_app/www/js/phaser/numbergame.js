@@ -9,20 +9,10 @@ class NumberGameScreen extends Phaser.Scene{
     }
 
     preload() {
-        this.load.image("Logo", "./images/logo.png");
-        this.load.image("Target", "./images/target.png");
-        this.load.image("Time", "./images/time.png");
-        this.load.image("Outline", "./images/game_outline.png");
-        this.load.spritesheet("Number", "./images/number.png", { frameWidth: 211, frameHeight: 199 });
-        this.load.spritesheet("Multi", "./images/sign_multi.png", { frameWidth: 190, frameHeight: 178 });
-        this.load.spritesheet("Plus", "./images/sign_plus.png", { frameWidth: 190, frameHeight: 178 });
-        this.load.spritesheet("Minus", "./images/sign_minus.png", { frameWidth: 190, frameHeight: 178 });
-        this.load.spritesheet("Divi", "./images/sign_div.png", { frameWidth: 190, frameHeight: 178 });
-        this.load.spritesheet("Refresh", "./images/refresh.png", { frameWidth: 190, frameHeight: 178 });
-        this.load.spritesheet("Check", "./images/check.png", { frameWidth: 190, frameHeight: 178 });
     }
 
     create() {
+        this.cameras.main.fadeIn(1000, 16, 110, 173);
         this.point = undefined;
         this.logo = this.add.image(540,120,'Logo');
 
@@ -250,8 +240,11 @@ class NumberGameScreen extends Phaser.Scene{
                 Client.daily_end(bPass);
             }
             cur_number++;
-            game.scene.stop('NumberGameScreen');
-            game.scene.start('EndScreen');
+            this.cameras.main.fadeOut(1000, 16, 110, 173);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                game.scene.stop('NumberGameScreen');
+                game.scene.start('EndScreen');
+            });
         }
         else if(game_type == "battle" || game_type == "tournament")
         {
@@ -279,8 +272,11 @@ class NumberGameScreen extends Phaser.Scene{
                     Client.daily_end(false);
                 }
                 cur_number++;
-                game.scene.stop('NumberGameScreen');
-                game.scene.start('EndScreen');
+                this.cameras.main.fadeOut(1000, 16, 110, 173);
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                    game.scene.stop('NumberGameScreen');
+                    game.scene.start('EndScreen');
+                });
             }
             else if(game_type == "battle" || game_type == "tournament")
             {

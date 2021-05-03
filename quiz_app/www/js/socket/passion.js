@@ -10,8 +10,11 @@ Client.socket.on('passion_start',function(data){
     let activeScene = game.scene.getScenes(true)[0];
     if(data.result)
     {
-        game.scene.stop(activeScene.scene.key);
-        game.scene.start('PassionScreen');
+        activeScene.cameras.main.fadeOut(1000, 16, 110, 173);
+        activeScene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+            game.scene.stop(activeScene.scene.key);
+            game.scene.start('PassionScreen');
+        });
     }
     else
     {

@@ -14,18 +14,17 @@ class TournamentScreen extends Phaser.Scene{
             url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
             sceneKey: 'rexUI'
         });
-        this.load.image("MainPage", "./images/main_page.png");
-        this.load.image("TournamentDetailOrange", "./images/tournament_detail_orange_back.png");
-        this.load.image("TournamentDetailBlack", "./images/tournament_detail_black_back.png");
-        this.load.image("Join", "./images/join.png");
-        this.load.image("Cancel", "./images/cancel.png");
     }
 
     create() {
+        this.cameras.main.fadeIn(1000, 16, 110, 173);
         this.main_page = this.add.image(540,1500,'MainPage');
         this.main_page.setInteractive().on('pointerdown', () => {
-            game.scene.stop('TournamentScreen');
-            game.scene.start('HomeScreen');
+            this.cameras.main.fadeOut(1000, 16, 110, 173);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                game.scene.stop('TournamentScreen');
+                game.scene.start('HomeScreen');
+            });
         });
 
         this.back_list = [];

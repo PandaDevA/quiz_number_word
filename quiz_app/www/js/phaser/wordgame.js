@@ -9,16 +9,10 @@ class WordGameScreen extends Phaser.Scene{
     }
 
     preload() {
-        this.load.image("Logo", "./images/logo.png");
-        this.load.image("Time", "./images/time.png");
-        this.load.image("Letter", "./images/letter.png");
-        this.load.image("Outline", "./images/game_outline.png");
-        this.load.spritesheet("Number", "./images/number.png", { frameWidth: 211, frameHeight: 199 });
-        this.load.spritesheet("Refresh", "./images/refresh.png", { frameWidth: 190, frameHeight: 178 });
-        this.load.spritesheet("Check", "./images/check.png", { frameWidth: 190, frameHeight: 178 });
     }
 
     create() {
+        this.cameras.main.fadeIn(1000, 16, 110, 173);
         this.point = undefined;
         this.logo = this.add.image(540,120,'Logo');
 
@@ -148,8 +142,11 @@ class WordGameScreen extends Phaser.Scene{
                 Client.daily_end(bPass);
             }
             cur_word++;
-            game.scene.stop('WordGameScreen');
-            game.scene.start('EndScreen');
+            this.cameras.main.fadeOut(1000, 16, 110, 173);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                game.scene.stop('WordGameScreen');
+                game.scene.start('EndScreen');
+            });
         }
         else if(game_type == "battle" || game_type == "tournament")
         {
@@ -178,8 +175,11 @@ class WordGameScreen extends Phaser.Scene{
                     Client.daily_end(false);
                 }
                 cur_word++;
-                game.scene.stop('WordGameScreen');
-                game.scene.start('EndScreen');
+                scene.cameras.main.fadeOut(1000, 16, 110, 173);
+                scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                    game.scene.stop('WordGameScreen');
+                    game.scene.start('EndScreen');
+                });
             }
             else if(game_type == "battle" || game_type == "tournament")
             {

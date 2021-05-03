@@ -9,10 +9,6 @@ class PassionScreen extends Phaser.Scene{
     } 
 
     preload() {
-        this.load.image("Passion", "./images/passion_board.png");
-        this.load.image("Turn", "./images/turn.png");
-        this.load.image("Stop", "./images/stop.png");
-        this.load.image("Indicator", "./images/passion_picker.png");
         this.angle_speed = 0.05;
         this.angle = 0.0;
         this.bStop = false;
@@ -20,6 +16,7 @@ class PassionScreen extends Phaser.Scene{
     }
 
     create() {
+        this.cameras.main.fadeIn(1000, 16, 110, 173);
         this.passion_flower = this.add.image(540,690,'Passion');
         let angle = Number.parseInt(Math.random()*360);
         this.angle = angle;
@@ -77,8 +74,11 @@ class PassionScreen extends Phaser.Scene{
             Client.passion_end();
             game_type = "passion";
             game_state = "pass";
-            game.scene.stop("PassionScreen");
-            game.scene.start("EndScreen");
+            scene.cameras.main.fadeOut(1000, 16, 110, 173);
+            scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                game.scene.stop("PassionScreen");
+                game.scene.start("EndScreen");
+            });
         }
         scene.angle = scene.angle + scene.angle_speed;
         if(scene.angle>360)

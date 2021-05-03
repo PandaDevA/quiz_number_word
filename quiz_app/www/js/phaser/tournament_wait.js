@@ -14,11 +14,10 @@ class TournamentWaitScreen extends Phaser.Scene{
             url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
             sceneKey: 'rexUI'
         });
-
-        this.load.image("TournamentDetailBlack", "./images/tournament_detail_black_back.png");
     }
 
     create() {
+        this.cameras.main.fadeIn(1000, 16, 110, 173);
         this.startText = this.add.text(540, 400, 'TOURNAMENT START', {
             fontFamily: 'RR',
             fontWeight: 'bold',
@@ -77,8 +76,11 @@ class TournamentWaitScreen extends Phaser.Scene{
         {
             scene.timer.remove();
             scene.time.removeEvent(scene.timer);
-            game.scene.stop('TournamentWaitScreen');
-            game.scene.start('NumberGameScreen');
+            scene.cameras.main.fadeOut(1000, 16, 110, 173);
+            scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                game.scene.stop('TournamentWaitScreen');
+                game.scene.start('NumberGameScreen');
+            });
         }
         else{
             scene.timeText.setText(current_time);

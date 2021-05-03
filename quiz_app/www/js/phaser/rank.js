@@ -14,11 +14,6 @@ class RankScreen extends Phaser.Scene{
             url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
             sceneKey: 'rexUI'
         });
-
-        this.load.image("MainPage", "./images/main_page.png");
-        this.load.image("UserName", "./images/username.png");
-        this.load.image("EmptyUser", "./images/avatar_empty.png");
-
         if(rank_list.length > 0){
             if(rank_list[0].avatar != "")
             {
@@ -49,6 +44,7 @@ class RankScreen extends Phaser.Scene{
     }
 
     create() {
+        this.cameras.main.fadeIn(1000, 16, 110, 173);
         this.graphics = this.add.graphics();
         if(rank_list.length > 0){
             this.graphics.fillStyle(0xffffff, 1);
@@ -191,8 +187,11 @@ class RankScreen extends Phaser.Scene{
 
         this.mainpageButton = this.add.image(540,1550,'MainPage');
         this.mainpageButton.setInteractive().on('pointerdown', () => {
-            game.scene.stop('RankScreen');
-            game.scene.start('HomeScreen');
+            this.cameras.main.fadeOut(1000, 16, 110, 173);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                game.scene.stop('RankScreen');
+                game.scene.start('HomeScreen');
+            });
         });
     }
     update(){

@@ -9,8 +9,6 @@ class MethodScreen extends Phaser.Scene{
     }
 
     preload() {
-        this.load.image("MainPage", "./images/main_page.png");
-
         this.load.scenePlugin({
             key: 'rexuiplugin',
             url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
@@ -19,6 +17,7 @@ class MethodScreen extends Phaser.Scene{
     }
 
     create() {
+        this.cameras.main.fadeIn(1000, 16, 110, 173);
         this.method = this.rexUI.add.scrollablePanel({
             x: 540,
             y: 800,
@@ -103,8 +102,11 @@ class MethodScreen extends Phaser.Scene{
         this.mainPage = this.add.image(540,1500,'MainPage');
         this.mainPage.setInteractive().on('pointerdown', () => {
             game.domContainer.style.display = 'block';
-            game.scene.stop('MethodScreen');
-            game.scene.start('HomeScreen');
+            this.cameras.main.fadeOut(1000, 16, 110, 173);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                game.scene.stop('MethodScreen');
+                game.scene.start('HomeScreen');
+            });
         });
         game.domContainer.style.display = 'none';
     }

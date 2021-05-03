@@ -15,19 +15,6 @@ class HomeScreen extends Phaser.Scene{
             sceneKey: 'rexUI'
         });
 
-        this.load.image("Logo", "./images/logo.png");
-        this.load.image("UserAvatar", "./images/avatar.png");
-        this.load.image("avatar_cover", "./images/avatar_cover.png");
-        this.load.image("Life", "./images/life.png");
-        this.load.image("Coin", "./images/coin.png");
-        this.load.image("InfoPanel", "./images/user_detail.png");
-        this.load.image("Stage", "./images/stage.png");
-        this.load.image("Battle", "./images/battle.png");
-        this.load.image("Tournament", "./images/tournament.png");
-        this.load.image("DailyGame", "./images/daily_game.png");
-        this.load.image("TurnEarn", "./images/turn_earn.png");
-        this.load.image("Menu", "./images/menu.png");
-
         if(userData.avatar != "")
         {
             if(this.textures.exists('user_avatar'))
@@ -37,6 +24,7 @@ class HomeScreen extends Phaser.Scene{
     }
 
     create() {
+        this.cameras.main.fadeIn(1000, 16, 110, 173);
         oppoData = "";
 
         this.logo = this.add.image(540,120,'Logo');
@@ -119,8 +107,11 @@ class HomeScreen extends Phaser.Scene{
         });
         this.battle = this.add.image(540,1030,'Battle');
         this.battle.setInteractive().on('pointerdown', () => {
-            game.scene.stop('HomeScreen');
-            game.scene.start('BattleScreen');
+            this.cameras.main.fadeOut(1000, 16, 110, 173);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                game.scene.stop('HomeScreen');
+                game.scene.start('BattleScreen');
+            });
         });
         this.tournament = this.add.image(540,1210,'Tournament');
         this.tournament.setInteractive().on('pointerdown', () => {
@@ -138,8 +129,11 @@ class HomeScreen extends Phaser.Scene{
 
         this.menu = this.add.image(960,1570,'Menu');
         this.menu.setInteractive().on('pointerdown', () => {
-            game.scene.stop('HomeScreen');
-            game.scene.start('MenuScreen');
+            this.cameras.main.fadeOut(1000, 16, 110, 173);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                game.scene.stop('HomeScreen');
+                game.scene.start('MenuScreen');
+            });
         });
 
     }
