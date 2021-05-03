@@ -68,12 +68,13 @@ class EndScreen extends Phaser.Scene{
                 .setOrigin(0.5,0.5);
             }
             else{
-                this.lostText = this.add.text(540, 850, 'YOU LOSE!\n\nTRY TOMORROW AGAIN!', { fixedWidth: 700, fixedHeight: 300, align:'center' })
+                this.lostText = this.add.text(540, 850, 'YOU LOSE!\n\nTRY TOMORROW\nAGAIN!', { fixedWidth: 700, align:'center' })
                 .setStyle({
                     fontSize: '80px',
                     fontFamily: 'RR',
                     fontWeight: 'bold',
                     color: '#ffffff',
+                    align: 'center'
                 })
                 .setOrigin(0.5,0.5);
             }
