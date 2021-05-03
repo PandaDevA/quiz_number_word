@@ -412,7 +412,7 @@ class EndScreen extends Phaser.Scene{
                 scene.timer.remove();
                 scene.time.removeEvent(scene.timer);
                 game.scene.stop('EndScreen');
-                if(cur_number != gameData.numData.length)
+                if(cur_number == cur_word)
                     game.scene.start('NumberGameScreen');
                 else
                     game.scene.start('WordGameScreen');

@@ -117,7 +117,7 @@ Client.socket.on('online_end',function(data){
         cur_point += activeScene.point;
         winner_name_list = data.winner;
         winner_point_list = data.winnerPoint;
-        if(cur_number != gameData.numData.length)
+        if(cur_number == cur_word)
             cur_number++;
         else
             cur_word++;
