@@ -1,10 +1,13 @@
 const data = require('../data/');
 const puzzle = require('./puzzle');
+const nodemailer = require('nodemailer');
+
 const infos = data.infos;
 const users = data.users;
 const rooms = data.rooms;
 
 const players = {};
+const sentVerifyCode = {};
 
 const getDateTimeString = (date) => {
 
@@ -19,7 +22,7 @@ const getDateTimeString = (date) => {
     return dateString + ' ' + timeString;
 }
 
- const getMultiRandomData = async () => {
+const getMultiRandomData = async () => {
     let numDataList = [], wordDataList = [];
     for (let i = 0; i < 5; i++) {
         const numData = puzzle.getNumberData();
@@ -29,6 +32,38 @@ const getDateTimeString = (date) => {
     }
     return { numDataList, wordDataList };
 };
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'tuktarov2121@gmail.com',
+    pass: 'dsf14hgd4eGHFD'
+  }
+});
+  
+const sendVerifyCode = (user) => {
+    const vCode = 10000 + Math.floor(Math.random() * (99999 - 10000 + 1));
+
+    const mailOptions = {
+    from: 'tuktarov2121@gmail.com',
+    to: user,
+    subject: 'Verifying for Quiz puzzle game user',
+    text: vCode
+    };
+    
+    return new Promise(function(resolve, reject) {
+        transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log(error);
+            reject(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+            resolve(vCode);
+        }
+        });
+    });
+}
+
 
 const exportedMethods = {
     async onHeartSupply(io) {
@@ -218,6 +253,41 @@ const exportedMethods = {
                         // console.log(`${data.username} is not logged`);
                     }
                 });
+            });
+
+            socket.on('forgot', (data) => {
+                // REQUIRE INFO: data.username
+                console.log('forgot request recevied');
+
+                users.getUserByName(data.username).then((result) => {
+                    if (result) {
+                        // Send verify code to user
+                        sendVerifyCode(result.email).then(
+                            vCode => {
+                                sentVerifyCode[data.username] = vCode;
+                                socket.emit('forgot', { result: true });
+                            },
+                            error => socket.emit('forgot', { result: false })
+                          );
+                    } else {
+                        socket.emit('forgot', { result: false });
+                    }
+                });
+            });
+
+            socket.on('verify', (data) => {
+                // REQUIRE INFO: data.username and data.code
+                console.log('verify request recevied');
+
+                if (sentVerifyCode[data.username] != undefined) {
+                    // Send verified to user
+                    if (sentVerifyCode[data.username] == data.code)
+                        socket.emit('verify', { result: true });
+                    else
+                        socket.emit('verify', { result: false });
+                } else {
+                    socket.emit('verify', { result: false });
+                }
             });
 
             socket.on('register', (data) => {
