@@ -122,6 +122,9 @@ class LoginScreen extends Phaser.Scene{
             color: '#ffffffa0',
         })
         .setOrigin(1,0.5);
+        this.forgotText.setInteractive().on('pointerdown', () => {
+            Client.forgot(this.userName.text);
+        });
 
         this.loginButton = this.add.image(540,860,'Login');
         this.loginButton.setInteractive().on('pointerdown', () => {

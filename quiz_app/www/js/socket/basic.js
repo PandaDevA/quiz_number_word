@@ -3,12 +3,16 @@
  */
 
 var Client = {};
-// Client.socket = io("http://192.168.104.55:8081/");
-Client.socket = io("http://192.168.104.56:8081/");
+Client.socket = io("http://192.168.104.55:8081/");
+// Client.socket = io("http://192.168.104.56:8081/");
 // Client.socket = io("http://quizpuzzle.chileracing.net/");
 
 Client.login = function(username, password){
     Client.socket.emit('login', {username: username, password: password});
+};
+
+Client.forgot = function(username){
+    Client.socket.emit('forgot', {username: username});
 };
 
 Client.logout = function(){
@@ -67,6 +71,18 @@ Client.socket.on('register',function(data){
     else
     {
         toast_error(game.scene.getScene('RegisterScreen'), 'Register failed\nUserName Duplicated.');
+    }
+});
+
+Client.socket.on('forgot',function(data){
+    let activeScene = game.scene.getScenes(true)[0];
+    if(data.result)
+    {
+        toast_error(activeScene, 'New Password Has Been\nSent To Your Email.');
+    }
+    else
+    {
+        toast_error(activeScene, 'Username Does\nNot Exists.');
     }
 });
 
