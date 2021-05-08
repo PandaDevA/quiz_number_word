@@ -14,7 +14,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "admob-demo-game-phaser": "^1.0.0",
-    "cordova-android": "^9.0.0",
+    "cordova-android": "^9.1.0",
     "cordova-plugin-admobpro": "^2.49.0",
     "cordova-plugin-extension": "^1.5.4",
     "cordova-plugin-whitelist": "^1.3.4"
@@ -27,9 +27,7 @@
         "PLAY_SERVICES_VERSION": "16.0.0"
       }
     },
-    "platforms": [
-      "android"
-    ]
+    "platforms": []
   },
   "dependencies": {
     "phaser": "^3.54.0"
