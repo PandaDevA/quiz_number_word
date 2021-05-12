@@ -147,7 +147,18 @@ class LoginScreen extends Phaser.Scene{
 
         this.googleButton = this.add.image(640,1170,'Google');
         this.googleButton.setInteractive().on('pointerdown', () => {
-            callGoogle();
+            window.plugins.googleplus.login(
+                {
+                  'webClientId': '540253986128-8fhn5o5lb8ogcsnii9tiqqedkd5413jt.apps.googleusercontent.com', // optional clientId of your Web application from Credentials settings of your project - On Android, this MUST be included to get an idToken. On iOS, it is not required.
+                  'offline': false, // optional, but requires the webClientId - if set to true the plugin will also return a serverAuthCode, which can be used to grant offline access to a non-Google server
+                },
+                function (obj) {
+                  alert(JSON.stringify(obj)); // do something useful instead of alerting
+                },
+                function (msg) {
+                  alert('error: ' + msg);
+                }
+            );
         });
 
 

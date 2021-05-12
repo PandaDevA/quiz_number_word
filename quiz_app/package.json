@@ -23,7 +23,11 @@
     "plugins": {
       "cordova-plugin-whitelist": {},
       "cordova-plugin-admobpro": {
-        "ADMOB_APP_ID": "quiz_app",
+        "ADMOB_APP_ID": "540253986128-2dbrpdr59okf8c5st4e2v3eb135t3ptm.apps.googleusercontent.com",
+        "PLAY_SERVICES_VERSION": "16.0.0"
+      },
+      "cordova-plugin-googleplus": {
+        "REVERSED_CLIENT_ID": "540253986128-2dbrpdr59okf8c5st4e2v3eb135t3ptm.apps.googleusercontent.com",
         "PLAY_SERVICES_VERSION": "16.0.0"
       }
     },
