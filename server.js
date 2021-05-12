@@ -29,9 +29,9 @@ console.log = function(d) { //
 };
 
 const port = process.env.PORT || 8081;
-const baseUrl = '0.0.0.0';
+// const baseUrl = '0.0.0.0';
 // const baseUrl = '192.168.104.56';
-// const baseUrl = 'quizpuzzle.chileracing.net'
+const baseUrl = 'quizpuzzle.chileracing.net'
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/quiz_app/www'));
