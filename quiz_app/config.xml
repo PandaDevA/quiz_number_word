@@ -15,7 +15,9 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
+    <allow-navigation href="*" />
     <platform name="android">
+        <preference name="loadUrlTimeoutValue" value="30000" />
         <allow-intent href="market:*" />
     </platform>
     <platform name="ios">
