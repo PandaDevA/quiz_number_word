@@ -74,8 +74,8 @@ const exportedMethods = {
             result.map(async (user, index) => {
                 var date = new Date();
                 var minutes = date.getMinutes();
-                var old = user.revive + 1;
-                if (user.heart < 3 && ( (user.revive - minutes) <= 59 && (user.revive - minutes) >= 1) || old <= minutes) {
+                var old = user.revive + 30;
+                if (user.heart < 3 && ( (user.revive - minutes) <= 30 && (user.revive - minutes) >= 1) || old <= minutes) {
                     const info = await users.addUserValue(user.userName, { heart: 1 });
                     if (!info) console.log('Error occured whild addHeart');
                     else io.to(players[user.userName]).emit('update_userdata', {result: info});
