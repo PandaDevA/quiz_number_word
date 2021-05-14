@@ -17,7 +17,6 @@ class PolicyScreen extends Phaser.Scene{
     }
 
     create() {
-        this.cameras.main.fadeIn(1000, 16, 110, 173);
         this.policy = this.rexUI.add.scrollablePanel({
             x: 540,
             y: 800,
@@ -102,11 +101,8 @@ class PolicyScreen extends Phaser.Scene{
         this.mainPage = this.add.image(540,1500,'MainPage');
         this.mainPage.setInteractive().on('pointerdown', () => {
             game.domContainer.style.display = 'block';
-            this.cameras.main.fadeOut(1000, 16, 110, 173);
-            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                game.scene.stop('PolicyScreen');
-                game.scene.start('HomeScreen');
-            });
+            game.scene.stop('PolicyScreen');
+            game.scene.start('HomeScreen');
         });
         game.domContainer.style.display = 'none';
     }

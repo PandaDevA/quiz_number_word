@@ -12,7 +12,6 @@ class WordGameScreen extends Phaser.Scene{
     }
 
     create() {
-        this.cameras.main.fadeIn(1000, 16, 110, 173);
         this.point = undefined;
         this.logo = this.add.image(540,120,'Logo');
 
@@ -142,11 +141,8 @@ class WordGameScreen extends Phaser.Scene{
                 Client.daily_end(bPass);
             }
             cur_word++;
-            this.cameras.main.fadeOut(1000, 16, 110, 173);
-            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                game.scene.stop('WordGameScreen');
-                game.scene.start('EndScreen');
-            });
+            game.scene.stop('WordGameScreen');
+            game.scene.start('EndScreen');
         }
         else if(game_type == "battle" || game_type == "tournament")
         {
@@ -175,11 +171,8 @@ class WordGameScreen extends Phaser.Scene{
                     Client.daily_end(false);
                 }
                 cur_word++;
-                scene.cameras.main.fadeOut(1000, 16, 110, 173);
-                scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                    game.scene.stop('WordGameScreen');
-                    game.scene.start('EndScreen');
-                });
+                game.scene.stop('WordGameScreen');
+                game.scene.start('EndScreen');
             }
             else if(game_type == "battle" || game_type == "tournament")
             {

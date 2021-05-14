@@ -44,7 +44,6 @@ class RankScreen extends Phaser.Scene{
     }
 
     create() {
-        this.cameras.main.fadeIn(1000, 16, 110, 173);
         this.graphics = this.add.graphics();
         if(rank_list.length > 0){
             this.graphics.fillStyle(0xffffff, 1);
@@ -187,11 +186,8 @@ class RankScreen extends Phaser.Scene{
 
         this.mainpageButton = this.add.image(540,1550,'MainPage');
         this.mainpageButton.setInteractive().on('pointerdown', () => {
-            this.cameras.main.fadeOut(1000, 16, 110, 173);
-            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                game.scene.stop('RankScreen');
-                game.scene.start('HomeScreen');
-            });
+            game.scene.stop('RankScreen');
+            game.scene.start('HomeScreen');
         });
     }
     update(){

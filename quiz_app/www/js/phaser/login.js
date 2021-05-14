@@ -72,13 +72,15 @@ class LoginScreen extends Phaser.Scene{
     }
 
     create() {
-        this.cameras.main.fadeIn(1000, 16, 110, 173);
+        if(window.localStorage.getItem('UserName') != ""){
+            Client.login(window.localStorage.getItem('UserName'), window.localStorage.getItem('Password'))
+        }
         this.logo = this.add.image(540,325,'Logo');
 
         this.userNameImage = this.add.image(540,560,'InputBack');
         this.userName = this.add.rexInputText(540, 560, 620, 70, 
             {
-                text:'testuser',
+                text: window.localStorage.getItem('UserName'),
                 type:'text',
                 fontSize: '64px',
                 fontFamily: 'RR',
@@ -98,7 +100,7 @@ class LoginScreen extends Phaser.Scene{
         this.passwordImage = this.add.image(540,700,'InputBack');
         this.password = this.add.rexInputText(540, 700, 620, 70, 
             {
-                text:'1234',
+                text: window.localStorage.getItem('Password'),
                 type:'password',
                 fontSize: '64px',
                 fontFamily: 'RR',
@@ -173,11 +175,8 @@ class LoginScreen extends Phaser.Scene{
 
         this.registerButton = this.add.image(540,1520,'SignUp');
         this.registerButton.setInteractive().on('pointerdown', () => {
-            this.cameras.main.fadeOut(1000, 16, 110, 173);
-            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                game.scene.stop('LoginScreen');
-                game.scene.start('RegisterScreen');
-            });
+            game.scene.stop('LoginScreen');
+            game.scene.start('RegisterScreen');
         });
     }
     update(){

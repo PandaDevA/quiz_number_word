@@ -17,14 +17,10 @@ class TournamentScreen extends Phaser.Scene{
     }
 
     create() {
-        this.cameras.main.fadeIn(1000, 16, 110, 173);
         this.main_page = this.add.image(540,1500,'MainPage');
         this.main_page.setInteractive().on('pointerdown', () => {
-            this.cameras.main.fadeOut(1000, 16, 110, 173);
-            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                game.scene.stop('TournamentScreen');
-                game.scene.start('HomeScreen');
-            });
+            game.scene.stop('TournamentScreen');
+            game.scene.start('HomeScreen');
         });
 
         this.back_list = [];

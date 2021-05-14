@@ -12,7 +12,6 @@ class NumberGameScreen extends Phaser.Scene{
     }
 
     create() {
-        this.cameras.main.fadeIn(1000, 16, 110, 173);
         this.point = undefined;
         this.logo = this.add.image(540,120,'Logo');
 
@@ -240,11 +239,8 @@ class NumberGameScreen extends Phaser.Scene{
                 Client.daily_end(bPass);
             }
             cur_number++;
-            this.cameras.main.fadeOut(1000, 16, 110, 173);
-            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                game.scene.stop('NumberGameScreen');
-                game.scene.start('EndScreen');
-            });
+            game.scene.stop('NumberGameScreen');
+            game.scene.start('EndScreen');
         }
         else if(game_type == "battle" || game_type == "tournament")
         {
@@ -272,11 +268,8 @@ class NumberGameScreen extends Phaser.Scene{
                     Client.daily_end(false);
                 }
                 cur_number++;
-                this.cameras.main.fadeOut(1000, 16, 110, 173);
-                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                    game.scene.stop('NumberGameScreen');
-                    game.scene.start('EndScreen');
-                });
+                game.scene.stop('NumberGameScreen');
+                game.scene.start('EndScreen');
             }
             else if(game_type == "battle" || game_type == "tournament")
             {

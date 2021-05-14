@@ -3,9 +3,9 @@
  */
 
 var Client = {};
-// Client.socket = io("http://192.168.104.55:8081/");
+Client.socket = io("http://192.168.104.55:8081/");
 // Client.socket = io("http://192.168.104.56:8081/");
-Client.socket = io("http://quizpuzzle.chileracing.net/");
+// Client.socket = io("http://quizpuzzle.chileracing.net/");
 
 Client.login = function(username, password){
     Client.socket.emit('login', {username: username, password: password});
@@ -46,11 +46,10 @@ Client.socket.on('login',function(data){
     if(data.result)
     {
         userData = data.result;
-        game.scene.getScene('LoginScreen').cameras.main.fadeOut(1000, 16, 110, 173);
-        game.scene.getScene('LoginScreen').cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-            game.scene.stop('LoginScreen');
-            game.scene.start('HomeScreen');
-        });
+        window.localStorage.setItem("UserName", userData.userName);
+        window.localStorage.setItem("Password", userData.password);
+        game.scene.stop('LoginScreen');
+        game.scene.start('HomeScreen');
     }
     else
     {
@@ -61,11 +60,8 @@ Client.socket.on('login',function(data){
 Client.socket.on('register',function(data){
     if(data.result)
     {
-        game.scene.getScene('RegisterScreen').cameras.main.fadeOut(1000, 16, 110, 173);
-        game.scene.getScene('RegisterScreen').cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-            game.scene.stop('RegisterScreen');
-            game.scene.start('LoginScreen');
-        });
+        game.scene.stop('RegisterScreen');
+        game.scene.start('LoginScreen');
         toast_error(game.scene.getScene('LoginScreen'), 'Register Succeed...');
     }
     else
@@ -91,11 +87,8 @@ Client.socket.on('rank_list',function(data){
     if(data.result)
     {
         rank_list = data.result;
-        activeScene.cameras.main.fadeOut(1000, 16, 110, 173);
-        activeScene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-            game.scene.stop(activeScene.scene.key);
-            game.scene.start('RankScreen');
-        });
+        game.scene.stop(activeScene.scene.key);
+        game.scene.start('RankScreen');
     }
     else
     {
@@ -108,11 +101,8 @@ Client.socket.on('rule_content',function(data){
     if(data.result)
     {
         rule_content = data.result;
-        activeScene.cameras.main.fadeOut(1000, 16, 110, 173);
-        activeScene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-            game.scene.stop(activeScene.scene.key);
-            game.scene.start('RuleScreen');
-        });
+        game.scene.stop(activeScene.scene.key);
+        game.scene.start('RuleScreen');
     }
     else
     {
@@ -125,11 +115,8 @@ Client.socket.on('policy_content',function(data){
     if(data.result)
     {
         policy_content = data.result;
-        activeScene.cameras.main.fadeOut(1000, 16, 110, 173);
-        activeScene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-            game.scene.stop(activeScene.scene.key);
-            game.scene.start('PolicyScreen');
-        });
+        game.scene.stop(activeScene.scene.key);
+        game.scene.start('PolicyScreen');
     }
     else
     {
@@ -142,11 +129,8 @@ Client.socket.on('method_content',function(data){
     if(data.result)
     {
         method_content = data.result;
-        activeScene.cameras.main.fadeOut(1000, 16, 110, 173);
-        activeScene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-            game.scene.stop(activeScene.scene.key);
-            game.scene.start('MethodScreen');
-        });
+        game.scene.stop(activeScene.scene.key);
+        game.scene.start('MethodScreen');
     }
     else
     {
@@ -294,11 +278,8 @@ function reject_modal(scene){
         .on('button.click', function (button, groupName, index) {
             cover.destroy();
             dialog.destroy();
-            scene.cameras.main.fadeOut(1000, 16, 110, 173);
-            scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                game.scene.stop(scene.scene.key);
-                game.scene.start('BattleScreen');
-            });
+            game.scene.stop(scene.scene.key);
+            game.scene.start('BattleScreen');
         })
         .on('button.over', function (button, groupName, index) {
             // button.getElement('background').setStrokeStyle(1, 0xffffff);

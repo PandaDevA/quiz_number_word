@@ -22,7 +22,6 @@ class RegisterScreen extends Phaser.Scene{
     }
 
     create() {
-        this.cameras.main.fadeIn(1000, 16, 110, 173);
         // Create button
         var button = this.add.image(540,400,'EmptyUser').setOrigin(0.5,0.5);
         // Create canvas   
@@ -140,11 +139,8 @@ class RegisterScreen extends Phaser.Scene{
         this.loginText.setShadow(10, 10, "#333333", 10, true, true);
 
         this.loginText.setInteractive().on('pointerdown', () => {
-            this.cameras.main.fadeOut(1000, 16, 110, 173);
-            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                game.scene.stop('RegisterScreen');
-                game.scene.start('LoginScreen');
-            });
+            game.scene.stop('RegisterScreen');
+            game.scene.start('LoginScreen');
         });
     }
 

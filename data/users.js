@@ -158,7 +158,7 @@ const exportedMethods = {
         }
 
         await userCollection.deleteMany();
-        await userCollection.insertMany(updatedUserData);
+        await userCollection.insertMany(updatedUserData); 
 
         console.log('Users rank is updated');
         return true;

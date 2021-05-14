@@ -18,7 +18,6 @@ class BattleScreen extends Phaser.Scene{
     }
 
     create() {
-        this.cameras.main.fadeIn(1000, 16, 110, 173);
         this.userNameImage = this.add.image(540,560,'InputBack');
         this.userName = this.add.rexInputText(540, 560, 620, 70, 
             {
@@ -61,11 +60,8 @@ class BattleScreen extends Phaser.Scene{
 
         this.mainPageButton = this.add.image(540,1550,'MainPage');
         this.mainPageButton.setInteractive().on('pointerdown', () => {
-            this.cameras.main.fadeOut(1000, 16, 110, 173);
-            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                game.scene.stop('BattleScreen');
-                game.scene.start('HomeScreen');
-            });
+            game.scene.stop('BattleScreen');
+            game.scene.start('HomeScreen');
         });
 
     }

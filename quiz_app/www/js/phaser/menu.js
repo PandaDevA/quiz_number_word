@@ -12,7 +12,6 @@ class MenuScreen extends Phaser.Scene{
     }
 
     create() {
-        this.cameras.main.fadeIn(1000, 16, 110, 173);
         this.graphics = this.add.graphics();
         this.graphics.fillStyle(0xfa5c00, 1);
         this.graphics.fillRoundedRect(90,90,900,1550, 10);
@@ -27,11 +26,8 @@ class MenuScreen extends Phaser.Scene{
         .setOrigin(0.5,0.5);
         this.profileText.setInteractive()
         .on('pointerdown', () => {
-            this.cameras.main.fadeOut(1000, 16, 110, 173);
-            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                game.scene.stop('MenuScreen');
-                game.scene.start('ProfileScreen');
-            });
+            game.scene.stop('MenuScreen');
+            game.scene.start('ProfileScreen');
         });
         let line = this.add.line(540, 270, 0, 0, 800, 0, 0xffffff, 1);
         line.setLineWidth(6,6);
@@ -107,11 +103,8 @@ class MenuScreen extends Phaser.Scene{
         this.logoutText.setInteractive()
         .on('pointerdown', () => {
             Client.logout();
-            this.cameras.main.fadeOut(1000, 16, 110, 173);
-            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                game.scene.stop('MenuScreen');
-                game.scene.start('LoginScreen');
-            });
+            game.scene.stop('MenuScreen');
+            game.scene.start('LoginScreen');
         });
         line = this.add.line(540, 1170, 0, 0, 800, 0, 0xffffff, 1);
         line.setLineWidth(6,6);
@@ -126,11 +119,8 @@ class MenuScreen extends Phaser.Scene{
         .setOrigin(0.5,0.5);
         this.backText.setInteractive()
         .on('pointerdown', () => {
-            this.cameras.main.fadeOut(1000, 16, 110, 173);
-            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                game.scene.stop('MenuScreen');
-                game.scene.start('HomeScreen');
-            });
+            game.scene.stop('MenuScreen');
+            game.scene.start('HomeScreen');
         });
         line = this.add.line(540, 1350, 0, 0, 800, 0, 0xffffff, 1);
         line.setLineWidth(6,6);

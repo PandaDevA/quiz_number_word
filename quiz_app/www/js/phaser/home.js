@@ -24,7 +24,6 @@ class HomeScreen extends Phaser.Scene{
     }
 
     create() {
-        this.cameras.main.fadeIn(1000, 16, 110, 173);
         oppoData = "";
 
         this.logo = this.add.image(540,120,'Logo');
@@ -107,11 +106,8 @@ class HomeScreen extends Phaser.Scene{
         });
         this.battle = this.add.image(540,1030,'Battle');
         this.battle.setInteractive().on('pointerdown', () => {
-            this.cameras.main.fadeOut(1000, 16, 110, 173);
-            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                game.scene.stop('HomeScreen');
-                game.scene.start('BattleScreen');
-            });
+            game.scene.stop('HomeScreen');
+            game.scene.start('BattleScreen');
         });
         this.tournament = this.add.image(540,1210,'Tournament');
         this.tournament.setInteractive().on('pointerdown', () => {
@@ -129,13 +125,9 @@ class HomeScreen extends Phaser.Scene{
 
         this.menu = this.add.image(960,1570,'Menu');
         this.menu.setInteractive().on('pointerdown', () => {
-            this.cameras.main.fadeOut(1000, 16, 110, 173);
-            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                game.scene.stop('HomeScreen');
-                game.scene.start('MenuScreen');
-            });
+            game.scene.stop('HomeScreen');
+            game.scene.start('MenuScreen');
         });
-
     }
     update_userData(){
         this.coinText.setText(userData.coin);

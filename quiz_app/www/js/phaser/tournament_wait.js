@@ -17,7 +17,6 @@ class TournamentWaitScreen extends Phaser.Scene{
     }
 
     create() {
-        this.cameras.main.fadeIn(1000, 16, 110, 173);
         this.startText = this.add.text(540, 400, 'TOURNAMENT START', {
             fontFamily: 'RR',
             fontWeight: 'bold',
@@ -76,11 +75,8 @@ class TournamentWaitScreen extends Phaser.Scene{
         {
             scene.timer.remove();
             scene.time.removeEvent(scene.timer);
-            scene.cameras.main.fadeOut(1000, 16, 110, 173);
-            scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                game.scene.stop('TournamentWaitScreen');
-                game.scene.start('NumberGameScreen');
-            });
+            game.scene.stop('TournamentWaitScreen');
+            game.scene.start('NumberGameScreen');
         }
         else{
             scene.timeText.setText(current_time);

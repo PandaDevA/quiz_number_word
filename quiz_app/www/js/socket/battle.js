@@ -39,11 +39,8 @@ Client.socket.on('invite_request',function(data){
         else if(data.to)
         {
             room_id = data.result.roomId;
-            activeScene.cameras.main.fadeOut(1000, 16, 110, 173);
-            activeScene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                game.scene.stop(activeScene.scene.key);
-                game.scene.start('BattleWaitScreen');
-            });
+            game.scene.stop(activeScene.scene.key);
+            game.scene.start('BattleWaitScreen');
         }
     }
     else
@@ -95,22 +92,16 @@ Client.socket.on('online_start',function(data){
         if(game_type == "battle"){
             if(activeScene.scene.key != 'BattleWaitScreen')
             {
-                activeScene.cameras.main.fadeOut(1000, 16, 110, 173);
-                activeScene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                    game.scene.stop(activeScene.scene.key);
-                    game.scene.start('BattleWaitScreen');
-                });
+                game.scene.stop(activeScene.scene.key);
+                game.scene.start('BattleWaitScreen');
             }
             else{
                 activeScene.startGame();
             }
         }
         else if(game_type == "tournament"){
-            activeScene.cameras.main.fadeOut(1000, 16, 110, 173);
-            activeScene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                game.scene.stop(activeScene.scene.key);
-                game.scene.start('TournamentWaitScreen');
-            });
+            game.scene.stop(activeScene.scene.key);
+            game.scene.start('TournamentWaitScreen');
         }
     }
     else
@@ -130,11 +121,8 @@ Client.socket.on('online_end',function(data){
             cur_number++;
         else
             cur_word++;
-        activeScene.cameras.main.fadeOut(1000, 16, 110, 173);
-        activeScene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-            game.scene.stop(activeScene.scene.key);
-            game.scene.start('EndScreen');
-        });
+        game.scene.stop(activeScene.scene.key);
+        game.scene.start('EndScreen');
     }
     else
     {
@@ -147,11 +135,8 @@ Client.socket.on('random_request',function(data){
     if(data.result)
     {
         room_id = data.result.roomId;
-        activeScene.cameras.main.fadeOut(1000, 16, 110, 173);
-        activeScene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-            game.scene.stop(activeScene.scene.key);
-            game.scene.start('BattleWaitScreen');
-        });
+        game.scene.stop(activeScene.scene.key);
+        game.scene.start('BattleWaitScreen');
     }
     else
     {
