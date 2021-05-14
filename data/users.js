@@ -60,6 +60,7 @@ const exportedMethods = {
             rank: total + 1,
             heart: 3,
             coin: 50,
+            revive:0,
             lastDate: 0,
             lastTime: 24,
         };
@@ -95,11 +96,12 @@ const exportedMethods = {
             updatedUserData.heart += data.heart;
             var date = new Date();
             var minutes = date.getMinutes();
-            updateduserData.revive = minutes;
+            updatedUserData.revive = minutes;
         }
         if (updatedUserData.heart > 3) updatedUserData.heart = 3;
 
-        await userCollection.updateOne({ _id: user._id }, { $set: updatedUserData });
+        const record = await userCollection.updateOne({ _id: user._id }, { $set: updatedUserData });
+        console.log(record);
 
         return {result: updatedUserData};
     },
@@ -133,7 +135,7 @@ const exportedMethods = {
             if (updatedUserData.heart < 0) updatedUserData.heart = 0;
         }
 
-        await userCollection.updateOne({ _id: user._id }, { $set: updatedUserData });
+        await userCollection.updateOne({ _id: user._id }, { $set:  p });
 
         return {result: updatedUserData};
     },

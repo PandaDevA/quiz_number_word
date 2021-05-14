@@ -61,7 +61,7 @@ socketSrc.useSocket(io).then(() => {
     });
     number = setInterval(() => {
         halfCnt++;
-        if ( halfCnt == 4 ) {
+        if ( halfCnt >= 2 ) {
             socketSrc.onHeartSupply(io);
             log_file = fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
             halfCnt = 0;

@@ -72,7 +72,7 @@ class LoginScreen extends Phaser.Scene{
     }
 
     create() {
-        if(window.localStorage.getItem('UserName') != ""){
+        if(window.localStorage.getItem('UserName') != null){
             Client.login(window.localStorage.getItem('UserName'), window.localStorage.getItem('Password'))
         }
         this.logo = this.add.image(540,325,'Logo');
