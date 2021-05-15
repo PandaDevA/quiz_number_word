@@ -1,7 +1,6 @@
 const data = require('../data/');
 const puzzle = require('./puzzle');
 const nodemailer = require('nodemailer');
-const smtpTransport = require('nodemailer-smtp-transport');
 
 const infos = data.infos;
 const users = data.users;
@@ -35,31 +34,25 @@ const getMultiRandomData = async () => {
 };
 
 const transporter = nodemailer.createTransport(
-    smtpTransport (
         {
-        service: 'gmail',
-        host: 'smtp.gmail.com',
-        secure: false,
-        requireTLS: true,
-        auth: {
-            user: 'tuktarov2121@gmail.com',
-            pass: 'dsf14hgd4eGHFD'
-        },
-        tls: {
-            rejectUnauthorized: false
-        },
-    }
-    )
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+                user: 'tuktarov2121@gmail.com',
+                pass: 'dsf14hgd4eGHFD'
+            },
+        }
     );
   
 const sendVerifyCode = (user) => {
     const vCode = 10000 + Math.floor(Math.random() * (99999 - 10000 + 1));
 
     const mailOptions = {
-    from: 'tuktarov2121@gmail.com',
-    to: user,
-    subject: 'Verifying for Quiz puzzle game user',
-    text: vCode
+        from: 'tuktarov2121@gmail.com',
+        to: user,
+        subject: 'Verifying for Quiz puzzle game user',
+        text: vCode
     };
     
     return new Promise(function(resolve, reject) {
