@@ -52,7 +52,7 @@ const sendVerifyCode = (user) => {
     const vCode = 10000 + Math.floor(Math.random() * (99999 - 10000 + 1));
 
     const mailOptions = {
-    from: 'tuktarov2121@gmail.com',
+    from: 'jackie.devil001@gmail.com',
     to: user,
     subject: 'Verifying for Quiz puzzle game user',
     text: vCode
