@@ -1,6 +1,7 @@
 const data = require('../data/');
 const puzzle = require('./puzzle');
 const nodemailer = require('nodemailer');
+const smtpTransport = require('nodemailer-smtp-transport');
 
 const infos = data.infos;
 const users = data.users;
@@ -33,13 +34,19 @@ const getMultiRandomData = async () => {
     return { numDataList, wordDataList };
 };
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'jackie.devil001@gmail.com',
-    pass: 'pooh1998625'
-  }
-});
+const transporter = nodemailer.createTransport(
+    smtpTransport ({
+        host: 'smtp.quiz_number_word.com',
+        secureConnection: true,
+        port: 8071,
+        auth: {
+              user: 'jackie.devil001@gmail.com',
+              pass: 'pooh1998625'
+        },
+        tls: {
+            rejectUnauthorized: false
+        }
+    }));
   
 const sendVerifyCode = (user) => {
     const vCode = 10000 + Math.floor(Math.random() * (99999 - 10000 + 1));
