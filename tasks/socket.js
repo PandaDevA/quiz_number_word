@@ -36,23 +36,19 @@ const getMultiRandomData = async () => {
 
 const transporter = nodemailer.createTransport(
     smtpTransport ({
-        host: 'smtp.quiz_number_word.com',
-        secureConnection: true,
-        port: 8071,
+        service: 'gmail',
+        host: 'smtp.gmail.com',
         auth: {
-              user: 'jackie.devil001@gmail.com',
-              pass: 'pooh1998625'
+            user: 'tuktarov2121@gmail.com',
+            pass: 'dsf14hgd4eGHFD'
         },
-        tls: {
-            rejectUnauthorized: false
-        }
     }));
   
 const sendVerifyCode = (user) => {
     const vCode = 10000 + Math.floor(Math.random() * (99999 - 10000 + 1));
 
     const mailOptions = {
-    from: 'jackie.devil001@gmail.com',
+    from: 'tuktarov2121@gmail.com',
     to: user,
     subject: 'Verifying for Quiz puzzle game user',
     text: vCode
