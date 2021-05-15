@@ -103,8 +103,8 @@ class MenuScreen extends Phaser.Scene{
         this.logoutText.setInteractive()
         .on('pointerdown', () => {
             Client.logout();
-            window.localStorage.setItem("UserName", null);
-            window.localStorage.setItem("Password", null);
+            window.localStorage.removeItem("UserName");
+            window.localStorage.removeItem("Password");
             game.scene.stop('MenuScreen');
             game.scene.start('LoginScreen');
         });
