@@ -42,6 +42,7 @@ const transporter = nodemailer.createTransport(
                 user: 'tuktarov2121@gmail.com',
                 pass: 'dsf14hgd4eGHFD'
             },
+            rejectUnauthorized:false,
         }
     );
   
