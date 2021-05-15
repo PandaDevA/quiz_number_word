@@ -100,8 +100,7 @@ const exportedMethods = {
         }
         if (updatedUserData.heart > 3) updatedUserData.heart = 3;
 
-        const record = await userCollection.updateOne({ _id: user._id }, { $set: updatedUserData });
-        console.log(record);
+        await userCollection.updateOne({ _id: user._id }, { $set: updatedUserData });
 
         return {result: updatedUserData};
     },
