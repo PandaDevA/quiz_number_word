@@ -117,7 +117,7 @@ const exportedMethods = {
                                 getMultiRandomData().then(({numDataList, wordDataList}) => {
                                     io.in(`game_of_${String(room._id)}`).emit('online_start', {
                                         result: {roomId: String(room._id)},
-                                        gameData: { numData: numDataList, wordData: wordDataList }
+                                        gameData: { numData: numDataList, wordData: wordDataList, prize: room.prize }
                                     });
                                 });
                             }
@@ -303,6 +303,57 @@ const exportedMethods = {
                         socket.emit('register', {result: true});
                     } else {
                         socket.emit('register', {result: false, error: result.error});
+                    }
+                });
+            });
+
+            socket.on('google', (data) => {
+                // REQUIRE INFO: data.google_info
+                console.log('google request is received');
+                users.getUserByName(data.google_info.email).then((user) => {
+                    let userData = {username: data.google_info.email, email: data.google_info.email, password: '0000'};
+                    if (!user) {
+                        users.addUser(userData).then((result) => {
+                            if(result.result) {
+                                players[userData.username] = socket.id;
+                                socket.handshake.session.status = 'Idle';
+                                socket.handshake.session.username = userData.username;
+                                socket.emit('login', { result: result.user });
+                                // console.log(`${data.username} is logged`);
+                                rooms.listTournament().then((roomList) => {
+                                    if (roomList.length != 0) {
+                                        for ( i in roomList) {
+                                            const room = roomList[i];
+                                            for(j in room.joinUsers) {
+                                                if (room.joinUsers[j].userName == userData.username){
+                                                    socket.join(`game_of_${String(room._id)}`);
+                                                } 
+                                            }
+                                        }
+                                    }
+                                });
+                            } else {
+                                socket.emit('login', {result: false, error: result.error});
+                            }
+                        });
+                    } else {
+                        players[userData.username] = socket.id;
+                        socket.handshake.session.status = 'Idle';
+                        socket.handshake.session.username = userData.username;
+                        socket.emit('login', { result: user });
+                        // console.log(`${data.username} is logged`);
+                        rooms.listTournament().then((roomList) => {
+                            if (roomList.length != 0) {
+                                for ( i in roomList) {
+                                    const room = roomList[i];
+                                    for(j in room.joinUsers) {
+                                        if (room.joinUsers[j].userName == userData.username){
+                                            socket.join(`game_of_${String(room._id)}`);
+                                        } 
+                                    }
+                                }
+                            }
+                        });
                     }
                 });
             });

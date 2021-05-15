@@ -155,10 +155,10 @@ class LoginScreen extends Phaser.Scene{
                   'offline': false, // optional, but requires the webClientId - if set to true the plugin will also return a serverAuthCode, which can be used to grant offline access to a non-Google server
                 },
                 function (obj) {
-                  alert(JSON.stringify(obj)); // do something useful instead of alerting
+                    Client.google(obj);
                 },
                 function (msg) {
-                  alert('error: ' + msg);
+                    toast_error(this, "Google login failed!");
                 }
             );
         });

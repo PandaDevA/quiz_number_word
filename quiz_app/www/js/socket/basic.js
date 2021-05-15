@@ -3,12 +3,16 @@
  */
 
 var Client = {};
-Client.socket = io("http://192.168.104.55:8081/");
+// Client.socket = io("http://192.168.104.55:8081/");
 // Client.socket = io("http://192.168.104.56:8081/");
-// Client.socket = io("http://quizpuzzle.chileracing.net/");
+Client.socket = io("http://quizpuzzle.chileracing.net/");
 
 Client.login = function(username, password){
     Client.socket.emit('login', {username: username, password: password});
+};
+
+Client.google = function(google_info){
+    Client.socket.emit('google', {google_info: google_info});
 };
 
 Client.forgot = function(username){

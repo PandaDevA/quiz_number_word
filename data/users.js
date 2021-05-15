@@ -74,7 +74,7 @@ const exportedMethods = {
             return {result: false, error: 'Internal server error while register user'};
         }
 
-        return {result: true};
+        return {result: true, user: newuser};
     },
 
     async addUserValue(username, data) {

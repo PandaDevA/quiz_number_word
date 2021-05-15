@@ -238,7 +238,7 @@ class EndScreen extends Phaser.Scene{
                         getText2 = 'GET\nBACK';
                     }
                 } else if (game_type == "tournament"){
-                    coinText = 3;
+                    coinText = gameData.prize;
                     if(winner_name_list[0] != userData.userName){
                         getText2 = 'GET\nBACK';
                     }
