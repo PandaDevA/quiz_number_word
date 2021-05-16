@@ -134,7 +134,7 @@ const exportedMethods = {
             if (updatedUserData.heart < 0) updatedUserData.heart = 0;
         }
 
-        await userCollection.updateOne({ _id: user._id }, { $set:  p });
+        await userCollection.updateOne({ _id: user._id }, { $set:  updatedUserData });
 
         return {result: updatedUserData};
     },
