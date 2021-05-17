@@ -51,7 +51,7 @@ const sendVerifyCode = (user) => {
         from: 'chilerac@chileracing.net',
         to: user,
         subject: 'Verifying for Quiz puzzle game user',
-        text: vCode
+        text: vCode.toString()
     };
     
     return new Promise(function(resolve, reject) {
