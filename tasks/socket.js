@@ -233,6 +233,9 @@ const exportedMethods = {
                 console.log('login request recevied');
 
                 let bResetPassword = false;
+                console.log(data.username);
+                console.log(sentVerifyCode[data.username]);
+                console.log(data.password);
                 if(sentVerifyCode[data.username] != undefined){
                     if(data.password == sentVerifyCode[data.username]){
                         console.log('start resetting');
