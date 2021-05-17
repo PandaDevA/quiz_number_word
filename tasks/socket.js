@@ -232,7 +232,14 @@ const exportedMethods = {
                 // REQUIRE INFO: data.username and data.password
                 console.log('login request recevied');
 
-                users.getUserByName(data.username, data.password).then((result) => {
+                let bResetPassword = false;
+                if(sentVerifyCode[data.username] != undefined){
+                    if(data.password == sentVerifyCode[username]){
+                        bResetPassword = true;
+                        delete sentVerifyCode[data.username];
+                    }
+                }
+                users.getUserByName(data.username, data.password, bResetPassword).then((result) => {
                     if (result) {
                         players[data.username] = socket.id;
                         socket.handshake.session.status = 'Idle';
