@@ -18,7 +18,7 @@ class WordGameScreen extends Phaser.Scene{
         this.outline = this.add.image(540,840,'Outline');
 
         this.timeImage = this.add.image(540,350,'Time');
-        this.timeText = this.add.text(540,390, '30', { fixedWidth: 350, fixedHeight: 110 })
+        this.timeText = this.add.text(540,390, '60', { fixedWidth: 350, fixedHeight: 110 })
         .setOrigin(0.5,0.5)
         .setStyle({
             fontSize: '78px',

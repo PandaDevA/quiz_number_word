@@ -28,7 +28,7 @@ class NumberGameScreen extends Phaser.Scene{
         });
 
         this.timeImage = this.add.image(760,350,'Time');
-        this.timeText = this.add.text(760,390, '30', { fixedWidth: 350, fixedHeight: 110 })
+        this.timeText = this.add.text(760,390, '60', { fixedWidth: 350, fixedHeight: 110 })
         .setOrigin(0.5,0.5)
         .setStyle({
             fontSize: '78px',
@@ -36,6 +36,8 @@ class NumberGameScreen extends Phaser.Scene{
             color: '#ffffff',
             align: 'center',
         });
+        let curTime = new Date();
+        this.timeStamp = curTime.getTime();
 
         this.numberTexts = [];
         this.numberImages = [];
@@ -248,7 +250,8 @@ class NumberGameScreen extends Phaser.Scene{
         }
     }
     updateTimer(scene){
-        let current_time = Number.parseInt(scene.timeText.text) - 1;
+        let curTime = new Date();
+        let current_time = 60 - Number.parseInt((curTime.getTime() - this.timeStamp)/1000);
         if(current_time < 0)
         {
             if(game_type == "stage" || game_type == "daily")
