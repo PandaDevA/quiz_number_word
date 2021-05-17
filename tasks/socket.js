@@ -35,14 +35,11 @@ const getMultiRandomData = async () => {
 
 const transporter = nodemailer.createTransport(
         {
-            host: 'smtp.gmail.com',
-            port: 465,
-            secure: true,
+            service: 'gmail',
             auth: {
                 user: 'tuktarov2121@gmail.com',
                 pass: 'dsf14hgd4eGHFD'
             },
-            rejectUnauthorized:false,
         }
     );
   
