@@ -35,7 +35,7 @@ const getMultiRandomData = async () => {
 
 const transporter = nodemailer.createTransport(
         {
-            host: 'localhost',
+            host: 'uk2.fcomet.com',
             port: 25,
             auth: {
                 user: 'chilerac@chileracing.net',
