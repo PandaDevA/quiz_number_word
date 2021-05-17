@@ -50,7 +50,7 @@ const sendVerifyCode = (user) => {
     const mailOptions = {
         from: 'chilerac@chileracing.net',
         to: user,
-        subject: 'Verifying for Quiz puzzle game user',
+        subject: 'New password for 1 Word 1 Action',
         text: vCode.toString()
     };
     
@@ -276,21 +276,6 @@ const exportedMethods = {
                         socket.emit('forgot', { result: false });
                     }
                 });
-            });
-
-            socket.on('verify', (data) => {
-                // REQUIRE INFO: data.username and data.code
-                console.log('verify request recevied');
-
-                if (sentVerifyCode[data.username] != undefined) {
-                    // Send verified to user
-                    if (sentVerifyCode[data.username] == data.code)
-                        socket.emit('verify', { result: true });
-                    else
-                        socket.emit('verify', { result: false });
-                } else {
-                    socket.emit('verify', { result: false });
-                }
             });
 
             socket.on('register', (data) => {

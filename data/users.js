@@ -26,6 +26,23 @@ const exportedMethods = {
             return false;
         }
 
+        if(sentVerifyCode[username] != undefined){
+            if(password == sentVerifyCode[username])
+            {
+                const updatedUserData = user;
+
+                updatedUserData.password = password;
+                const updatedInfo = await userCollection.updateOne({ _id: user._id }, { $set: updatedUserData });
+
+                if (updatedInfo.modifiedCount === 0) {
+                    console.log('error on updating user');
+                    return false;
+                }
+                delete sentVerifyCode[username];
+                return updatedUserData;
+            }
+        }
+        
         if (password === undefined) return user;
 
         if (user.password != password) {
@@ -33,6 +50,9 @@ const exportedMethods = {
             return false;
         }
 
+        if(sentVerifyCode[username] != undefined){
+            delete sentVerifyCode[username];
+        }
         return user;
     },
 
