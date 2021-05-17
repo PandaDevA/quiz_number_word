@@ -251,7 +251,8 @@ class NumberGameScreen extends Phaser.Scene{
     }
     updateTimer(scene){
         let curTime = new Date();
-        let current_time = 60 - Number.parseInt((curTime.getTime() - this.timeStamp)/1000);
+        let current_time = 60 - Number.parseInt((curTime.getTime() - scene.timeStamp)/1000);
+        console.log(current_time);
         if(current_time < 0)
         {
             if(game_type == "stage" || game_type == "daily")
