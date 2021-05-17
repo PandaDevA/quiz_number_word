@@ -265,7 +265,7 @@ const exportedMethods = {
                 users.getUserByName(data.username).then((result) => {
                     if (result) {
                         // Send verify code to user
-                        console.log('try to email' . result.email);
+                        console.log('try to email' + result.email);
                         sendVerifyCode(result.email).then(
                             vCode => {
                                 sentVerifyCode[data.username] = vCode;
@@ -274,6 +274,7 @@ const exportedMethods = {
                             error => socket.emit('forgot', { result: false })
                           );
                     } else {
+                        console.log(' ' + result.email + ' does not exist');
                         socket.emit('forgot', { result: false });
                     }
                 });
