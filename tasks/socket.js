@@ -61,7 +61,7 @@ const sendVerifyCode = (user) => {
             reject(error);
         } else {
             console.log('Email sent: ' + info.response);
-            resolve(vCode);
+            resolve(vCode.toString());
         }
         });
     });
