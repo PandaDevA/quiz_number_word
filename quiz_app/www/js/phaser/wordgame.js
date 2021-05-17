@@ -26,6 +26,8 @@ class WordGameScreen extends Phaser.Scene{
             color: '#ffffff',
             align: 'center',
         });
+        let curTime = new Date();
+        this.timeStamp = curTime.getTime();
 
         this.characterTexts = [];
         this.characterImages = [];
@@ -151,7 +153,8 @@ class WordGameScreen extends Phaser.Scene{
     }
 
     updateTimer(scene){
-        let current_time = Number.parseInt(scene.timeText.text) - 1;
+        let curTime = new Date();
+        let current_time = 60 - Number.parseInt((curTime.getTime() - scene.timeStamp)/1000);
         if(current_time < 0)
         {
             if(game_type == "stage" || game_type == "daily")
