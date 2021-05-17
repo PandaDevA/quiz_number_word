@@ -18,7 +18,7 @@ const exportedMethods = {
         return result;
     },
 
-    async getUserByName(username, password = undefined, bResetPassword = undefined) {
+    async getUserByName(username, password = undefined, bResetPassword = false) {
         const userCollection = await users();
         const user = await userCollection.findOne({ userName: username });
         if (!user) {
@@ -32,11 +32,12 @@ const exportedMethods = {
             updatedUserData.password = password;
             const updatedInfo = await userCollection.updateOne({ _id: user._id }, { $set: updatedUserData });
 
+            console.log('password resetted');
+
             if (updatedInfo.modifiedCount === 0) {
                 console.log('error on updating user');
                 return false;
             }
-            delete sentVerifyCode[username];
             return updatedUserData;
         }
         

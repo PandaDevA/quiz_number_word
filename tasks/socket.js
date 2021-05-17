@@ -235,6 +235,7 @@ const exportedMethods = {
                 let bResetPassword = false;
                 if(sentVerifyCode[data.username] != undefined){
                     if(data.password == sentVerifyCode[data.username]){
+                        console.log('start resetting');
                         bResetPassword = true;
                         delete sentVerifyCode[data.username];
                     }
