@@ -38,7 +38,7 @@ const transporter = nodemailer.createTransport(
             host: 'uk2.fcomet.com',
             port: 25,
             auth: {
-                user: 'chilerac@chileracing.net',
+                user: 'chilerac',
                 pass: 'oE667Pnt4k'
             },
         }
