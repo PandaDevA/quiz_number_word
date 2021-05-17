@@ -143,6 +143,7 @@ const exportedMethods = {
             if (userNameInSession) {
                 players[userNameInSession] = socket.id;
                 socket.handshake.session.status = 'Idle';
+                socket.handshake.session.save();
                 socket.emit('update_userdata', { isRefresh: true });
                 rooms.listTournament().then((roomList) => {
                     if (roomList.length != 0) {
@@ -225,6 +226,7 @@ const exportedMethods = {
                 console.log('logout request recevied');
                 // Set PLAYERS value of this user as 'undefined' to remove the user from PLAYERS Object
                 socket.handshake.session.username = undefined;
+                socket.handshake.session.save();
                 players[userNameInSession] = undefined;
             });
 
@@ -319,6 +321,7 @@ const exportedMethods = {
                                 players[userData.username] = socket.id;
                                 socket.handshake.session.status = 'Idle';
                                 socket.handshake.session.username = userData.username;
+                                socket.handshake.session.save();
                                 socket.emit('login', { result: result.user });
                                 // console.log(`${data.username} is logged`);
                                 rooms.listTournament().then((roomList) => {
@@ -341,6 +344,7 @@ const exportedMethods = {
                         players[userData.username] = socket.id;
                         socket.handshake.session.status = 'Idle';
                         socket.handshake.session.username = userData.username;
+                        socket.handshake.session.save();
                         socket.emit('login', { result: user });
                         // console.log(`${data.username} is logged`);
                         rooms.listTournament().then((roomList) => {
@@ -367,6 +371,7 @@ const exportedMethods = {
                         const numData = puzzle.getNumberData();
                         puzzle.getWordData().then((wordData) => {
                             socket.handshake.session.status = 'Stage';
+                            socket.handshake.session.save();
                             socket.emit('stage_start', {
                                 result: true,
                                 gameData: { numData: [numData], wordData: [wordData] }
@@ -390,6 +395,7 @@ const exportedMethods = {
                     else console.log(`${data.username} could not find while process standalone_end`);
                 });
                 socket.handshake.session.status = 'Idle';
+                socket.handshake.session.save();
             });
 
             socket.on('daily_start', (data) => {
@@ -402,6 +408,7 @@ const exportedMethods = {
                         const numData = puzzle.getNumberData();
                         puzzle.getWordData().then((wordData) => {
                             socket.handshake.session.status = 'Daily';
+                            socket.handshake.session.save();
                             socket.emit('daily_start', {
                                 result: true,
                                 gameData: { numData: [numData], wordData: [wordData] }
@@ -480,6 +487,7 @@ const exportedMethods = {
                             socket.leave(`game_of_${data.room_id}`);
                             console.log(`${data.username} is leaved tournament`);
                             socket.handshake.session.status = 'Idle';
+                            socket.handshake.session.save();
                         } else {
                             users.addUserValue(data.username, {coin: room.result.joiningFee, heart: 1}).then((userData) => {
                                 if (!userData.result) {
@@ -491,6 +499,7 @@ const exportedMethods = {
                                     socket.leave(`game_of_${data.room_id}`);
                                     console.log(`${data.username} is leaved tournament`);
                                     socket.handshake.session.status = 'Idle';
+                                    socket.handshake.session.save();
                                 }
                             });
                         }
@@ -529,6 +538,7 @@ const exportedMethods = {
                                 client.handshake.session.status = 'Idle';
                             };
                             socket.handshake.session.status = 'Idle';
+                            socket.handshake.session.save();
                             // console.log('All users are ended');
 
                             await rooms.removeRoom({room_id: data.room_id});
@@ -575,6 +585,7 @@ const exportedMethods = {
                                         if(players[data.inviteuser])
                                             io.to(players[data.inviteuser]).emit('invite_request', {result: {roomId: result.id}, from: data.waituser});
                                         socket.handshake.session.status = 'Battle';
+                                        socket.handshake.session.save();
                                     } else {
                                         socket.emit('invite_request', { result: false, to: data.inviteuser, error: 'Could not create room.' });
                                         console.log(`invite_request request of ${data.waituser} is failed`);
@@ -626,6 +637,7 @@ const exportedMethods = {
                                             socket.join(`game_of_${data.roomId}`);
                                             socket.handshake.session.status = 'Battle';
                                             socket.handshake.session.cur_step = 0;
+                                            socket.handshake.session.save();
                                             getMultiRandomData().then(({numDataList, wordDataList}) => {
                                                 users.getUserByName(data.waituser).then((user1) => {
                                                     socket.to(`game_of_${data.roomId}`).emit('online_start', {
@@ -684,6 +696,7 @@ const exportedMethods = {
                         // socket.to(`game_of_${data.roomId}`).emit('battle_cancel', { result: true });
                         socket.leave(`game_of_${data.roomId}`);
                         socket.handshake.session.status = 'Idle';
+                        socket.handshake.session.save();
                         // if(players[data.inviteuser])
                         //     io.to(players[data.inviteuser]).leave(`game_of_${data.roomId}`);
                     } else {
@@ -722,6 +735,7 @@ const exportedMethods = {
                                                 io.sockets.sockets.get(players[username]).handshake.session.cur_step = 0;
                                                 socket.handshake.session.status = 'Battle';
                                                 socket.handshake.session.cur_step = 0;
+                                                socket.handshake.session.save();
                                                 socket.emit('online_start', { result: {roomId}, oppoData: user1, gameData: { numData: numDataList, wordData: wordDataList } });
                                                 socket.to(`game_of_${roomId}`)
                                                     .emit('online_start', { result: {roomId}, oppoData: user, gameData: { numData: numDataList, wordData: wordDataList } });
@@ -739,6 +753,7 @@ const exportedMethods = {
                                     socket.emit('random_request', {result: {roomId: result.id}});
                                     socket.handshake.session.status = 'Waiting';
                                     socket.handshake.session.createdRoomId = result.id;
+                                    socket.handshake.session.save();
                                 } else {
                                     socket.emit('random_request', { result: false, error: 'Could not create room.'  });
                                     console.log(`random_request request of ${data.username} is failed`);
@@ -758,6 +773,7 @@ const exportedMethods = {
                     if(user.result) {
                         socket.emit('passion_start', {result: true});
                         socket.handshake.session.status = 'Passion';
+                        socket.handshake.session.save();
                     }
                     else socket.emit('passion_start', {result: false, error: user.error});
                 });
@@ -772,6 +788,7 @@ const exportedMethods = {
             //         else console.log(`${data.username} could not find while process passion_end`);
             //     });
             //     socket.handshake.session.status = 'Idle';
+            //     socket.handshake.session.save();
             // });
 
             socket.on('rank_list', () => {
