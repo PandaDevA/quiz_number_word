@@ -1,10 +1,10 @@
 const MongoClient = require('mongodb').MongoClient;
 const settings = {
     mongoConfig: {
-        // serverUrl: 'mongodb://localhost:8002/',
-        // database: 'Puzzle_number_word'
-         serverUrl: 'mongodb+srv://admin:%21QAZxsw2@puzzle.am9gf.mongodb.net/test?authSource=admin&replicaSet=atlas-h19s4z-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true',
-         database: 'Puzzle_word_number'
+        serverUrl: 'mongodb://localhost:8002/',
+        database: 'Puzzle_number_word'
+        //  serverUrl: 'mongodb+srv://admin:%21QAZxsw2@puzzle.am9gf.mongodb.net/test?authSource=admin&replicaSet=atlas-h19s4z-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true',
+        //  database: 'Puzzle_word_number'
     }
 };
 const mongoConfig = settings.mongoConfig;
