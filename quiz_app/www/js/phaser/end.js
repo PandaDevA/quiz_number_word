@@ -252,12 +252,12 @@ class EndScreen extends Phaser.Scene{
                     this.pointAds = this.add.image(540,890,'PointAds');
                     this.pointAds.setInteractive().on('pointerdown', () => {
                         console.log('Point Interstitial');
-                        // AdMob.showInterstitial();
-                        // AdMob.prepareInterstitial({
-                        //     adId: admobid.interstitial,
-                        //     autoShow:false,
-                        //     isTesting: true,
-                        // });
+                        AdMob.showInterstitial();
+                        AdMob.prepareInterstitial({
+                            adId: admobid.interstitial,
+                            autoShow:false,
+                            isTesting: true,
+                        });
                     
                     });
             
@@ -284,12 +284,12 @@ class EndScreen extends Phaser.Scene{
                 this.coinAds = this.add.image(540,game_type == "tournament" ? 1140 : 1080,'CoinAds');
                 this.coinAds.setInteractive().on('pointerdown', () => {
                     console.log('Coin Interstitial');
-                    // AdMob.showInterstitial();
-                    // AdMob.prepareInterstitial({
-                    //     adId: admobid.interstitial,
-                    //     autoShow:false,
-                    //     isTesting: true,
-                    // });
+                    AdMob.showInterstitial();
+                    AdMob.prepareInterstitial({
+                        adId: admobid.interstitial,
+                        autoShow:false,
+                        isTesting: true,
+                    });
                 });
     
                 this.coinText = this.add.text(410,game_type == "tournament" ? 1140 : 1080, coinText, { fixedWidth: 160, fixedHeight: 60, align:'center' })

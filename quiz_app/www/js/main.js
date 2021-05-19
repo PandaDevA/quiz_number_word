@@ -66,39 +66,39 @@ function onBackKeyDown() {
             break;
         case "EndScreen":
             game.scene.stop(activeName);
-            game.scale.start("HomeScreen");
+            game.scene.start("HomeScreen");
             break;
         case "TournamentScreen":
             game.scene.stop(activeName);
-            game.scale.start("HomeScreen");
+            game.scene.start("HomeScreen");
             break;
         case "BattleScreen":
             game.scene.stop(activeName);
-            game.scale.start("HomeScreen");
+            game.scene.start("HomeScreen");
             break;
         case "MenuScreen":
             game.scene.stop(activeName);
-            game.scale.start("HomeScreen");
+            game.scene.start("HomeScreen");
             break;
         case "RankScreen":
             game.scene.stop(activeName);
-            game.scale.start("HomeScreen");
+            game.scene.start("HomeScreen");
             break;
         case "RuleScreen":
             game.scene.stop(activeName);
-            game.scale.start("HomeScreen");
+            game.scene.start("HomeScreen");
             break;
         case "PolicyScreen":
             game.scene.stop(activeName);
-            game.scale.start("HomeScreen");
+            game.scene.start("HomeScreen");
             break;
         case "ProfileScreen":
             game.scene.stop(activeName);
-            game.scale.start("HomeScreen");
+            game.scene.start("HomeScreen");
             break;
         case "RegisterScreen":
             game.scene.stop(activeName);
-            game.scale.start("LoginScreen");
+            game.scene.start("LoginScreen");
             break;
     }
 }
