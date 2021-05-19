@@ -50,6 +50,58 @@ const config = {
 var game = new Phaser.Game(config);
 
 game.scene.start('LoginScreen');
+document.addEventListener('deviceready',
+    function(){
+        document.addEventListener("backbutton", onBackKeyDown, false);
+    },
+    false
+);
+
+function onBackKeyDown() {
+    let activeScene = game.scene.getScenes(true)[0];
+    let activeName = activeScene.scene.key
+    switch(activeName){
+        case "LoginScreen":
+            navigator.app.exitApp();
+            break;
+        case "EndScreen":
+            game.scene.stop(activeName);
+            game.scale.start("HomeScreen");
+            break;
+        case "TournamentScreen":
+            game.scene.stop(activeName);
+            game.scale.start("HomeScreen");
+            break;
+        case "BattleScreen":
+            game.scene.stop(activeName);
+            game.scale.start("HomeScreen");
+            break;
+        case "MenuScreen":
+            game.scene.stop(activeName);
+            game.scale.start("HomeScreen");
+            break;
+        case "RankScreen":
+            game.scene.stop(activeName);
+            game.scale.start("HomeScreen");
+            break;
+        case "RuleScreen":
+            game.scene.stop(activeName);
+            game.scale.start("HomeScreen");
+            break;
+        case "PolicyScreen":
+            game.scene.stop(activeName);
+            game.scale.start("HomeScreen");
+            break;
+        case "ProfileScreen":
+            game.scene.stop(activeName);
+            game.scale.start("HomeScreen");
+            break;
+        case "RegisterScreen":
+            game.scene.stop(activeName);
+            game.scale.start("LoginScreen");
+            break;
+    }
+}
 
 const getDateTimeString = (date) => {
 

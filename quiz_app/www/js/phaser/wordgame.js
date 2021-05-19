@@ -157,6 +157,7 @@ class WordGameScreen extends Phaser.Scene{
         let current_time = 60 - Number.parseInt((curTime.getTime() - scene.timeStamp)/1000);
         if(current_time < 0)
         {
+            scene.timeText.setText('0');
             if(game_type == "stage" || game_type == "daily")
                 game_state = "failed";
             else

@@ -50,7 +50,7 @@ class NumberGameScreen extends Phaser.Scene{
             let numberText = this.add.text(300 + (i%3)*240, 720 + Math.floor(i/3) * 250, gameData.numData[cur_number].array[i], { fixedWidth: 180, fixedHeight: 100 })
             .setOrigin(0.5,0.5)
             .setStyle({
-                fontSize: '100px',
+                fontSize: '92px',
                 fontFamily: 'RR',
                 fontWeight:'bold',
                 color: '#1d3d59',
@@ -254,6 +254,7 @@ class NumberGameScreen extends Phaser.Scene{
         let current_time = 60 - Number.parseInt((curTime.getTime() - scene.timeStamp)/1000);
         if(current_time < 0)
         {
+            scene.timeText.setText('0');
             if(game_type == "stage" || game_type == "daily")
                 game_state = "failed";
             else
