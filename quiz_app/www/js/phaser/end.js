@@ -40,7 +40,7 @@ class EndScreen extends Phaser.Scene{
 
             if(game_type == "stage")
             {
-                this.lostText = this.add.text(540, 850, 'YOU CAN"T PASS\nTHE STAGE', { fixedWidth: 700, fixedHeight: 200, align:'center' })
+                this.lostText = this.add.text(540, 850, 'YOU CAN\'T PASS\nTHE STAGE', { fixedWidth: 700, fixedHeight: 200, align:'center' })
                 .setStyle({
                     fontSize: '80px',
                     fontFamily: 'RR',
