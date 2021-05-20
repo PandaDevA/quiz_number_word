@@ -292,6 +292,9 @@ class EndScreen extends Phaser.Scene{
                         autoShow:false,
                         isTesting: true,
                     });
+                    this.coinAds.destroy();
+                    this.coinText.destroy();
+                    this.getCoinText.destroy();
                 });
     
                 this.coinText = this.add.text(410,game_type == "tournament" ? 1140 : 1080, coinText, { fixedWidth: 160, fixedHeight: 60, align:'center' })
