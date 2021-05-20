@@ -2,12 +2,17 @@ Client.daily_start = function(){
     Client.socket.emit('daily_start', {username : userData.userName});
 };
 
-Client.daily_end = function(isWin){
-    if(isWin)
-        Client.socket.emit('standalone_end', {username : userData.userName, heart:1, point:cur_point, coin:3});
+Client.daily_end = function(){
+    Client.socket.emit('standalone_end', {username : userData.userName, heart:0, point:cur_point, coin:3});
 };
 
 Client.socket.on('daily_start',function(data){
+    AdMob.showInterstitial();
+    AdMob.prepareInterstitial({
+        adId: admobid.interstitial,
+        autoShow:false,
+        isTesting: true,
+    });
     let activeScene = game.scene.getScenes(true)[0];
     if(data.result)
     {

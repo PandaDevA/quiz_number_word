@@ -137,10 +137,12 @@ class WordGameScreen extends Phaser.Scene{
             this.time.removeEvent(this.timer);
             cur_point += this.point;
             if(game_type == "stage"){
-                Client.stage_end(bPass);
+                if(bPass)
+                    Client.stage_end();
             }
             else if(game_type == "daily"){
-                Client.daily_end(bPass);
+                if(bPass)
+                    Client.daily_end();
             }
             cur_word++;
             game.scene.stop('WordGameScreen');
@@ -168,12 +170,12 @@ class WordGameScreen extends Phaser.Scene{
                 scene.timer.remove();
                 scene.time.removeEvent(scene.timer);
                 cur_point += scene.point;
-                if(game_type == "stage"){
-                    Client.stage_end(false);
-                }
-                else if(game_type == "daily"){
-                    Client.daily_end(false);
-                }
+                // if(game_type == "stage"){
+                //     Client.stage_end(false);
+                // }
+                // else if(game_type == "daily"){
+                //     Client.daily_end(false);
+                // }
                 cur_word++;
                 game.scene.stop('WordGameScreen');
                 game.scene.start('EndScreen');

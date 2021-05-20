@@ -234,12 +234,12 @@ class NumberGameScreen extends Phaser.Scene{
             this.timer.remove();
             this.time.removeEvent(this.timer);
             cur_point += this.point;
-            if(game_type == "stage"){
-                Client.stage_end(bPass);
-            }
-            else if(game_type == "daily"){
-                Client.daily_end(bPass);
-            }
+            // if(game_type == "stage"){
+            //     Client.stage_end(bPass);
+            // }
+            // else if(game_type == "daily"){
+            //     Client.daily_end(bPass);
+            // }
             cur_number++;
             game.scene.stop('NumberGameScreen');
             game.scene.start('EndScreen');
@@ -265,12 +265,12 @@ class NumberGameScreen extends Phaser.Scene{
                 scene.timer.remove();
                 scene.time.removeEvent(scene.timer);
                 cur_point += scene.point;
-                if(game_type == "stage"){
-                    Client.stage_end(false);
-                }
-                else if(game_type == "daily"){
-                    Client.daily_end(false);
-                }
+                // if(game_type == "stage"){
+                //     Client.stage_end(false);
+                // }
+                // else if(game_type == "daily"){
+                //     Client.daily_end(false);
+                // }
                 cur_number++;
                 game.scene.stop('NumberGameScreen');
                 game.scene.start('EndScreen');

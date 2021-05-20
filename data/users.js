@@ -131,11 +131,13 @@ const exportedMethods = {
 
         const updatedUserData = user;
 
-        if (data.now_day && user.lastDate == data.now_day) return {result: false, error: 'Please wait until tomorrow'};
-        else if (data.now_day) updatedUserData.lastDate = data.now_day;
+        // if (data.now_day && user.lastDate == data.now_day) return {result: false, error: 'Please wait until tomorrow'};
+        // else 
+        if (data.now_day) updatedUserData.lastDate = data.now_day;
 
-        if (data.now_hour && user.lastTime / 4 == data.now_hour / 4) return {result: false, error: 'Please wait until the next 4 hours'};
-        else if (data.now_hour) updatedUserData.lastTime = data.now_hour;
+        // if (data.now_hour && user.lastTime / 4 == data.now_hour / 4) return {result: false, error: 'Please wait until the next 4 hours'};
+        // else 
+        if (data.now_hour) updatedUserData.lastTime = data.now_hour;
 
         if (data.coin) {
             if (updatedUserData.coin < data.coin) return {result: false, error: 'You need more coins'};
