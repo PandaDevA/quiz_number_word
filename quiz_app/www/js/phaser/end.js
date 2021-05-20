@@ -50,7 +50,7 @@ class EndScreen extends Phaser.Scene{
                 .setOrigin(0.5,0.5);
             }
             else{ 
-                this.lostText = this.add.text(540, 850, 'YOU LOSE!\n\nTRY TOMORROW\nAGAIN!', { fixedWidth: 700, align:'center' })
+                this.lostText = this.add.text(540, 850, 'YOU LOSE!', { fixedWidth: 700, align:'center' })
                 .setStyle({
                     fontSize: '80px',
                     fontFamily: 'RR',
@@ -258,7 +258,9 @@ class EndScreen extends Phaser.Scene{
                             autoShow:false,
                             isTesting: true,
                         });
-                    
+                        this.pointAds.destroy();
+                        this.pointText.destroy();
+                        this.getPointText.destroy();
                     });
             
                     this.pointText = this.add.text(410,890, cur_point, { fixedWidth: 160, fixedHeight: 60, align:'center' })
