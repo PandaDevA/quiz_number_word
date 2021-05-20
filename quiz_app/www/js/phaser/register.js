@@ -64,7 +64,7 @@ class RegisterScreen extends Phaser.Scene{
         this.userNameImage = this.add.image(540,700,'InputBack');
         this.userName = this.add.rexInputText(540, 700, 620, 70, 
             {
-                text:'admin',
+                text:'',
                 type:'text',
                 fontSize: '64px',
                 fontFamily: 'RR',
@@ -103,8 +103,8 @@ class RegisterScreen extends Phaser.Scene{
         this.passwordImage = this.add.image(540,1000,'InputBack');
         this.password = this.add.rexInputText(540, 1000, 620, 70, 
             {
-                text:'1234',
-                type:'password',
+                text:'',
+                type:'text',
                 fontSize: '64px',
                 fontFamily: 'RR',
                 color: '#000000',

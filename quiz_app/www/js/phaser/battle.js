@@ -21,7 +21,7 @@ class BattleScreen extends Phaser.Scene{
         this.userNameImage = this.add.image(540,560,'InputBack');
         this.userName = this.add.rexInputText(540, 560, 620, 70, 
             {
-                text:'testuser',
+                text:'',
                 type:'text',
                 fontSize: '64px',
                 fontFamily: 'RR',

@@ -49,7 +49,7 @@ class EndScreen extends Phaser.Scene{
                 })
                 .setOrigin(0.5,0.5);
             }
-            else{
+            else{ 
                 this.lostText = this.add.text(540, 850, 'YOU LOSE!\n\nTRY TOMORROW\nAGAIN!', { fixedWidth: 700, align:'center' })
                 .setStyle({
                     fontSize: '80px',
