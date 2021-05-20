@@ -157,7 +157,7 @@ class EndScreen extends Phaser.Scene{
                     if(game_type == "stage")
                         showText = 'YOU FINISHED STAGE';
                     else if(game_type == "daily")
-                        showText = 'YOU FINISHED DAILY GAME';
+                        showText = 'YOU FINISHED BONUS GAME';
                     else if(game_type == "passion")
                         showText = 'YOU EARN COIN';
                     this.win = this.add.image(540,400,'Win');

@@ -22,6 +22,6 @@ Client.socket.on('daily_start',function(data){
     }
     else
     {
-        toast_error(activeScene, 'CAN NOT PLAY\nDAILY GAME!');
+        toast_error(activeScene, 'CAN NOT PLAY\nBONUS GAME!');
     }
 });

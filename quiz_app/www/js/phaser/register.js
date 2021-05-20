@@ -23,14 +23,14 @@ class RegisterScreen extends Phaser.Scene{
 
     create() {
         // Create button
-        var button = this.add.image(540,400,'EmptyUser').setOrigin(0.5,0.5);
+        var button = this.add.image(540,300,'EmptyUser').setOrigin(0.5,0.5);
         // Create canvas   
-        var canvas = this.add.rexCanvas(540, 400, 300, 300).setOrigin(0.5,0.5);
+        var canvas = this.add.rexCanvas(540, 300, 300, 300).setOrigin(0.5,0.5);
         canvas.fitTo = (function (parent) {
             var newSize = FitTo(this, parent, true);
             this.setDisplaySize(newSize.width, newSize.height);
         }).bind(canvas)
-        this.userAvatar_cover = this.add.image(540,400,'avatar_cover').setDepth(5);
+        this.userAvatar_cover = this.add.image(540,300,'avatar_cover').setDepth(5);
 
         var self = this;
         // Create a transparent file chooser
@@ -61,8 +61,8 @@ class RegisterScreen extends Phaser.Scene{
                 });
         });
         
-        this.userNameImage = this.add.image(540,700,'InputBack');
-        this.userName = this.add.rexInputText(540, 700, 620, 70, 
+        this.userNameImage = this.add.image(540,600,'InputBack');
+        this.userName = this.add.rexInputText(540, 600, 620, 70, 
             {
                 text:'',
                 type:'text',
@@ -72,7 +72,7 @@ class RegisterScreen extends Phaser.Scene{
             })
         .setOrigin(0.5,0.5);
 
-        this.userNameText = this.add.text(210, 635, 'Username', { fixedWidth: 200, fixedHeight: 32 })
+        this.userNameText = this.add.text(210, 535, 'Username', { fixedWidth: 200, fixedHeight: 32 })
         .setStyle({
             fontSize: '28px',
             fontFamily: 'RR',
@@ -81,8 +81,8 @@ class RegisterScreen extends Phaser.Scene{
         })
         .setOrigin(0,0.5);
 
-        this.emailImage = this.add.image(540,850,'InputBack');
-        this.email = this.add.rexInputText(540, 850, 620, 70, 
+        this.emailImage = this.add.image(540,750,'InputBack');
+        this.email = this.add.rexInputText(540, 750, 620, 70, 
         {
             text:'',
             type:'text',
@@ -91,7 +91,7 @@ class RegisterScreen extends Phaser.Scene{
             color: '#000000',
         })
         .setOrigin(0.5,0.5);
-        this.emailText = this.add.text(210, 785, 'Email', { fixedWidth: 200, fixedHeight: 32 })
+        this.emailText = this.add.text(210, 685, 'Email', { fixedWidth: 200, fixedHeight: 32 })
         .setStyle({
             fontSize: '28px',
             fontFamily: 'RR',
@@ -100,8 +100,8 @@ class RegisterScreen extends Phaser.Scene{
         })
         .setOrigin(0,0.5);
 
-        this.passwordImage = this.add.image(540,1000,'InputBack');
-        this.password = this.add.rexInputText(540, 1000, 620, 70, 
+        this.passwordImage = this.add.image(540,900,'InputBack');
+        this.password = this.add.rexInputText(540, 900, 620, 70, 
             {
                 text:'',
                 type:'text',
@@ -110,7 +110,7 @@ class RegisterScreen extends Phaser.Scene{
                 color: '#000000',
             })
         .setOrigin(0.5,0.5);
-        this.passwordText = this.add.text(210, 935, 'Password', { fixedWidth: 200, fixedHeight: 32 })
+        this.passwordText = this.add.text(210, 835, 'Password', { fixedWidth: 200, fixedHeight: 32 })
         .setStyle({
             fontSize: '28px',
             fontFamily: 'RR',
@@ -119,12 +119,22 @@ class RegisterScreen extends Phaser.Scene{
         })
         .setOrigin(0,0.5);
 
-        this.registerButton = this.add.image(540,1200,'SignUp1');
+        this.registerButton = this.add.image(540,1300,'SignUp1');
         this.registerButton.setInteractive().on('pointerdown', () => {
             Client.register(this.userName.text, this.email.text, this.password.text, this.avatar);
         });
 
-        this.loginText = this.add.text(540, 1500, 'Login Now', { fixedWidth: 500, fixedHeight: 120 })
+        this.privacyText = this.add.text(540, 1100, 'When you become a member, you are\ndeemed to have accepted the "Privacy\nPolicy" and "Terms and Conditions."\nAnd we have to make link for "Privacy\nPolicy" and "Terms and Conditions."', { fixedWidth: 800, fixedHeight: 300 })
+        .setStyle({
+            fontSize: '36px',
+            fontFamily: 'RR',
+            fontWeight: 'bold',
+            align: "center",
+            fill: '#000000',
+        })
+        .setOrigin(0.5,0.5);
+
+        this.loginText = this.add.text(540, 1540, 'Login Now', { fixedWidth: 500, fixedHeight: 120 })
         .setStyle({
             fontSize: '84px',
             fontFamily: 'RR',

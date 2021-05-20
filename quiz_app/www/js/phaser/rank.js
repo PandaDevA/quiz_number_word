@@ -72,7 +72,8 @@ class RankScreen extends Phaser.Scene{
                 fontWeight: 'bold',
                 fontSize: '32px',
                 color: "#ffffff",
-                aligh: "center"
+                aligh: "center",
+                fixedWidth: 280
             }).setOrigin(0.5, 0.5);
         }
 
@@ -103,7 +104,8 @@ class RankScreen extends Phaser.Scene{
                 fontWeight: 'bold',
                 fontSize: '28px',
                 color: "#ffffff",
-                aligh: "center"
+                aligh: "center",
+                fixedWidth: 210
             }).setOrigin(0.5, 0.5);
         }
 
@@ -134,7 +136,8 @@ class RankScreen extends Phaser.Scene{
                 fontWeight: 'bold',
                 fontSize: '28px',
                 color: "#ffffff",
-                aligh: "center"
+                aligh: "center",
+                fixedWidth: 210
             }).setOrigin(0.5, 0.5);
         }
 
