@@ -11,8 +11,8 @@ Client.login = function(username, password){
     Client.socket.emit('login', {username: username, password: password});
 };
 
-Client.prize = function(point, coin){
-    Client.socket.emit('prize', {username: userData.userName, heart:0, point: point, coin: coin});
+Client.prize = function(heart, point, coin){
+    Client.socket.emit('prize', {username: userData.userName, heart:heart, point: point, coin: coin});
 };
 
 Client.google = function(google_info){

@@ -9,6 +9,12 @@ class PassionScreen extends Phaser.Scene{
     } 
 
     preload() {
+        this.load.scenePlugin({
+            key: 'rexuiplugin',
+            url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+            sceneKey: 'rexUI'
+        });
+
         this.angle_speed = 0.05;
         this.angle = 0.0;
         this.bStop = false;
@@ -16,19 +22,26 @@ class PassionScreen extends Phaser.Scene{
     }
 
     create() {
-        this.passion_flower = this.add.image(540,690,'Passion');
+        this.passion_flower = this.add.image(540,600,'Passion');
         let angle = Number.parseInt(Math.random()*360);
         this.angle = angle;
         this.passion_flower.setAngle(angle);
-        this.indicator = this.add.image(540,1180,'Indicator');
+        this.indicator = this.add.image(540,1090,'Indicator');
 
-        this.turnButton = this.add.image(280,1440,'Turn', 0);
+        this.turnButton = this.add.image(280,1350,'Turn', 0);
         this.turnButton.setInteractive().on('pointerdown', () => {
             this.turn();
         });
 
-        this.stopButton = this.add.image(800,1440,'Stop', 0).setAlpha(0.5);
+        this.stopButton = this.add.image(800,1350,'Stop', 0).setAlpha(0.5);
         this.stopButton.disableInteractive();        
+
+        this.mainPageButton = this.add.image(540,1550,'MainPage');
+        this.mainPageButton.setInteractive().on('pointerdown', () => {
+            game.scene.stop('PassionScreen');
+            game.scene.start('HomeScreen');
+        });
+
     }
     update(){
     }
@@ -64,17 +77,32 @@ class PassionScreen extends Phaser.Scene{
             });
         }
 
-        if(scene.angle_speed <= 0.05)
+        if(scene.angle_speed < 0.05)
         {
             scene.timer.remove();
             scene.time.removeEvent(scene.timer);
-            let prize_list = [1,50,5,0,1,2,5,0,1,2,5,0];
+            let prize_list = [2,-1,-1,0,-1,1,-1,-1,0,-1,1,-1];
             cur_prize = prize_list[Number.parseInt((scene.angle+345)/30)%12];
-            Client.passion_end();
-            game_type = "passion";
-            game_state = "pass";
-            game.scene.stop("PassionScreen");
-            game.scene.start("EndScreen");
+
+            if(cur_prize == -1){
+                AdMob.showInterstitial();
+                AdMob.prepareInterstitial({
+                    adId: admobid.interstitial,
+                    autoShow:false,
+                    isTesting: true,
+                });
+            } else if(cur_prize == 0){
+                Client.prize(1,0,0);
+                toast_error(scene, "You Earned 1 Life.");
+            } else{
+                Client.prize(0,0,cur_prize);
+                toast_error(scene, "You Earned "+ cur_prize + " Coin.");
+            }
+            scene.angle_speed = 0.05;
+            scene.bStop = false;
+            scene.bTurn = false;
+            scene.turnButton.setInteractive().setAlpha(1.0);
+            scene.stopButton.disableInteractive().setAlpha(0.5);
         }
         scene.angle = scene.angle + scene.angle_speed;
         if(scene.angle>360)

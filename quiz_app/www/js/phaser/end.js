@@ -272,7 +272,7 @@ class EndScreen extends Phaser.Scene{
                         else if( game_type == 'battle'){
                             multiplier = 4;
                         }        
-                        Client.prize(cur_point * multiplier, 0);
+                        Client.prize(0, cur_point * multiplier, 0);
                     });
             
                     this.pointText = this.add.text(400,890, cur_point, { fixedWidth: 160, fixedHeight: 60, align:'center' })
@@ -317,7 +317,7 @@ class EndScreen extends Phaser.Scene{
                     else if( game_type == 'battle'){
                         multiplier = 1;
                     }
-                    Client.prize(0, coinText * multiplier);
+                    Client.prize(0, 0, coinText * multiplier);
                 });
     
                 this.coinText = this.add.text(400,game_type == "tournament" ? 1140 : 1080, coinText, { fixedWidth: 160, fixedHeight: 60, align:'center' })
