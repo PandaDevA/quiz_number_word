@@ -9,6 +9,11 @@ class WordGameScreen extends Phaser.Scene{
     }
 
     preload() {
+        this.load.scenePlugin({
+            key: 'rexuiplugin',
+            url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+            sceneKey: 'rexUI'
+        });
     }
 
     create() {
@@ -119,11 +124,17 @@ class WordGameScreen extends Phaser.Scene{
                 this.point = 10 + Math.floor(Number.parseInt(this.timeText.text)/10);
             }
             else if(word_length == 7){
-                this.point = 5;
+                this.point = 8;
             }
             else if(word_length == 6){
-                this.point = 2;
+                this.point = 6;
             }
+            else if(word_length == 5){
+                this.point = 4;
+            }
+        } else{
+            toast_error(this, 'You must find a word\nwith at least 5 letters\nto pass stage!');
+            return;
         }
         
         if(!bPass && (game_type == "stage" || game_type == "daily"))

@@ -9,6 +9,11 @@ class NumberGameScreen extends Phaser.Scene{
     }
 
     preload() {
+        this.load.scenePlugin({
+            key: 'rexuiplugin',
+            url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+            sceneKey: 'rexUI'
+        });
     }
 
     create() {
@@ -221,7 +226,21 @@ class NumberGameScreen extends Phaser.Scene{
         else if(Math.abs(target-result) == 1)
         {
             bPass = true;
-            this.point = 5;
+            this.point = 8;
+        }
+        else if(Math.abs(target-result) == 2)
+        {
+            bPass = true;
+            this.point = 6;
+        }
+        else if(Math.abs(target-result) == 3)
+        {
+            bPass = true;
+            this.point = 4;
+        }
+        else{
+            toast_error(this, 'You must reach a number that\nis close to +3 or -3 from\nthe given target number!');
+            return;
         }
 
         if(!bPass && (game_type == "stage" || game_type == "daily"))

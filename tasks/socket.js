@@ -398,6 +398,16 @@ const exportedMethods = {
                 socket.handshake.session.save();
             });
 
+            socket.on('prize', (data) => {
+                // REQUIRE INFO: data.username and user value; data.coin or data.point or data.heart
+                console.log('prize request recevied : ', data);
+
+                users.addUserValue(data.username, data).then((user) => {
+                    if (user) socket.emit('update_userdata', {result: user.result});
+                    else console.log(`${data.username} could not find while process prize`);
+                });
+            });
+
             socket.on('daily_start', (data) => {
                 // REQUIRE INFO: data.username
                 console.log('daily_start request recevied');

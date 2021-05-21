@@ -225,7 +225,8 @@ class EndScreen extends Phaser.Scene{
                     getText1 = 'GET ×3';
                 }
                 else if( game_type == 'daily'){
-                    getText1 = 'GET ×8';
+                    getText1 = 'GET ×6';
+                    getText2 = 'GET ×4';
                     coinText = 3;
                 }
                 else if( game_type == 'battle'){
@@ -261,9 +262,20 @@ class EndScreen extends Phaser.Scene{
                         this.pointAds.destroy();
                         this.pointText.destroy();
                         this.getPointText.destroy();
+                        let multiplier = 1;
+                        if( game_type == 'stage' ){
+                            multiplier = 2;
+                        }
+                        else if( game_type == 'daily'){
+                            multiplier = 5;
+                        }
+                        else if( game_type == 'battle'){
+                            multiplier = 4;
+                        }        
+                        Client.prize(cur_point * multiplier, 0);
                     });
             
-                    this.pointText = this.add.text(410,890, cur_point, { fixedWidth: 160, fixedHeight: 60, align:'center' })
+                    this.pointText = this.add.text(400,890, cur_point, { fixedWidth: 160, fixedHeight: 60, align:'center' })
                     .setStyle({
                         fontSize: '60px',
                         fontFamily: 'RR',
@@ -295,9 +307,20 @@ class EndScreen extends Phaser.Scene{
                     this.coinAds.destroy();
                     this.coinText.destroy();
                     this.getCoinText.destroy();
+                    let multiplier = 1;
+                    if( game_type == 'stage' ){
+                        multiplier = 1;
+                    }
+                    else if( game_type == 'daily'){
+                        multiplier = 3;
+                    }
+                    else if( game_type == 'battle'){
+                        multiplier = 1;
+                    }
+                    Client.prize(0, coinText * multiplier);
                 });
     
-                this.coinText = this.add.text(410,game_type == "tournament" ? 1140 : 1080, coinText, { fixedWidth: 160, fixedHeight: 60, align:'center' })
+                this.coinText = this.add.text(400,game_type == "tournament" ? 1140 : 1080, coinText, { fixedWidth: 160, fixedHeight: 60, align:'center' })
                 .setStyle({
                     fontSize: '60px',
                     fontFamily: 'RR',
