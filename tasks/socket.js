@@ -35,12 +35,17 @@ const getMultiRandomData = async () => {
 
 const transporter = nodemailer.createTransport(
         {
-            host: 'uk2.fcomet.com',
-            port: 25,
-            auth: {
-                user: 'chilerac',
-                pass: 'oE667Pnt4k'
-            },
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+        	auth: {
+		        user: 'tuktarov2121@gmail.com',
+		        pass: 'dsf14hgd4eGHFD',
+	        },
+	        tls: {
+		        // do not fail on invalid certs
+		        rejectUnauthorized: false
+	        }
         }
     );
   
@@ -48,7 +53,7 @@ const sendVerifyCode = (user) => {
     const vCode = 10000 + Math.floor(Math.random() * (99999 - 10000 + 1));
 
     const mailOptions = {
-        from: 'chilerac@chileracing.net',
+        from: 'tuktarov2121@gmail.com',
         to: user,
         subject: 'New password for 1 Word 1 Action',
         text: vCode.toString()
@@ -306,6 +311,24 @@ const exportedMethods = {
                         socket.emit('register', {result: true});
                     } else {
                         socket.emit('register', {result: false, error: result.error});
+                    }
+                });
+            });
+
+            socket.on('user_update', (data) => {
+                // REQUIRE INFO: data.username and data.password and data.email
+                console.log('user_update request is received');
+                if (data.username == 'tournament') {
+                    socket.emit('user_update', {result: false, error: 'The user name is not allowed. Please use other name.'});
+                    return;
+                }
+
+                users.updateUser(data.prevname, data).then((result) => {
+                    if(result.result) {
+                        socket.emit('update_userdata', {result: result.result});
+                        socket.emit('user_update', {result: true});
+                    } else {
+                        socket.emit('user_update', {result: false, error: result.error});
                     }
                 });
             });

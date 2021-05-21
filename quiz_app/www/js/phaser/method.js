@@ -17,6 +17,7 @@ class MethodScreen extends Phaser.Scene{
     }
 
     create() {
+        this.button_audio = this.sound.add('button');
         this.method = this.rexUI.add.scrollablePanel({
             x: 540,
             y: 800,
@@ -100,6 +101,8 @@ class MethodScreen extends Phaser.Scene{
 
         this.mainPage = this.add.image(540,1500,'MainPage');
         this.mainPage.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             game.domContainer.style.display = 'block';
             game.scene.stop('MethodScreen');
             game.scene.start('HomeScreen');

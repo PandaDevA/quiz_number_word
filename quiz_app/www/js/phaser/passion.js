@@ -22,6 +22,7 @@ class PassionScreen extends Phaser.Scene{
     }
 
     create() {
+        this.button_audio = this.sound.add('button');
         this.passion_flower = this.add.image(540,600,'Passion');
         let angle = Number.parseInt(Math.random()*360);
         this.angle = angle;
@@ -30,6 +31,8 @@ class PassionScreen extends Phaser.Scene{
 
         this.turnButton = this.add.image(280,1350,'Turn', 0);
         this.turnButton.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             this.turn();
         });
 
@@ -38,6 +41,8 @@ class PassionScreen extends Phaser.Scene{
 
         this.mainPageButton = this.add.image(540,1550,'MainPage');
         this.mainPageButton.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             game.scene.stop('PassionScreen');
             game.scene.start('HomeScreen');
         });
@@ -72,6 +77,8 @@ class PassionScreen extends Phaser.Scene{
         {
             scene.bTurn = false;
             scene.stopButton.setInteractive().setAlpha(1.0).on('pointerdown', () => {
+                if(sound_enable)
+                    this.button_audio.play();
                 scene.stop();
                 scene.stopButton.disableInteractive().setAlpha(0.5);
             });

@@ -17,6 +17,13 @@ class WordGameScreen extends Phaser.Scene{
     }
 
     create() {
+        this.action_audio = this.sound.add('action');
+        this.start_audio = this.sound.add('start');
+        if(sound_enable)
+            this.start_audio.play();
+        this.lose_audio = this.sound.add('lose');
+        this.success_audio = this.sound.add('success');
+
         this.point = undefined;
         this.logo = this.add.image(540,120,'Logo');
 
@@ -80,6 +87,8 @@ class WordGameScreen extends Phaser.Scene{
             this.resultTexts.push(resultText);
 
             characterImage.setInteractive().on('pointerdown', () => {
+                if(sound_enable)
+                    this.action_audio.play();
                 if(this.characterImages[i].alpha == 0.5)
                     return;
                 this.result = this.result + this.characterTexts[i].text;
@@ -90,6 +99,8 @@ class WordGameScreen extends Phaser.Scene{
 
         this.refreshButton = this.add.image(640,1380,'Refresh', 1);
         this.refreshButton.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.action_audio.play();
             this.result = '';
             for (var i=0; i<this.resultTexts.length; i++)
                 this.resultTexts[i].setText('');
@@ -99,6 +110,8 @@ class WordGameScreen extends Phaser.Scene{
 
         this.checkButton = this.add.image(440,1380,'Check', 1);
         this.checkButton.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.action_audio.play();
             this.checkResult();
         });
 
@@ -133,6 +146,8 @@ class WordGameScreen extends Phaser.Scene{
                 this.point = 4;
             }
         } else{
+            if(sound_enable)
+                this.lose_audio.play();
             toast_error(this, 'You must find a word\nwith at least 5 letters\nto pass stage!');
             return;
         }
@@ -141,6 +156,9 @@ class WordGameScreen extends Phaser.Scene{
             game_state = "failed";
         else
             game_state = "pass";
+
+        if(sound_enable)
+            this.success_audio.play();
 
         if(game_type == "stage" || game_type == "daily")
         {
@@ -170,6 +188,8 @@ class WordGameScreen extends Phaser.Scene{
         let current_time = 60 - Number.parseInt((curTime.getTime() - scene.timeStamp)/1000);
         if(current_time < 0)
         {
+            if(sound_enable)
+                this.lose_audio.play();
             scene.timeText.setText('0');
             if(game_type == "stage" || game_type == "daily")
                 game_state = "failed";

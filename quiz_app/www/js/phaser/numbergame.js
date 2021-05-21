@@ -17,6 +17,13 @@ class NumberGameScreen extends Phaser.Scene{
     }
 
     create() {
+        this.action_audio = this.sound.add('action');
+        this.start_audio = this.sound.add('start');
+        if(sound_enable)
+            this.start_audio.play();
+        this.lose_audio = this.sound.add('lose');
+        this.success_audio = this.sound.add('success');
+
         this.point = undefined;
         this.logo = this.add.image(540,120,'Logo');
 
@@ -64,6 +71,8 @@ class NumberGameScreen extends Phaser.Scene{
             this.numberTexts.push(numberText);
             this.numberImages.push(numberImage);
             numberImage.setInteractive().on('pointerdown', () => {
+                if(sound_enable)
+                    this.action_audio.play();
                 if(this.numberImages[i].alpha == 0.5)
                     return;
                 if(this.selected_index == i)
@@ -131,6 +140,8 @@ class NumberGameScreen extends Phaser.Scene{
 
         this.plusOperator = this.add.image(225, 1170,'Plus', 1);
         this.plusOperator.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.action_audio.play();
             if(this.selected_operator == 1)
             {
                 this.selected_operator = -1;
@@ -146,6 +157,8 @@ class NumberGameScreen extends Phaser.Scene{
 
         this.minusOperator = this.add.image(430,1170,'Minus', 1);
         this.minusOperator.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.action_audio.play();
             if(this.selected_operator == 2)
             {
                 this.selected_operator = -1;
@@ -161,6 +174,8 @@ class NumberGameScreen extends Phaser.Scene{
 
         this.multiOperator = this.add.image(635,1170,'Multi', 1);
         this.multiOperator.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.action_audio.play();
             if(this.selected_operator == 3)
             {
                 this.selected_operator = -1;
@@ -176,6 +191,8 @@ class NumberGameScreen extends Phaser.Scene{
 
         this.diviOperator = this.add.image(840,1170, 'Divi', 1);
         this.diviOperator.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.action_audio.play();
             if(this.selected_operator == 4)
             {
                 this.selected_operator = -1;
@@ -191,12 +208,16 @@ class NumberGameScreen extends Phaser.Scene{
 
         this.refreshButton = this.add.image(640,1380,'Refresh', 1);
         this.refreshButton.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.action_audio.play();
             this.refreshNumbers();
             this.refreshOperators();
         });
 
         this.checkButton = this.add.image(440,1380,'Check', 1);
         this.checkButton.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.action_audio.play();
             this.checkResult();
         });
 
@@ -239,6 +260,8 @@ class NumberGameScreen extends Phaser.Scene{
             this.point = 4;
         }
         else{
+            if(sound_enable)
+                this.lose_audio.play();
             toast_error(this, 'You must reach a number that\nis close to +3 or -3 from\nthe given target number!');
             return;
         }
@@ -248,6 +271,8 @@ class NumberGameScreen extends Phaser.Scene{
         else
             game_state = "pass";
 
+        if(sound_enable)
+            this.success_audio.play();
         if(game_type == "stage" || game_type == "daily")
         {
             this.timer.remove();
@@ -273,6 +298,8 @@ class NumberGameScreen extends Phaser.Scene{
         let current_time = 60 - Number.parseInt((curTime.getTime() - scene.timeStamp)/1000);
         if(current_time < 0)
         {
+            if(sound_enable)
+                this.lose_audio.play();
             scene.timeText.setText('0');
             if(game_type == "stage" || game_type == "daily")
                 game_state = "failed";

@@ -24,6 +24,7 @@ class HomeScreen extends Phaser.Scene{
     }
 
     create() {
+        this.button_audio = this.sound.add('button');
         oppoData = "";
 
         this.logo = this.add.image(540,120,'Logo');
@@ -102,29 +103,41 @@ class HomeScreen extends Phaser.Scene{
 
         this.stage = this.add.image(540,850,'Stage');
         this.stage.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             Client.stage_start();
         });
         this.battle = this.add.image(540,1030,'Battle');
         this.battle.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             game.scene.stop('HomeScreen');
             game.scene.start('BattleScreen');
         });
         this.tournament = this.add.image(540,1210,'Tournament');
         this.tournament.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             Client.tournament_list();
         });
         this.daily_game = this.add.image(540,1390,'DailyGame');
         this.daily_game.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             Client.daily_start();
         });
 
         this.turn_earn = this.add.image(540,1570,'TurnEarn');
         this.turn_earn.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             Client.passion_start();
         });
 
         this.menu = this.add.image(960,1570,'Menu');
         this.menu.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             game.scene.stop('HomeScreen');
             game.scene.start('MenuScreen');
         });

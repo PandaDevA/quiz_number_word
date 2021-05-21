@@ -18,10 +18,11 @@ class ProfileScreen extends Phaser.Scene{
         this.load.plugin('rexfilechooserplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexfilechooserplugin.min.js', true);
         this.load.plugin('rexinputtextplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexinputtextplugin.min.js', true);
 
-        this.avatar = "";
+        this.avatar = userData.avatar;
     }
 
     create() {
+        this.button_audio = this.sound.add('button');
         // Create button
         var button = this.add.image(540,400,'EmptyUser').setOrigin(0.5,0.5);
         // Create canvas   
@@ -29,10 +30,20 @@ class ProfileScreen extends Phaser.Scene{
         canvas.fitTo = (function (parent) {
             var newSize = FitTo(this, parent, true);
             this.setDisplaySize(newSize.width, newSize.height);
-        }).bind(canvas)
-        this.userAvatar_cover = this.add.image(540,400,'avatar_cover').setDepth(5);
+        }).bind(canvas);
 
         var self = this;
+
+        if(this.avatar != ''){
+            canvas.loadFromURLPromise(this.avatar)
+            .then(function () {
+                URL.revokeObjectURL(self.avatar);
+                canvas.fitTo(button);
+            });
+        }
+
+        this.userAvatar_cover = this.add.image(540,400,'avatar_cover').setDepth(5);
+
         // Create a transparent file chooser
         this.add.rexFileChooser({
             accept: 'image/*'
@@ -64,7 +75,7 @@ class ProfileScreen extends Phaser.Scene{
         this.userNameImage = this.add.image(540,700,'InputBack');
         this.userName = this.add.rexInputText(540, 700, 620, 70, 
             {
-                text:'admin',
+                text:userData.userName,
                 type:'text',
                 fontSize: '64px',
                 fontFamily: 'RR',
@@ -84,7 +95,7 @@ class ProfileScreen extends Phaser.Scene{
         this.emailImage = this.add.image(540,850,'InputBack');
         this.email = this.add.rexInputText(540, 850, 620, 70, 
         {
-            text:'',
+            text:userData.email,
             type:'text',
             fontSize: '64px',
             fontFamily: 'RR',
@@ -103,8 +114,8 @@ class ProfileScreen extends Phaser.Scene{
         this.passwordImage = this.add.image(540,1000,'InputBack');
         this.password = this.add.rexInputText(540, 1000, 620, 70, 
             {
-                text:'1234',
-                type:'password',
+                text:userData.password,
+                type:'text',
                 fontSize: '64px',
                 fontFamily: 'RR',
                 color: '#000000',
@@ -121,11 +132,15 @@ class ProfileScreen extends Phaser.Scene{
 
         this.registerButton = this.add.image(540,1200,'SignUp1');
         this.registerButton.setInteractive().on('pointerdown', () => {
-            Client.register(this.userName.text, this.email.text, this.password.text, this.avatar);
+            if(sound_enable)
+                this.button_audio.play();
+            Client.user_update(this.userName.text, this.email.text, this.password.text, this.avatar);
         });
 
         this.mainPageButton = this.add.image(540,1400,'MainPage');
         this.mainPageButton.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             game.scene.stop('ProfileScreen');
             game.scene.start('HomeScreen');
         });

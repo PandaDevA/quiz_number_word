@@ -18,6 +18,7 @@ class BattleScreen extends Phaser.Scene{
     }
 
     create() {
+        this.button_audio = this.sound.add('button');
         this.userNameImage = this.add.image(540,560,'InputBack');
         this.userName = this.add.rexInputText(540, 560, 620, 70, 
             {
@@ -40,6 +41,8 @@ class BattleScreen extends Phaser.Scene{
 
         this.inviteButton = this.add.image(540,700,'Invite');
         this.inviteButton.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             Client.invite_request(this.userName.text);
         });
 
@@ -55,11 +58,15 @@ class BattleScreen extends Phaser.Scene{
 
         this.randomButton = this.add.image(540,1100,'Random');
         this.randomButton.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             Client.random_request();
         });
 
         this.mainPageButton = this.add.image(540,1550,'MainPage');
         this.mainPageButton.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             game.scene.stop('BattleScreen');
             game.scene.start('HomeScreen');
         });

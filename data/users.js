@@ -91,6 +91,27 @@ const exportedMethods = {
         return {result: true, user: newuser};
     },
 
+    async updateUser(username, data) {
+
+        const userCollection = await users();
+        const user = await userCollection.findOne({ userName: username });
+
+        if (!user) {
+            return false;
+        }
+
+        const updatedUserData = user;
+
+        updatedUserData.userName = data.username;
+        updatedUserData.email = data.email;
+        updatedUserData.password = data.password;
+        updatedUserData.avatar = data.avatar;
+
+        await userCollection.updateOne({ _id: user._id }, { $set: updatedUserData });
+
+        return {result: updatedUserData};
+    },
+
     async addUserValue(username, data) {
 
         const userCollection = await users();

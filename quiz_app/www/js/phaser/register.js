@@ -22,6 +22,7 @@ class RegisterScreen extends Phaser.Scene{
     }
 
     create() {
+        this.button_audio = this.sound.add('button');
         // Create button
         var button = this.add.image(540,300,'EmptyUser').setOrigin(0.5,0.5);
         // Create canvas   
@@ -121,6 +122,8 @@ class RegisterScreen extends Phaser.Scene{
 
         this.registerButton = this.add.image(540,1300,'SignUp1');
         this.registerButton.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             Client.register(this.userName.text, this.email.text, this.password.text, this.avatar);
         });
 
@@ -149,6 +152,8 @@ class RegisterScreen extends Phaser.Scene{
         this.loginText.setShadow(10, 10, "#333333", 10, true, true);
 
         this.loginText.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             game.scene.stop('RegisterScreen');
             game.scene.start('LoginScreen');
         });

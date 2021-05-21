@@ -12,6 +12,7 @@ class MenuScreen extends Phaser.Scene{
     }
 
     create() {
+        this.button_audio = this.sound.add('button');
         this.graphics = this.add.graphics();
         this.graphics.fillStyle(0xfa5c00, 1);
         this.graphics.fillRoundedRect(90,90,900,1550, 10);
@@ -26,6 +27,8 @@ class MenuScreen extends Phaser.Scene{
         .setOrigin(0.5,0.5);
         this.profileText.setInteractive()
         .on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             game.scene.stop('MenuScreen');
             game.scene.start('ProfileScreen');
         });
@@ -42,6 +45,8 @@ class MenuScreen extends Phaser.Scene{
         .setOrigin(0.5,0.5);
         this.rankingText.setInteractive()
         .on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             Client.rank_list();
         });
         line = this.add.line(540, 450, 0, 0, 800, 0, 0xffffff, 1);
@@ -57,6 +62,8 @@ class MenuScreen extends Phaser.Scene{
         .setOrigin(0.5,0.5);
         this.ruleText.setInteractive()
         .on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             Client.rule_content();
         });
         line = this.add.line(540, 630, 0, 0, 800, 0, 0xffffff, 1);
@@ -72,6 +79,8 @@ class MenuScreen extends Phaser.Scene{
         .setOrigin(0.5,0.5);
         this.methodText.setInteractive()
         .on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             Client.method_content();
         });
         line = this.add.line(540, 810, 0, 0, 800, 0, 0xffffff, 1);
@@ -87,6 +96,8 @@ class MenuScreen extends Phaser.Scene{
         .setOrigin(0.5,0.5);
         this.policyText.setInteractive()
         .on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             Client.policy_content();
         });
         line = this.add.line(540, 990, 0, 0, 800, 0, 0xffffff, 1);
@@ -102,6 +113,8 @@ class MenuScreen extends Phaser.Scene{
         .setOrigin(0.5,0.5);
         this.logoutText.setInteractive()
         .on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             Client.logout();
             window.localStorage.removeItem("UserName");
             window.localStorage.removeItem("Password");
@@ -121,6 +134,8 @@ class MenuScreen extends Phaser.Scene{
         .setOrigin(0.5,0.5);
         this.backText.setInteractive()
         .on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             game.scene.stop('MenuScreen');
             game.scene.start('HomeScreen');
         });
@@ -145,8 +160,11 @@ class MenuScreen extends Phaser.Scene{
             color: '#ffffff',
         })
         .setOrigin(0.5,0.5);
-        this.soundOnText.disableInteractive()
+        this.soundOnText
         .on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
+            sound_enable = true;
             this.soundOffText.setInteractive().setAlpha(0.5);
             this.soundOnText.disableInteractive().setAlpha(1);
         });
@@ -159,11 +177,19 @@ class MenuScreen extends Phaser.Scene{
             color: '#ffffff',
         })
         .setOrigin(0.5,0.5);
-        this.soundOffText.setInteractive()
+        this.soundOffText
         .on('pointerdown', () => {
+            sound_enable = false;
             this.soundOnText.setInteractive().setAlpha(0.5);
             this.soundOffText.disableInteractive().setAlpha(1);
-        }).setAlpha(0.5);
+        });
+        if(sound_enable){
+            this.soundOffText.setInteractive().setAlpha(0.5);
+            this.soundOnText.disableInteractive().setAlpha(1.0);
+        } else {
+            this.soundOffText.disableInteractive().setAlpha(1.0);
+            this.soundOnText.setInteractive().setAlpha(0.5);
+        }
     }
 
     update(){

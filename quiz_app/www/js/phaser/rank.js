@@ -44,6 +44,7 @@ class RankScreen extends Phaser.Scene{
     }
 
     create() {
+        this.button_audio = this.sound.add('button');
         this.graphics = this.add.graphics();
         if(rank_list.length > 0){
             this.graphics.fillStyle(0xffffff, 1);
@@ -189,6 +190,8 @@ class RankScreen extends Phaser.Scene{
 
         this.mainpageButton = this.add.image(540,1550,'MainPage');
         this.mainpageButton.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             game.scene.stop('RankScreen');
             game.scene.start('HomeScreen');
         });

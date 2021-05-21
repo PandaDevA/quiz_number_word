@@ -22,10 +22,13 @@ class EndScreen extends Phaser.Scene{
     }
 
     create() {
+        this.button_audio = this.sound.add('button');
         if(game_state == "failed"){
             this.lose = this.add.image(540,480,'Lose');
             this.main_page = this.add.image(540,1140,'MainPage');
             this.main_page.setInteractive().on('pointerdown', () => {
+                if(sound_enable)
+                    this.button_audio.play();
                 game.scene.stop('EndScreen');
                 game.scene.start('HomeScreen');
             });
@@ -34,6 +37,8 @@ class EndScreen extends Phaser.Scene{
             {
                 this.play_again = this.add.image(540,1320,'PlayAgain');
                 this.play_again.setInteractive().on('pointerdown', () => {
+                    if(sound_enable)
+                        this.button_audio.play();
                     Client.stage_start();
                 });
             }
@@ -252,6 +257,8 @@ class EndScreen extends Phaser.Scene{
                 if(game_type != "tournament" && game_type != "passion"){
                     this.pointAds = this.add.image(540,890,'PointAds');
                     this.pointAds.setInteractive().on('pointerdown', () => {
+                        if(sound_enable)
+                            this.button_audio.play();
                         console.log('Point Interstitial');
                         AdMob.showInterstitial();
                         AdMob.prepareInterstitial({
@@ -297,6 +304,8 @@ class EndScreen extends Phaser.Scene{
     
                 this.coinAds = this.add.image(540,game_type == "tournament" ? 1140 : 1080,'CoinAds');
                 this.coinAds.setInteractive().on('pointerdown', () => {
+                    if(sound_enable)
+                        this.button_audio.play();
                     console.log('Coin Interstitial');
                     AdMob.showInterstitial();
                     AdMob.prepareInterstitial({
@@ -340,6 +349,8 @@ class EndScreen extends Phaser.Scene{
     
                 this.main_page = this.add.image(540,1310,'MainPage');
                 this.main_page.setInteractive().on('pointerdown', () => {
+                    if(sound_enable)
+                        this.button_audio.play();
                     game.scene.stop('EndScreen');
                     game.scene.start('HomeScreen');
                 });
@@ -348,6 +359,8 @@ class EndScreen extends Phaser.Scene{
                 {
                     this.next_stage = this.add.image(540,1495,'NextStage');
                     this.next_stage.setInteractive().on('pointerdown', () => {
+                        if(sound_enable)
+                            this.button_audio.play();
                         Client.stage_start();
                     });
                 }

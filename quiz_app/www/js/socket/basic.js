@@ -3,8 +3,8 @@
  */
 
 var Client = {};
-// Client.socket = io("http://37.148.213.22:8081/");
-Client.socket = io("http://192.168.104.55:8081/");
+Client.socket = io("http://37.148.213.22:8081/");
+// Client.socket = io("http://192.168.104.55:8081/");
 // Client.socket = io("http://quizpuzzle.chileracing.net/");
 
 Client.login = function(username, password){
@@ -29,6 +29,10 @@ Client.logout = function(){
 
 Client.register = function(username, email, password, avatar){
     Client.socket.emit('register', {username: username, email: email, password: password, avatar: avatar});
+};
+
+Client.user_update = function(username, email, password, avatar){
+    Client.socket.emit('user_update', {prevname: userData.userName, username: username, email: email, password: password, avatar: avatar});
 };
 
 Client.rank_list = function(){
@@ -75,6 +79,19 @@ Client.socket.on('register',function(data){
     else
     {
         toast_error(game.scene.getScene('RegisterScreen'), 'Register failed\nUserName Duplicated.');
+    }
+});
+
+Client.socket.on('user_update',function(data){
+    if(data.result)
+    {
+        game.scene.stop('ProfileScreen');
+        game.scene.start('HomeScreen');
+        toast_error(game.scene.getScene('HomeScreen'), 'Update Succeed...');
+    }
+    else
+    {
+        toast_error(game.scene.getScene('ProfileScreen'), 'Update failed\nUserName Duplicated.');
     }
 });
 

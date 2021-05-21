@@ -16,6 +16,7 @@ var policy_content = "";
 var game_type = "";
 var game_state = "";
 var is_timeout = false;
+var sound_enable = true;
 
 var cur_number = 0;
 var cur_word = 0;

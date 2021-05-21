@@ -17,8 +17,11 @@ class TournamentScreen extends Phaser.Scene{
     }
 
     create() {
+        this.button_audio = this.sound.add('button');
         this.main_page = this.add.image(540,1500,'MainPage');
         this.main_page.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             game.scene.stop('TournamentScreen');
             game.scene.start('HomeScreen');
         });
@@ -72,6 +75,8 @@ class TournamentScreen extends Phaser.Scene{
             let button = this.add.image(540, 500 + i*400, bJoin? 'Cancel' : 'Join');
             button.setData('isJoin', bJoin);
             button.setInteractive().on('pointerdown', () => {
+                if(sound_enable)
+                    this.button_audio.play();
                 if(bJoin)
                     Client.tournament_out(tournament_list[i].id);
                 else
@@ -95,6 +100,8 @@ class TournamentScreen extends Phaser.Scene{
             this.button_list[i].setData('isJoin', bJoin);
             this.button_list[i].removeListener('pointerdown');
             this.button_list[i].on('pointerdown', () => {
+                if(sound_enable)
+                    this.button_audio.play();
                 if(bJoin)
                     Client.tournament_out(roomId);
                 else

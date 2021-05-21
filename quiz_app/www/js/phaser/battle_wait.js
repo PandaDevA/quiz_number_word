@@ -17,6 +17,9 @@ class BattleWaitScreen extends Phaser.Scene{
     }
 
     create() {
+        this.button_audio = this.sound.add('button');
+        this.waiting_audio = this.sound.add('waiting', {loop: true});
+
         if(userData.avatar == ""){
             this.userAvatar = this.add.image(540,400,'UserAvatar');   
         }
@@ -62,6 +65,8 @@ class BattleWaitScreen extends Phaser.Scene{
 
         this.cancelButton = this.add.image(540,1550,'Cancel');
         this.cancelButton.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             Client.battle_cancel();
             game.scene.stop('BattleWaitScreen');
             game.scene.start('BattleScreen');
@@ -76,8 +81,9 @@ class BattleWaitScreen extends Phaser.Scene{
     }
 
     startGame(){
+        if(sound_enable)
+            this.waiting_audio.play();
         this.oppoWaiting.destroy();
-
         if(oppoData.avatar)
         {
             if(this.textures.exists('oppo_avatar'))

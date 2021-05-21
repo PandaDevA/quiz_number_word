@@ -17,6 +17,7 @@ class PolicyScreen extends Phaser.Scene{
     }
 
     create() {
+        this.button_audio = this.sound.add('button');
         this.policy = this.rexUI.add.scrollablePanel({
             x: 540,
             y: 800,
@@ -100,6 +101,8 @@ class PolicyScreen extends Phaser.Scene{
 
         this.mainPage = this.add.image(540,1500,'MainPage');
         this.mainPage.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             game.domContainer.style.display = 'block';
             game.scene.stop('PolicyScreen');
             game.scene.start('HomeScreen');

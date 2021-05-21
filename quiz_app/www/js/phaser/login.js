@@ -69,9 +69,17 @@ class LoginScreen extends Phaser.Scene{
         this.load.image("TournamentDetailOrange", "./images/tournament_detail_orange_back.png");
         this.load.image("Join", "./images/join.png");
         this.load.image("Letter", "./images/letter.png");
-    }
+
+        this.load.audio('button', './assets/audio/button click.mp3');
+        this.load.audio('lose', './assets/audio/losed result.mp3');
+        this.load.audio('success', './assets/audio/success result.mp3');
+        this.load.audio('waiting', './assets/audio/waiting opponent sound.mp3');
+        this.load.audio('action', './assets/audio/word action click.mp3');
+        this.load.audio('start', './assets/audio/word and action opening.mp3');
+   }
 
     create() {
+        this.button_audio = this.sound.add('button');
         if(window.localStorage.getItem('UserName') != null){
             Client.login(window.localStorage.getItem('UserName'), window.localStorage.getItem('Password'))
         }
@@ -125,11 +133,15 @@ class LoginScreen extends Phaser.Scene{
         })
         .setOrigin(1,0.5);
         this.forgotText.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             Client.forgot(this.userName.text);
         });
 
         this.loginButton = this.add.image(540,860,'Login');
         this.loginButton.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             console.log('login_request');
             Client.login(this.userName.text, this.password.text);
         });
@@ -149,6 +161,8 @@ class LoginScreen extends Phaser.Scene{
 
         this.googleButton = this.add.image(640,1170,'Google');
         this.googleButton.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             window.plugins.googleplus.login(
                 {
                   'webClientId': '540253986128-8fhn5o5lb8ogcsnii9tiqqedkd5413jt.apps.googleusercontent.com', // optional clientId of your Web application from Credentials settings of your project - On Android, this MUST be included to get an idToken. On iOS, it is not required.
@@ -175,6 +189,8 @@ class LoginScreen extends Phaser.Scene{
 
         this.registerButton = this.add.image(540,1520,'SignUp');
         this.registerButton.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
             game.scene.stop('LoginScreen');
             game.scene.start('RegisterScreen');
         });
