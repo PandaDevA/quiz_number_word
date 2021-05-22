@@ -127,6 +127,13 @@ class WordGameScreen extends Phaser.Scene{
 
     checkResult(){
         let bPass = false;
+        if(this.result == '')
+        {
+            if(sound_enable)
+                this.lose_audio.play();
+            toast_error(this, 'You must find a word\nwith at least 5 letters\nto pass stage!');
+            return;
+        }
         let match_index = gameData.wordData[cur_word].matchArray.indexOf(this.result);
         this.point = 0;
         if(match_index != -1)
@@ -148,7 +155,10 @@ class WordGameScreen extends Phaser.Scene{
         } else{
             if(sound_enable)
                 this.lose_audio.play();
-            toast_error(this, 'You must find a word\nwith at least 5 letters\nto pass stage!');
+            if(this.result.length >=5)
+                toast_error(this, 'There is no Word on\ndictionary as you write!');
+            else 
+                toast_error(this, 'You must find a word\nwith at least 5 letters\nto pass stage!');
             return;
         }
         
