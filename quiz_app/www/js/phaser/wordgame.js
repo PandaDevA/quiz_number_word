@@ -189,7 +189,7 @@ class WordGameScreen extends Phaser.Scene{
         if(current_time < 0)
         {
             if(sound_enable)
-                this.lose_audio.play();
+                scene.lose_audio.play();
             scene.timeText.setText('0');
             if(game_type == "stage" || game_type == "daily")
                 game_state = "failed";
