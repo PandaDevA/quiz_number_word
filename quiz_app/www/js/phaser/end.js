@@ -254,7 +254,7 @@ class EndScreen extends Phaser.Scene{
                         getText2 = 'GET\n1 COIN';
                 }
 
-                if(game_type != "tournament" && game_type != "passion"){
+                if(game_type != "tournament" && game_type != "passion" && game_type != "daily"){
                     this.pointAds = this.add.image(540,890,'PointAds');
                     this.pointAds.setInteractive().on('pointerdown', () => {
                         if(sound_enable)
@@ -302,51 +302,54 @@ class EndScreen extends Phaser.Scene{
                     .setOrigin(0.5,0.5);
                 }
     
-                this.coinAds = this.add.image(540,game_type == "tournament" ? 1140 : 1080,'CoinAds');
-                this.coinAds.setInteractive().on('pointerdown', () => {
-                    if(sound_enable)
-                        this.button_audio.play();
-                    console.log('Coin Interstitial');
-                    AdMob.showInterstitial();
-                    AdMob.prepareInterstitial({
-                        adId: admobid.interstitial,
-                        autoShow:false,
-                        isTesting: true,
+
+                if(game_type != "stage")
+                {
+                    this.coinAds = this.add.image(540,game_type == "tournament" ? 1140 : 1080,'CoinAds');
+                    this.coinAds.setInteractive().on('pointerdown', () => {
+                        if(sound_enable)
+                            this.button_audio.play();
+                        console.log('Coin Interstitial');
+                        AdMob.showInterstitial();
+                        AdMob.prepareInterstitial({
+                            adId: admobid.interstitial,
+                            autoShow:false,
+                            isTesting: true,
+                        });
+                        this.coinAds.destroy();
+                        this.coinText.destroy();
+                        this.getCoinText.destroy();
+                        let multiplier = 1;
+                        if( game_type == 'stage' ){
+                            multiplier = 1;
+                        }
+                        else if( game_type == 'daily'){
+                            multiplier = 3;
+                        }
+                        else if( game_type == 'battle'){
+                            multiplier = 1;
+                        }
+                        Client.prize(0, 0, coinText * multiplier);
                     });
-                    this.coinAds.destroy();
-                    this.coinText.destroy();
-                    this.getCoinText.destroy();
-                    let multiplier = 1;
-                    if( game_type == 'stage' ){
-                        multiplier = 1;
-                    }
-                    else if( game_type == 'daily'){
-                        multiplier = 3;
-                    }
-                    else if( game_type == 'battle'){
-                        multiplier = 1;
-                    }
-                    Client.prize(0, 0, coinText * multiplier);
-                });
-    
-                this.coinText = this.add.text(400,game_type == "tournament" ? 1140 : 1080, coinText, { fixedWidth: 160, fixedHeight: 60, align:'center' })
-                .setStyle({
-                    fontSize: '60px',
-                    fontFamily: 'RR',
-                    fontWeight: 'bold',
-                    color: '#ffffff',
-                })
-                .setOrigin(0.5,0.5);
-                this.getCoinText = this.add.text(800,game_type == "tournament" ? 1140 : 1080, getText2)
-                .setStyle({
-                    fontSize: '45px',
-                    fontFamily: 'RR',
-                    fontWeight: 'bold',
-                    color: '#fa5c00',
-                    align: 'center'
-                })
-                .setOrigin(0.5,0.5);
-    
+        
+                    this.coinText = this.add.text(400,game_type == "tournament" ? 1140 : 1080, coinText, { fixedWidth: 160, fixedHeight: 60, align:'center' })
+                    .setStyle({
+                        fontSize: '60px',
+                        fontFamily: 'RR',
+                        fontWeight: 'bold',
+                        color: '#ffffff',
+                    })
+                    .setOrigin(0.5,0.5);
+                    this.getCoinText = this.add.text(800,game_type == "tournament" ? 1140 : 1080, getText2)
+                    .setStyle({
+                        fontSize: '45px',
+                        fontFamily: 'RR',
+                        fontWeight: 'bold',
+                        color: '#fa5c00',
+                        align: 'center'
+                    })
+                    .setOrigin(0.5,0.5);
+                }
                 this.main_page = this.add.image(540,1310,'MainPage');
                 this.main_page.setInteractive().on('pointerdown', () => {
                     if(sound_enable)

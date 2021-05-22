@@ -3,7 +3,7 @@ Client.stage_start = function(){
 };
 
 Client.stage_end = function(){
-    Client.socket.emit('standalone_end', {username : userData.userName, heart:1, point:cur_point, coin:1});
+    Client.socket.emit('standalone_end', {username : userData.userName, heart:1, point:cur_point, coin:0});
 };
 
 Client.socket.on('stage_start',function(data){
