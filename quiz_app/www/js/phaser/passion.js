@@ -62,9 +62,6 @@ class PassionScreen extends Phaser.Scene{
         });
     }
 
-    stop(){
-        this.bStop = true;
-    }
     updateTimer(scene){
         if(scene.bTurn)
         {
@@ -76,12 +73,16 @@ class PassionScreen extends Phaser.Scene{
         if(scene.angle_speed >= 40)
         {
             scene.bTurn = false;
-            scene.stopButton.setInteractive().setAlpha(1.0).on('pointerdown', () => {
-                if(sound_enable)
-                    this.button_audio.play();
-                scene.stop();
-                scene.stopButton.disableInteractive().setAlpha(0.5);
-            });
+            if(scene.bStop == false && scene.stopButton.alpha == 0.5)
+            {
+                scene.stopButton.setInteractive().setAlpha(1.0).on('pointerdown', () => {
+                    if(sound_enable){
+                        scene.button_audio.play();
+                    }
+                    scene.bStop = true;
+                    scene.stopButton.disableInteractive().setAlpha(0.5);
+                });
+            }
         }
 
         if(scene.angle_speed < 0.05)
