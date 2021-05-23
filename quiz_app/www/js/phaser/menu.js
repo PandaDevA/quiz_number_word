@@ -17,7 +17,7 @@ class MenuScreen extends Phaser.Scene{
         this.graphics.fillStyle(0xfa5c00, 1);
         this.graphics.fillRoundedRect(90,90,900,1550, 10);
 
-        this.profileText = this.add.text(540,175, 'PROFILE')
+        this.profileText = this.add.text(540,175, 'PROFİL')
         .setStyle({
             fontSize: '64px',
             fontFamily: 'RR',
@@ -35,7 +35,7 @@ class MenuScreen extends Phaser.Scene{
         let line = this.add.line(540, 270, 0, 0, 800, 0, 0xffffff, 1);
         line.setLineWidth(6,6);
 
-        this.rankingText = this.add.text(540,355, 'RANKING')
+        this.rankingText = this.add.text(540,355, 'SIRALAMA')
         .setStyle({
             fontSize: '64px',
             fontFamily: 'RR',
@@ -52,7 +52,7 @@ class MenuScreen extends Phaser.Scene{
         line = this.add.line(540, 450, 0, 0, 800, 0, 0xffffff, 1);
         line.setLineWidth(6,6);
 
-        this.ruleText = this.add.text(540,535, 'RULE')
+        this.ruleText = this.add.text(540,535, 'KURALLAR')
         .setStyle({
             fontSize: '64px',
             fontFamily: 'RR',
@@ -69,7 +69,7 @@ class MenuScreen extends Phaser.Scene{
         line = this.add.line(540, 630, 0, 0, 800, 0, 0xffffff, 1);
         line.setLineWidth(6,6);
 
-        this.methodText = this.add.text(540,715, 'HOW TO PLAY?')
+        this.methodText = this.add.text(540,715, 'NASIL OYNANIR?')
         .setStyle({
             fontSize: '64px',
             fontFamily: 'RR',
@@ -86,7 +86,7 @@ class MenuScreen extends Phaser.Scene{
         line = this.add.line(540, 810, 0, 0, 800, 0, 0xffffff, 1);
         line.setLineWidth(6,6);
 
-        this.policyText = this.add.text(540,895, 'PRIVACY POLICY')
+        this.policyText = this.add.text(540,895, 'GİZLİLİK SÖZLEŞMESİ')
         .setStyle({
             fontSize: '64px',
             fontFamily: 'RR',
@@ -103,7 +103,7 @@ class MenuScreen extends Phaser.Scene{
         line = this.add.line(540, 990, 0, 0, 800, 0, 0xffffff, 1);
         line.setLineWidth(6,6);
 
-        this.logoutText = this.add.text(540,1075, 'LOGOUT')
+        this.logoutText = this.add.text(540,1075, 'ÇIKIŞ')
         .setStyle({
             fontSize: '64px',
             fontFamily: 'RR',
@@ -124,7 +124,7 @@ class MenuScreen extends Phaser.Scene{
         line = this.add.line(540, 1170, 0, 0, 800, 0, 0xffffff, 1);
         line.setLineWidth(6,6);
 
-        this.backText = this.add.text(540,1255, 'BACK')
+        this.backText = this.add.text(540,1255, 'GERİ DÖN')
         .setStyle({
             fontSize: '64px',
             fontFamily: 'RR',
@@ -143,7 +143,7 @@ class MenuScreen extends Phaser.Scene{
         line.setLineWidth(6,6);
 
 
-        this.soundText = this.add.text(380,1550, 'SOUND')
+        this.soundText = this.add.text(280,1550, 'SES')
         .setStyle({
             fontSize: '64px',
             fontFamily: 'RR',
@@ -152,7 +152,7 @@ class MenuScreen extends Phaser.Scene{
         })
         .setOrigin(0.5,0.5);
 
-        this.soundOnText = this.add.text(600,1550, 'ON')
+        this.soundOnText = this.add.text(500,1550, 'AÇIK')
         .setStyle({
             fontSize: '64px',
             fontFamily: 'RR',
@@ -169,7 +169,7 @@ class MenuScreen extends Phaser.Scene{
             this.soundOnText.disableInteractive().setAlpha(1);
         });
 
-        this.soundOffText = this.add.text(760,1550, 'OFF')
+        this.soundOffText = this.add.text(760,1550, 'KAPALI')
         .setStyle({
             fontSize: '64px',
             fontFamily: 'RR',

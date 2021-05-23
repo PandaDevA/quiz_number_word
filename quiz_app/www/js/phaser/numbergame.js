@@ -232,8 +232,10 @@ class NumberGameScreen extends Phaser.Scene{
     }
 
     checkResult(){
-        if(this.selected_index == -1)
+        if(this.selected_index == -1){
+            toast_error(this, 'Lütfen bir sayı seçiniz');
             return;
+        }
 
         let bPass = false;
         let target = Number.parseInt(this.targetNumber.text);
@@ -262,7 +264,7 @@ class NumberGameScreen extends Phaser.Scene{
         else{
             if(sound_enable)
                 this.lose_audio.play();
-            toast_error(this, 'You must reach a number that\nis close to +3 or -3 from\nthe given target number!');
+            toast_error(this, 'Hedefe +3 veya -3\nyakınlıktaki\nsayıya ulaşmalısınız');
             return;
         }
 

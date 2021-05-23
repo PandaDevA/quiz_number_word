@@ -3,8 +3,8 @@
  */
 
 var Client = {};
-// Client.socket = io("http://37.148.213.22:8081/");
-Client.socket = io("http://192.168.104.55:8081/");
+Client.socket = io("http://37.148.213.22:8081/");
+// Client.socket = io("http://192.168.104.55:8081/");
 // Client.socket = io("http://quizpuzzle.chileracing.net/");
 
 Client.login = function(username, password){
@@ -305,6 +305,66 @@ function reject_modal(scene){
             dialog.destroy();
             game.scene.stop(scene.scene.key);
             game.scene.start('BattleScreen');
+        })
+        .on('button.over', function (button, groupName, index) {
+            // button.getElement('background').setStrokeStyle(1, 0xffffff);
+        })
+        .on('button.out', function (button, groupName, index) {
+            // button.getElement('background').setStrokeStyle();
+        });
+}
+
+function passion_modal(scene){
+    var cover = scene.add.rectangle(-1000,-1000,2080,2680,0x000000, 0.2).setOrigin(0,0).setDepth(1).setInteractive();
+    var dialog = scene.rexUI.add.dialog({
+        x: 540,
+        y: 800,
+
+        background: scene.rexUI.add.roundRectangle(0, 0, 100, 100, 20, 0xffffff),
+        content: scene.add.text(0, 0, 'YOU NEED LIFE OR\nCOIN TO PLAY GAME.\nDO YOU WANT TO GO TO\nTURN AND EARN?', {
+            fontFamily: 'RR',
+            fontWeight: 'bold',
+            fontSize: '64px',
+            color: "#106eac",
+            align: "center"
+        }),
+
+        actions: [
+            createLabel(scene, 'YES'),
+            createLabel(scene, 'NO')
+        ],
+
+        space: {
+            content: 25,
+            action: 15,
+
+            left: 60,
+            right: 60,
+            top: 40,
+            bottom: 40,
+        },
+
+        align: {
+            actions: 'center', // 'center'|'left'|'right'
+        },
+
+        expand: {
+            content: false, // Content is a pure text object
+        }
+    }).setDepth(100)
+        .layout()
+        // .drawBounds(scene.add.graphics(), 0xff0000)
+        .popUp(1000);
+
+    dialog
+        .on('button.click', function (button, groupName, index) {
+            if(index == 0)
+            {
+                game.scene.stop(scene.scene.key);
+                game.scene.start('PassionScreen');
+            }
+            cover.destroy();
+            dialog.destroy();
         })
         .on('button.over', function (button, groupName, index) {
             // button.getElement('background').setStrokeStyle(1, 0xffffff);

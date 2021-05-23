@@ -403,7 +403,7 @@ const exportedMethods = {
                         });
                         console.log(`${data.username} start stage`);
                     } else {
-                        socket.emit('stage_start', { result: false, error: user.error });
+                        socket.emit('stage_start', { result: false, need_power: user.need_power, error: user.error });
                         console.log(`${data.username} failure to start stage`);
                     }
                 });
@@ -596,7 +596,7 @@ const exportedMethods = {
                 console.log('invite_request is received');
                 if (players[data.inviteuser] === undefined) {
                     console.log('invite user is not connected.');
-                    socket.emit('invite_request', {result: false, to: data.inviteuser, error: 'Invite user is offline.'});
+                    socket.emit('invite_request', {result: false, to: data.inviteuser, error: 'Çağırdığınız kullanıcı\nonline değil.'});
                 } else if (io.sockets.sockets.get(players[data.inviteuser]).handshake.session.status != 'Idle') {
                     console.log('invite user is playing game now.');
                     socket.emit('invite_request', {result: false, to: data.inviteuser, error: 'Invite user is playing now.'});
@@ -604,11 +604,11 @@ const exportedMethods = {
                     users.getUserByName(data.waituser).then((user) => {
                         if (!user) {
                             console.log('user could not find');
-                            socket.emit('invite_request', {result: false, to: data.inviteuser, error: 'User could not find'});
+                            socket.emit('invite_request', {result: false, to: data.inviteuser, error: 'Online kullanıcı\nbulunamadı'});
                         } else {
                             if (user.heart == 0 || user.coin < 3) {
                                 console.log('Need more coin or heart is zero');
-                                socket.emit('invite_request', {result: false, to: data.inviteuser, error: 'Need more coin or heart is zero'});
+                                socket.emit('invite_request', {result: false, to: data.inviteuser, need_power: true, error: 'Need more coin or heart is zero'});
                             } else {
                                 rooms.createRoom({username: data.waituser}).then((result) => {
                                     if (result) {
@@ -647,7 +647,7 @@ const exportedMethods = {
                         } else {
                             if (user.heart == 0 || user.coin < 3) {
                                 console.log('Need more coin or heart is zero');
-                                socket.emit('invite_request', {result: false, to: data.inviteuser, error: 'Need more coin or heart is zero'});
+                                socket.emit('invite_request', {result: false, to: data.inviteuser, need_power: true, error: 'Need more coin or heart is zero'});
                             } else {
                                 rooms.joinRoom({room_id: data.roomId, username: data.inviteuser}).then((room) => {
                                     if (room.error) {
@@ -749,7 +749,7 @@ const exportedMethods = {
                     } else {
                         if (user.heart == 0 || user.coin < 3) {
                             console.log('Need more coin or heart is zero');
-                            socket.emit('invite_request', {result: false, to: data.username, error: 'Need more coin or heart is zero'});
+                            socket.emit('invite_request', {result: false, to: data.username, need_power: true, error: 'Need more coin or heart is zero'});
                         } else {
                             for (i in players) {
                                 const username = i;

@@ -53,6 +53,7 @@ class PassionScreen extends Phaser.Scene{
 
     turn(){
         this.turnButton.disableInteractive().setAlpha(0.5);
+        this.mainPageButton.disableInteractive().setAlpha(0.5);
         this.bTurn = true;
         this.timer = this.time.addEvent({
             delay: 100,
@@ -101,15 +102,16 @@ class PassionScreen extends Phaser.Scene{
                 });
             } else if(cur_prize == 0){
                 Client.prize(1,0,0);
-                toast_error(scene, "You Earned 1 Life.");
+                toast_error(scene, "1 can kazandınız.");
             } else{
                 Client.prize(0,0,cur_prize);
-                toast_error(scene, "You Earned "+ cur_prize + " Coin.");
+                toast_error(scene, cur_prize + " jeton kazandınız.");
             }
             scene.angle_speed = 0.05;
             scene.bStop = false;
             scene.bTurn = false;
             scene.turnButton.setInteractive().setAlpha(1.0);
+            scene.mainPageButton.setInteractive().setAlpha(1.0);
             scene.stopButton.disableInteractive().setAlpha(0.5);
         }
         scene.angle = scene.angle + scene.angle_speed;

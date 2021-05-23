@@ -41,7 +41,12 @@ Client.socket.on('tournament_in',function(data){
     }
     else
     {
-        toast_error(activeScene, "CAN NOT JOIN\nIN TOURNAMENT");
+        if(data.need_power){
+            passion_modal(activeScene);
+        }
+        else{
+            toast_error(activeScene, "CAN NOT JOIN\nIN TOURNAMENT");
+        }
     }
 });
 

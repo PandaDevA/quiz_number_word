@@ -23,6 +23,7 @@ class LoginScreen extends Phaser.Scene{
         this.load.image("Logo", "./images/logo.png");
         this.load.image("Login", "./images/login.png");
         this.load.image("SignUp", "./images/signup.png");
+        this.load.image("Update", "./images/update.png");
         this.load.image("InputBack", "./images/input_back.png");
         this.load.image("Facebook", "./images/facebook.png");
         this.load.image("Google", "./images/google.png");
@@ -96,7 +97,7 @@ class LoginScreen extends Phaser.Scene{
             })
         .setOrigin(0.5,0.5);
 
-        this.userNameText = this.add.text(210, 495, 'Username', { fixedWidth: 200, fixedHeight: 32 })
+        this.userNameText = this.add.text(210, 495, 'Kullanıcı', { fixedWidth: 200, fixedHeight: 32 })
         .setStyle({
             fontSize: '28px',
             fontFamily: 'RR',
@@ -115,7 +116,7 @@ class LoginScreen extends Phaser.Scene{
                 color: '#000000',
             })
         .setOrigin(0.5,0.5);
-        this.passwordText = this.add.text(210, 635, 'Password', { fixedWidth: 200, fixedHeight: 32 })
+        this.passwordText = this.add.text(210, 635, 'Şifre', { fixedWidth: 200, fixedHeight: 32 })
         .setStyle({
             fontSize: '28px',
             fontFamily: 'RR',
@@ -124,7 +125,7 @@ class LoginScreen extends Phaser.Scene{
         })
         .setOrigin(0,0.5);
 
-        this.forgotText = this.add.text(860, 765, 'Forgot Password?', { fixedWidth: 250, fixedHeight: 32 })
+        this.forgotText = this.add.text(860, 765, 'Şifremi Unuttum?', { fixedWidth: 250, fixedHeight: 32 })
         .setStyle({
             fontSize: '28px',
             fontFamily: 'RR',
@@ -155,11 +156,11 @@ class LoginScreen extends Phaser.Scene{
         })
         .setOrigin(0.5,0.5);
 
-        this.facebookButton = this.add.image(440,1170,'Facebook');
-        this.facebookButton.setInteractive().on('pointerdown', () => {
-        });
+        // this.facebookButton = this.add.image(440,1170,'Facebook');
+        // this.facebookButton.setInteractive().on('pointerdown', () => {
+        // });
 
-        this.googleButton = this.add.image(640,1170,'Google');
+        this.googleButton = this.add.image(540,1170,'Google');
         this.googleButton.setInteractive().on('pointerdown', () => {
             if(sound_enable)
                 this.button_audio.play();

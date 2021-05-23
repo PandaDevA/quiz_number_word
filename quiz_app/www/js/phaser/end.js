@@ -45,7 +45,7 @@ class EndScreen extends Phaser.Scene{
 
             if(game_type == "stage")
             {
-                this.lostText = this.add.text(540, 850, 'YOU CAN\'T PASS\nTHE STAGE', { fixedWidth: 700, fixedHeight: 200, align:'center' })
+                this.lostText = this.add.text(540, 850, 'ETABI\nGEÇEMEDİNİZ', { fixedWidth: 700, fixedHeight: 200, align:'center' })
                 .setStyle({
                     fontSize: '80px',
                     fontFamily: 'RR',
@@ -55,7 +55,7 @@ class EndScreen extends Phaser.Scene{
                 .setOrigin(0.5,0.5);
             }
             else{ 
-                this.lostText = this.add.text(540, 850, 'YOU LOSE!', { fixedWidth: 700, align:'center' })
+                this.lostText = this.add.text(540, 850, 'KAYBETTİN!', { fixedWidth: 700, align:'center' })
                 .setStyle({
                     fontSize: '80px',
                     fontFamily: 'RR',
@@ -70,7 +70,7 @@ class EndScreen extends Phaser.Scene{
                 if(game_type == "stage" || game_type == "daily")
                 {
                     this.win = this.add.image(540,480,'Win');
-                    this.earnedPointText = this.add.text(420, 840, 'YOU\nEARNED\nPOINT', { fixedWidth: 150, fixedHeight: 120, align:'center' })
+                    this.earnedPointText = this.add.text(420, 840, 'Kazandığınız\npuan', { fixedWidth: 150, fixedHeight: 120, align:'center' })
                     .setStyle({
                         fontSize: '36px',
                         fontFamily: 'RR',
@@ -130,7 +130,7 @@ class EndScreen extends Phaser.Scene{
                 // this.graphics.lineStyle(4, '#ffffff', 1);
                 this.graphics.fillStyle(0xffffff, 1);
                 this.graphics.fillRoundedRect(100,1050,880,490, 10);
-                this.gameStartText = this.add.text(540,1130, 'NEXT PART WILL START', { fixedWidth: 780, fixedHeight: 60, align:'center' })
+                this.gameStartText = this.add.text(540,1130, 'Sonraki bölüm geliyor', { fixedWidth: 780, fixedHeight: 60, align:'center' })
                 .setStyle({
                     fontSize: '60px',
                     fontFamily: 'RR',
@@ -160,7 +160,7 @@ class EndScreen extends Phaser.Scene{
                 {
                     let showText = "";
                     if(game_type == "stage")
-                        showText = 'YOU FINISHED STAGE';
+                        showText = 'Etabı bitirdiniz';
                     else if(game_type == "daily")
                         showText = 'YOU FINISHED BONUS GAME';
                     else if(game_type == "passion")
@@ -177,7 +177,7 @@ class EndScreen extends Phaser.Scene{
                 }
                 else if( game_type == "battle" || game_type == "tournament"){
                     let bWin = winner_name_list[0] == userData.userName;
-                    this.gameFinishText = this.add.text(540,game_type == "battle" ? 700 : 990, bWin ? 'YOU WIN!' : 'YOU LOSE!', { fixedWidth: 700, fixedHeight: 120, align:'center' })
+                    this.gameFinishText = this.add.text(540,game_type == "battle" ? 700 : 990, bWin ? 'KAZANDIN!' : 'KAYBETTİN!', { fixedWidth: 700, fixedHeight: 120, align:'center' })
                     .setStyle({
                         fontSize: '120px',
                         fontFamily: 'RR',
@@ -226,13 +226,17 @@ class EndScreen extends Phaser.Scene{
                 let getText1 = '';
                 let getText2 = 'GET ×2';
                 let coinText = 1;
+                let adsPos1 = 890;
+                let adsPos2 = 1140;
                 if( game_type == 'stage' ){
                     getText1 = 'GET ×3';
+                    adsPos1 = 1015;
                 }
                 else if( game_type == 'daily'){
                     getText1 = 'GET ×6';
                     getText2 = 'GET ×4';
                     coinText = 3;
+                    adsPos2 = 1015;
                 }
                 else if( game_type == 'battle'){
                     coinText = 3;
@@ -244,6 +248,7 @@ class EndScreen extends Phaser.Scene{
                         getText2 = 'GET\nBACK';
                     }
                 } else if (game_type == "tournament"){
+                    adsPos2 = 1080;
                     coinText = gameData.prize;
                     if(winner_name_list[0] != userData.userName){
                         getText2 = 'GET\nBACK';
@@ -255,7 +260,7 @@ class EndScreen extends Phaser.Scene{
                 }
 
                 if(game_type != "tournament" && game_type != "passion" && game_type != "daily"){
-                    this.pointAds = this.add.image(540,890,'PointAds');
+                    this.pointAds = this.add.image(540,adsPos1,'PointAds');
                     this.pointAds.setInteractive().on('pointerdown', () => {
                         if(sound_enable)
                             this.button_audio.play();
@@ -282,7 +287,7 @@ class EndScreen extends Phaser.Scene{
                         Client.prize(0, cur_point * multiplier, 0);
                     });
             
-                    this.pointText = this.add.text(400,890, cur_point, { fixedWidth: 160, fixedHeight: 60, align:'center' })
+                    this.pointText = this.add.text(400,adsPos1, cur_point, { fixedWidth: 160, fixedHeight: 60, align:'center' })
                     .setStyle({
                         fontSize: '60px',
                         fontFamily: 'RR',
@@ -291,7 +296,7 @@ class EndScreen extends Phaser.Scene{
                     })
                     .setOrigin(0.5,0.5);
     
-                    this.getPointText = this.add.text(800,890, getText1)
+                    this.getPointText = this.add.text(800,adsPos1, getText1)
                     .setStyle({
                         fontSize: '45px',
                         fontFamily: 'RR',
@@ -305,7 +310,7 @@ class EndScreen extends Phaser.Scene{
 
                 if(game_type != "stage")
                 {
-                    this.coinAds = this.add.image(540,game_type == "tournament" ? 1140 : 1080,'CoinAds');
+                    this.coinAds = this.add.image(540,adsPos2,'CoinAds');
                     this.coinAds.setInteractive().on('pointerdown', () => {
                         if(sound_enable)
                             this.button_audio.play();
@@ -332,7 +337,7 @@ class EndScreen extends Phaser.Scene{
                         Client.prize(0, 0, coinText * multiplier);
                     });
         
-                    this.coinText = this.add.text(400,game_type == "tournament" ? 1140 : 1080, coinText, { fixedWidth: 160, fixedHeight: 60, align:'center' })
+                    this.coinText = this.add.text(400,adsPos2, coinText, { fixedWidth: 160, fixedHeight: 60, align:'center' })
                     .setStyle({
                         fontSize: '60px',
                         fontFamily: 'RR',
@@ -340,7 +345,7 @@ class EndScreen extends Phaser.Scene{
                         color: '#ffffff',
                     })
                     .setOrigin(0.5,0.5);
-                    this.getCoinText = this.add.text(800,game_type == "tournament" ? 1140 : 1080, getText2)
+                    this.getCoinText = this.add.text(800,adsPos2, getText2)
                     .setStyle({
                         fontSize: '45px',
                         fontFamily: 'RR',

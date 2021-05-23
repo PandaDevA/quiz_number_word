@@ -57,7 +57,7 @@ class HomeScreen extends Phaser.Scene{
         //         align: 'center',
         //     });
         this.info_panel = this.add.image(735,520,'InfoPanel');
-        this.pointText = this.add.text(720,570,'Point', { fixedWidth: 180, fixedHeight: 50 })
+        this.pointText = this.add.text(720,570,'Puan', { fixedWidth: 180, fixedHeight: 50 })
         .setOrigin(0.5,0.5)
         .setStyle({
             fontSize: '46px',
@@ -74,7 +74,7 @@ class HomeScreen extends Phaser.Scene{
             align: 'center',
         });
 
-        this.rankingText = this.add.text(720,390,'Ranking', { fixedWidth: 180, fixedHeight: 50 })
+        this.rankingText = this.add.text(720,390,'Sıralama', { fixedWidth: 180, fixedHeight: 50 })
         .setOrigin(0.5,0.5)
         .setStyle({
             fontSize: '46px',
@@ -107,20 +107,20 @@ class HomeScreen extends Phaser.Scene{
                 this.button_audio.play();
             Client.stage_start();
         });
-        this.battle = this.add.image(540,1030,'Battle');
+        this.battle = this.add.image(540,1210,'Battle');
         this.battle.setInteractive().on('pointerdown', () => {
             if(sound_enable)
                 this.button_audio.play();
             game.scene.stop('HomeScreen');
             game.scene.start('BattleScreen');
         });
-        this.tournament = this.add.image(540,1210,'Tournament');
+        this.tournament = this.add.image(540,1390,'Tournament');
         this.tournament.setInteractive().on('pointerdown', () => {
             if(sound_enable)
                 this.button_audio.play();
             Client.tournament_list();
         });
-        this.daily_game = this.add.image(540,1390,'DailyGame');
+        this.daily_game = this.add.image(540,1030,'DailyGame');
         this.daily_game.setInteractive().on('pointerdown', () => {
             if(sound_enable)
                 this.button_audio.play();

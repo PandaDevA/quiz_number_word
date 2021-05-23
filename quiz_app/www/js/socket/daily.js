@@ -27,6 +27,11 @@ Client.socket.on('daily_start',function(data){
     }
     else
     {
-        toast_error(activeScene, 'CAN NOT PLAY\nBONUS GAME!');
+        if(data.need_power){
+            passion_modal(activeScene);
+        }
+        else{
+            toast_error(activeScene, 'CAN NOT PLAY\nBONUS GAME!');
+        }
     }
 });

@@ -73,7 +73,7 @@ class RegisterScreen extends Phaser.Scene{
             })
         .setOrigin(0.5,0.5);
 
-        this.userNameText = this.add.text(210, 535, 'Username', { fixedWidth: 200, fixedHeight: 32 })
+        this.userNameText = this.add.text(210, 535, 'Kullanıcı', { fixedWidth: 200, fixedHeight: 32 })
         .setStyle({
             fontSize: '28px',
             fontFamily: 'RR',
@@ -111,7 +111,7 @@ class RegisterScreen extends Phaser.Scene{
                 color: '#000000',
             })
         .setOrigin(0.5,0.5);
-        this.passwordText = this.add.text(210, 835, 'Password', { fixedWidth: 200, fixedHeight: 32 })
+        this.passwordText = this.add.text(210, 835, 'Şifre', { fixedWidth: 200, fixedHeight: 32 })
         .setStyle({
             fontSize: '28px',
             fontFamily: 'RR',
@@ -127,7 +127,7 @@ class RegisterScreen extends Phaser.Scene{
             Client.register(this.userName.text, this.email.text, this.password.text, this.avatar);
         });
 
-        this.privacyText = this.add.text(540, 1100, 'When you become a member, you are\ndeemed to have accepted the "Privacy\nPolicy" and "Terms and Conditions."\nAnd we have to make link for "Privacy\nPolicy" and "Terms and Conditions."', { fixedWidth: 800, fixedHeight: 300 })
+        this.privacyText = this.add.text(540, 1100, 'Üye olduğunuzda, "Koşullar ve\nŞartlar" ile "Gizlilik\nSözleşmesi"ni kabul etmiş\nsayılırsınız.', { fixedWidth: 800, fixedHeight: 300 })
         .setStyle({
             fontSize: '36px',
             fontFamily: 'RR',

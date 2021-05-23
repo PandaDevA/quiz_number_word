@@ -130,7 +130,7 @@ class ProfileScreen extends Phaser.Scene{
         })
         .setOrigin(0,0.5);
 
-        this.registerButton = this.add.image(540,1200,'SignUp1');
+        this.registerButton = this.add.image(540,1200,'Update');
         this.registerButton.setInteractive().on('pointerdown', () => {
             if(sound_enable)
                 this.button_audio.play();

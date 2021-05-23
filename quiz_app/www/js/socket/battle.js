@@ -45,7 +45,10 @@ Client.socket.on('invite_request',function(data){
     }
     else
     {
-        if(!data.from)
+        if(data.need_power){
+            passion_modal(activeScene);
+        }
+        else if(!data.from)
         {
             toast_error(activeScene, data.error);
         }
@@ -58,7 +61,12 @@ Client.socket.on('invite_accept',function(data){
         room_id = "";
         invite_name = "";
         let activeScene = game.scene.getScenes(true)[0];
-        toast_error(activeScene, data.error);
+        if(data.need_power){
+            passion_modal(activeScene);
+        }
+        else{
+            toast_error(activeScene, data.error);
+        }
     }
 });
 
@@ -140,6 +148,11 @@ Client.socket.on('random_request',function(data){
     }
     else
     {
-        toast_error(activeScene, data.error);
+        if(data.need_power){
+            passion_modal(activeScene);
+        }
+        else{
+            toast_error(activeScene, data.error);
+        }
     }
 });

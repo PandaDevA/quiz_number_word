@@ -17,9 +17,9 @@ class BattleWaitScreen extends Phaser.Scene{
     }
 
     create() {
+        var self = this;
         this.button_audio = this.sound.add('button');
-        this.waiting_audio = this.sound.add('waiting', {loop: true});
-
+        this.waiting_audio = this.sound.add('waiting');
         if(userData.avatar == ""){
             this.userAvatar = this.add.image(540,400,'UserAvatar');   
         }
@@ -46,7 +46,7 @@ class BattleWaitScreen extends Phaser.Scene{
         }).setOrigin(0.5, 0.5);
 
         this.oppoAvatar = this.add.image(540,1080,'EmptyUser');   
-        this.oppoWaiting = this.add.text(540, 1080, 'WAITING\nOPPONENT', {
+        this.oppoWaiting = this.add.text(540, 1080, 'RAKİP\nBEKLENİYOR', {
             fontFamily: 'RR',
             fontWeight: 'bold',
             fontSize: '64px',

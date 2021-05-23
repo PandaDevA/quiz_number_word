@@ -30,7 +30,7 @@ class BattleScreen extends Phaser.Scene{
             })
         .setOrigin(0.5,0.5);
 
-        this.userNameText = this.add.text(210, 495, 'Write your friend username', { fixedWidth: 800, fixedHeight: 32 })
+        this.userNameText = this.add.text(210, 495, 'Arkadaşınızın kullanıcı adını yazın', { fixedWidth: 800, fixedHeight: 32 })
         .setStyle({
             fontSize: '28px',
             fontFamily: 'RR',
@@ -46,7 +46,7 @@ class BattleScreen extends Phaser.Scene{
             Client.invite_request(this.userName.text);
         });
 
-        this.userNameText = this.add.text(540, 900, 'OR', { fixedWidth: 800, fixedHeight: 70 })
+        this.userNameText = this.add.text(540, 900, 'ya da', { fixedWidth: 800, fixedHeight: 70 })
         .setStyle({
             fontSize: '64px',
             fontFamily: 'RR',

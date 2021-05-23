@@ -17,7 +17,7 @@ class TournamentWaitScreen extends Phaser.Scene{
     }
 
     create() {
-        this.waiting_audio = this.sound.add('waiting', {loop: true});
+        this.waiting_audio = this.sound.add('waiting');
         if(sound_enable)
             this.waiting_audio.play();
         this.startText = this.add.text(540, 400, 'TOURNAMENT START', {
