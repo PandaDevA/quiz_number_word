@@ -78,7 +78,7 @@ Client.socket.on('register',function(data){
     }
     else
     {
-        toast_error(game.scene.getScene('RegisterScreen'), 'Register failed\nUserName Duplicated.');
+        toast_error(game.scene.getScene('RegisterScreen'), 'Register failed\nPlease use other\ninformation.');
     }
 });
 
@@ -91,7 +91,7 @@ Client.socket.on('user_update',function(data){
     }
     else
     {
-        toast_error(game.scene.getScene('ProfileScreen'), 'Update failed\nUserName Duplicated.');
+        toast_error(game.scene.getScene('ProfileScreen'), 'Update failed\nPlease use other\ninformation.');
     }
 });
 

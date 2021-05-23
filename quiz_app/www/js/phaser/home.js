@@ -74,7 +74,7 @@ class HomeScreen extends Phaser.Scene{
             align: 'center',
         });
 
-        this.rankingText = this.add.text(720,390,'Sıralama', { fixedWidth: 180, fixedHeight: 50 })
+        this.rankingText = this.add.text(720,390,'Sıralama')
         .setOrigin(0.5,0.5)
         .setStyle({
             fontSize: '46px',

@@ -137,7 +137,7 @@ class RegisterScreen extends Phaser.Scene{
         })
         .setOrigin(0.5,0.5);
 
-        this.loginText = this.add.text(540, 1540, 'Login Now', { fixedWidth: 500, fixedHeight: 120 })
+        this.loginText = this.add.text(540, 1540, 'GİRİŞ YAP', { fixedWidth: 500, fixedHeight: 120 })
         .setStyle({
             fontSize: '84px',
             fontFamily: 'RR',

@@ -745,11 +745,11 @@ const exportedMethods = {
                 users.getUserByName(data.username).then(async(user) => {
                     if (!user) {
                         console.log('user could not find');
-                        socket.emit('invite_request', {result: false, to: data.username, error: 'User could not find'});
+                        socket.emit('random_request', {result: false, to: data.username, error: 'User could not find'});
                     } else {
                         if (user.heart == 0 || user.coin < 3) {
                             console.log('Need more coin or heart is zero');
-                            socket.emit('invite_request', {result: false, to: data.username, need_power: true, error: 'Need more coin or heart is zero'});
+                            socket.emit('random_request', {result: false, to: data.username, need_power: true, error: 'Need more coin or heart is zero'});
                         } else {
                             for (i in players) {
                                 const username = i;

@@ -27,7 +27,7 @@ Client.socket.on('tournament_list',function(data){
     }
     else
     {
-        toast_error(activeScene, "THERE IS\nNO TOURNAMENT\nPLANED");
+        toast_error(activeScene, "Henüz planlanmış\nbir turnuva yok.");
     }
 });
 

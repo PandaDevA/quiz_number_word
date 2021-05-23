@@ -83,7 +83,7 @@ class ProfileScreen extends Phaser.Scene{
             })
         .setOrigin(0.5,0.5);
 
-        this.userNameText = this.add.text(210, 635, 'Username', { fixedWidth: 200, fixedHeight: 32 })
+        this.userNameText = this.add.text(210, 635, 'Kullanıcı Adı', { fixedWidth: 400, fixedHeight: 32 })
         .setStyle({
             fontSize: '28px',
             fontFamily: 'RR',
@@ -121,7 +121,7 @@ class ProfileScreen extends Phaser.Scene{
                 color: '#000000',
             })
         .setOrigin(0.5,0.5);
-        this.passwordText = this.add.text(210, 935, 'Password', { fixedWidth: 200, fixedHeight: 32 })
+        this.passwordText = this.add.text(210, 935, 'Şifre', { fixedWidth: 200, fixedHeight: 32 })
         .setStyle({
             fontSize: '28px',
             fontFamily: 'RR',

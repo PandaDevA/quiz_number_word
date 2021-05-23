@@ -54,7 +54,7 @@ class RankScreen extends Phaser.Scene{
                 fontWeight: 'bold',
                 fontSize: '32px',
                 color: "#106ead",
-                aligh: "center"
+                align: "center"
             }).setOrigin(0.5, 0.5);
     
             if(rank_list[0].avatar == ""){
@@ -73,7 +73,7 @@ class RankScreen extends Phaser.Scene{
                 fontWeight: 'bold',
                 fontSize: '32px',
                 color: "#ffffff",
-                aligh: "center",
+                align: "center",
                 fixedWidth: 280
             }).setOrigin(0.5, 0.5);
         }
@@ -86,7 +86,7 @@ class RankScreen extends Phaser.Scene{
                 fontWeight: 'bold',
                 fontSize: '28px',
                 color: "#106ead",
-                aligh: "center"
+                align: "center"
             }).setOrigin(0.5, 0.5);
     
             if(rank_list[1].avatar == ""){
@@ -105,7 +105,7 @@ class RankScreen extends Phaser.Scene{
                 fontWeight: 'bold',
                 fontSize: '28px',
                 color: "#ffffff",
-                aligh: "center",
+                align: "center",
                 fixedWidth: 210
             }).setOrigin(0.5, 0.5);
         }
@@ -118,7 +118,7 @@ class RankScreen extends Phaser.Scene{
                 fontWeight: 'bold',
                 fontSize: '28px',
                 color: "#106ead",
-                aligh: "center"
+                align: "center"
             }).setOrigin(0.5, 0.5);
     
             if(rank_list[2].avatar == ""){
@@ -137,35 +137,35 @@ class RankScreen extends Phaser.Scene{
                 fontWeight: 'bold',
                 fontSize: '28px',
                 color: "#ffffff",
-                aligh: "center",
+                align: "center",
                 fixedWidth: 210
             }).setOrigin(0.5, 0.5);
         }
 
         this.graphics.fillStyle(0xffffff, 1);
         this.graphics.fillRoundedRect(220,995,640,275, 20);
-        this.add.text(540, 1045, "YOU", {
+        this.add.text(540, 1045, "SİZ", {
             fontFamily: 'RR',
             fontWeight: 'bold',
-            fontSize: '100px',
+            fontSize: '80px',
             color: "#106ead",
-            aligh: "center"
+            align: "center"
         }).setOrigin(0.5, 0.5);
 
-        this.add.text(390, 1105, "Ranking", {
+        this.add.text(390, 1105, "Sıralama", {
             fontFamily: 'RR',
             fontWeight: 'bold',
             fontSize: '36px',
             color: "#fa5c00",
-            aligh: "center"
+            align: "center"
         }).setOrigin(0.5, 0.5);
 
-        this.add.text(690, 1105, "Point", {
+        this.add.text(690, 1105, "Puan", {
             fontFamily: 'RR',
             fontWeight: 'bold',
             fontSize: '36px',
             color: "#fa5c00",
-            aligh: "center"
+            align: "center"
         }).setOrigin(0.5, 0.5);
 
         this.graphics.fillStyle(0xfa5c00, 1);
@@ -175,7 +175,7 @@ class RankScreen extends Phaser.Scene{
             fontWeight: 'bold',
             fontSize: '48px',
             color: "#ffffff",
-            aligh: "center"
+            align: "center"
         }).setOrigin(0.5, 0.5);
 
         this.graphics.fillStyle(0xfa5c00, 1);
@@ -185,7 +185,7 @@ class RankScreen extends Phaser.Scene{
             fontWeight: 'bold',
             fontSize: '48px',
             color: "#ffffff",
-            aligh: "center"
+            align: "center"
         }).setOrigin(0.5, 0.5);
 
         this.mainpageButton = this.add.image(540,1550,'MainPage');

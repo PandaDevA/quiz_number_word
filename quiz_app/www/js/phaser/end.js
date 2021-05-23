@@ -70,7 +70,7 @@ class EndScreen extends Phaser.Scene{
                 if(game_type == "stage" || game_type == "daily")
                 {
                     this.win = this.add.image(540,480,'Win');
-                    this.earnedPointText = this.add.text(420, 840, 'Kazandığınız\npuan', { fixedWidth: 150, fixedHeight: 120, align:'center' })
+                    this.earnedPointText = this.add.text(380, 860, 'Kazandığınız\npuan', { fixedHeight: 120, align:'center' })
                     .setStyle({
                         fontSize: '36px',
                         fontFamily: 'RR',
@@ -130,7 +130,7 @@ class EndScreen extends Phaser.Scene{
                 // this.graphics.lineStyle(4, '#ffffff', 1);
                 this.graphics.fillStyle(0xffffff, 1);
                 this.graphics.fillRoundedRect(100,1050,880,490, 10);
-                this.gameStartText = this.add.text(540,1130, 'Sonraki bölüm geliyor', { fixedWidth: 780, fixedHeight: 60, align:'center' })
+                this.gameStartText = this.add.text(540,1130, 'Sonraki bölüm geliyor', { fixedWidth: 780, align:'center' })
                 .setStyle({
                     fontSize: '60px',
                     fontFamily: 'RR',
@@ -162,9 +162,9 @@ class EndScreen extends Phaser.Scene{
                     if(game_type == "stage")
                         showText = 'Etabı bitirdiniz';
                     else if(game_type == "daily")
-                        showText = 'YOU FINISHED BONUS GAME';
+                        showText = 'Tebrikler oyunu bitirdiniz';
                     else if(game_type == "passion")
-                        showText = 'YOU EARN COIN';
+                        showText = 'Kazandığınız jeton';
                     this.win = this.add.image(540,400,'Win');
                     this.gameFinishText = this.add.text(540,700, showText, { fixedWidth: 700, fixedHeight: 50, align:'center' })
                     .setStyle({
