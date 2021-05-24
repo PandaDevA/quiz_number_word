@@ -69,7 +69,7 @@ class PolicyScreen extends Phaser.Scene{
                 header: 10,
             },
 
-            header: this.add.text(0, 0, 'Privacy Policy', { fixedWidth: 1000, fixedHeight: 100 })
+            header: this.add.text(0, 0, 'GİZLİLİK SÖZLEŞMESİ', { fixedWidth: 1000, fixedHeight: 100 })
             .setStyle({
                 fontSize: '64px',
                 fontFamily: 'RR',

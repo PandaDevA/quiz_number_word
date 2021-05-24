@@ -173,7 +173,7 @@ class LoginScreen extends Phaser.Scene{
                     Client.google(obj);
                 },
                 function (msg) {
-                    toast_error(this, "Google login failed!");
+                    toast_error(this, "Google Giriş yapıalamadı,\nyeniden deneyin!");
                 }
             );
         });

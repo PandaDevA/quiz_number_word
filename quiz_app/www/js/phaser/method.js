@@ -69,7 +69,7 @@ class MethodScreen extends Phaser.Scene{
                 header: 10,
             },
 
-            header: this.add.text(0, 0, 'How to Play', { fixedWidth: 1000, fixedHeight: 100 })
+            header: this.add.text(0, 0, 'NASIL OYNANIR', { fixedWidth: 1000, fixedHeight: 100 })
             .setStyle({
                 fontSize: '64px',
                 fontFamily: 'RR',

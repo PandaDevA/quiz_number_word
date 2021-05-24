@@ -65,7 +65,7 @@ Client.socket.on('login',function(data){
     }
     else
     {
-        toast_error(game.scene.getScene('LoginScreen'), 'Login Failed');
+        toast_error(game.scene.getScene('LoginScreen'), 'Giriş yapıalamadı,\nyeniden deneyin');
     }
 });
 
@@ -74,11 +74,11 @@ Client.socket.on('register',function(data){
     {
         game.scene.stop('RegisterScreen');
         game.scene.start('LoginScreen');
-        toast_error(game.scene.getScene('LoginScreen'), 'Register Succeed...');
+        toast_error(game.scene.getScene('LoginScreen'), 'Üyelik kaydınız oluşturuldu,\nlütfen giriş yapın');
     }
     else
     {
-        toast_error(game.scene.getScene('RegisterScreen'), 'Register failed\nPlease use other\ninformation.');
+        toast_error(game.scene.getScene('RegisterScreen'), 'Üyelik oluşturulamadı, lütfen\nbilgilerinizi değiştirin');
     }
 });
 
@@ -87,11 +87,11 @@ Client.socket.on('user_update',function(data){
     {
         game.scene.stop('ProfileScreen');
         game.scene.start('HomeScreen');
-        toast_error(game.scene.getScene('HomeScreen'), 'Update Succeed...');
+        toast_error(game.scene.getScene('HomeScreen'), 'Bilgileriniz güncellendi');
     }
     else
     {
-        toast_error(game.scene.getScene('ProfileScreen'), 'Update failed\nPlease use other\ninformation.');
+        toast_error(game.scene.getScene('ProfileScreen'), 'Güncelleme yapılamadı,\ngirdiğiniz kullanıcı\nadı sistemde kayıtlı');
     }
 });
 
@@ -99,11 +99,11 @@ Client.socket.on('forgot',function(data){
     let activeScene = game.scene.getScenes(true)[0];
     if(data.result)
     {
-        toast_error(activeScene, 'New Password Has Been\nSent To Your Email.');
+        toast_error(activeScene, 'Yeni şifreniz e-mail\nadresinize gönderildi');
     }
     else
     {
-        toast_error(activeScene, 'Username Does\nNot Exists.');
+        toast_error(activeScene, 'Sistemde kayıtlı böyle bir\nkullanıcı görünmüyor');
     }
 });
 
@@ -117,7 +117,7 @@ Client.socket.on('rank_list',function(data){
     }
     else
     {
-        toast_error(activeScene, 'Failed to load rank');
+        toast_error(activeScene, 'Sayfa yüklenemedi, daha\nsonra tekrar deneyin');
     }
 });
 
@@ -131,7 +131,7 @@ Client.socket.on('rule_content',function(data){
     }
     else
     {
-        toast_error(activeScene, 'Failed to load rule');
+        toast_error(activeScene, 'Sayfa yüklenemedi, daha\nsonra tekrar deneyin');
     }
 });
 
@@ -145,7 +145,7 @@ Client.socket.on('policy_content',function(data){
     }
     else
     {
-        toast_error(activeScene, 'Failed to load policy');
+        toast_error(activeScene, 'Sayfa yüklenemedi, daha\nsonra tekrar deneyin');
     }
 });
 
@@ -159,7 +159,7 @@ Client.socket.on('method_content',function(data){
     }
     else
     {
-        toast_error(activeScene, 'Failed to load method');
+        toast_error(activeScene, 'Sayfa yüklenemedi, daha\nsonra tekrar deneyin');
     }
 });
 
@@ -202,7 +202,7 @@ function invite_modal(scene){
         y: 800,
 
         background: scene.rexUI.add.roundRectangle(0, 0, 100, 100, 20, 0xffffff),
-        content: scene.add.text(0, 0, invite_name + '\nWANT TO PLAY\nBATTLE GAME\nWITH YOU.\nDO YOU WANT?', {
+        content: scene.add.text(0, 0, invite_name + '\nSİZİNLE DÜELLO YAPMAK\nİSTİYOR. İSTER MİSİNİZ?', {
             fontFamily: 'RR',
             fontWeight: 'bold',
             fontSize: '64px',
@@ -321,7 +321,7 @@ function passion_modal(scene){
         y: 800,
 
         background: scene.rexUI.add.roundRectangle(0, 0, 100, 100, 20, 0xffffff),
-        content: scene.add.text(0, 0, 'YOU NEED LIFE OR\nCOIN TO PLAY GAME.\nDO YOU WANT TO GO TO\nTURN AND EARN?', {
+        content: scene.add.text(0, 0, 'MAALESEF YETERLİ\nCANINIZ/JETONUNUZ YOK.\nKAZANMAK İÇİN "ŞANSINI DENE"\nBÖLÜMÜNE GİTMEK İSTER\nMİSİNİZ?', {
             fontFamily: 'RR',
             fontWeight: 'bold',
             fontSize: '64px',

@@ -69,7 +69,7 @@ class RuleScreen extends Phaser.Scene{
                 header: 10,
             },
 
-            header: this.add.text(0, 0, 'Rule', { fixedWidth: 1000, fixedHeight: 100 })
+            header: this.add.text(0, 0, 'KURALLAR VE ŞARTLAR', { fixedWidth: 1000, fixedHeight: 100 })
             .setStyle({
                 fontSize: '64px',
                 fontFamily: 'RR',

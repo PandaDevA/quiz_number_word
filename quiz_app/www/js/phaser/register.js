@@ -122,6 +122,10 @@ class RegisterScreen extends Phaser.Scene{
 
         this.registerButton = this.add.image(540,1300,'SignUp1');
         this.registerButton.setInteractive().on('pointerdown', () => {
+            if(this.userName.text == '' || this.password.text == ''){
+                toast_error(this, 'Please fill username\nand password.');
+                return;
+            }
             if(sound_enable)
                 this.button_audio.play();
             Client.register(this.userName.text, this.email.text, this.password.text, this.avatar);
