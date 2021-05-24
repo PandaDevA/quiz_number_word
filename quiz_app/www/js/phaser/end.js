@@ -70,23 +70,34 @@ class EndScreen extends Phaser.Scene{
                 if(game_type == "stage" || game_type == "daily")
                 {
                     this.win = this.add.image(540,480,'Win');
-                    this.earnedPointText = this.add.text(380, 860, 'Kazandığınız\npuan', { fixedHeight: 120, align:'center' })
-                    .setStyle({
-                        fontSize: '36px',
-                        fontFamily: 'RR',
-                        fontWeight: 'bold',
-                        color: '#ffffff',
-                    })
-                    .setOrigin(0.5,0.5);
-                    this.pointBack = this.add.image(590,840,'Orange');
-                    this.pointText = this.add.text(590,840, cur_point, { fixedWidth: 160, fixedHeight: 60, align:'center' })
-                    .setStyle({
-                        fontSize: '60px',
-                        fontFamily: 'RR',
-                        fontWeight: 'bold',
-                        color: '#ffffff',
-                    })
-                    .setOrigin(0.5,0.5);
+                    if(game_type == "stage"){
+                        this.earnedPointText = this.add.text(380, 860, 'Kazandığınız\npuan', { fixedHeight: 120, align:'center' })
+                        .setStyle({
+                            fontSize: '36px',
+                            fontFamily: 'RR',
+                            fontWeight: 'bold',
+                            color: '#ffffff',
+                        })
+                        .setOrigin(0.5,0.5);
+                        this.pointBack = this.add.image(590,840,'Orange');
+                        this.pointText = this.add.text(590,840, cur_point, { fixedWidth: 160, fixedHeight: 60, align:'center' })
+                        .setStyle({
+                            fontSize: '60px',
+                            fontFamily: 'RR',
+                            fontWeight: 'bold',
+                            color: '#ffffff',
+                        })
+                        .setOrigin(0.5,0.5);
+                    } else {
+                        this.earnedPointText = this.add.text(540, 860, 'You have passed', { align:'center' })
+                        .setStyle({
+                            fontSize: '50px',
+                            fontFamily: 'RR',
+                            fontWeight: 'bold',
+                            color: '#ffffff',
+                        })
+                        .setOrigin(0.5,0.5);
+                    }
                 }
                 else if(game_type == "battle")
                 {
