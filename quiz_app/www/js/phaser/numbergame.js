@@ -328,8 +328,8 @@ class NumberGameScreen extends Phaser.Scene{
                 if(scene.point == undefined)
                 {
                     scene.point = 0;
-                    Client.online_end(scene.point);
                 }
+                Client.online_end(scene.point);
             }
         }
         else{
