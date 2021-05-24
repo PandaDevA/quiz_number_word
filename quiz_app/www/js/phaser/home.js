@@ -57,6 +57,12 @@ class HomeScreen extends Phaser.Scene{
         //         align: 'center',
         //     });
         this.info_panel = this.add.image(735,520,'InfoPanel');
+        this.info_panel.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
+            Client.rank_list();
+        });
+
         this.pointText = this.add.text(720,570,'Puan', { fixedWidth: 180, fixedHeight: 50 })
         .setOrigin(0.5,0.5)
         .setStyle({
@@ -100,6 +106,12 @@ class HomeScreen extends Phaser.Scene{
             this.userAvatar.setDisplaySize(390,398);
             this.userAvatar_cover = this.add.image(345,520,'avatar_cover').setDepth(5);
         }
+        this.userAvatar.setInteractive().on('pointerdown', () => {
+            if(sound_enable)
+                this.button_audio.play();
+            game.scene.stop('HomeScreen');
+            game.scene.start('ProfileScreen');
+        });
 
         this.stage = this.add.image(540,850,'Stage');
         this.stage.setInteractive().on('pointerdown', () => {
