@@ -188,7 +188,7 @@ class EndScreen extends Phaser.Scene{
                 }
                 else if( game_type == "battle" || game_type == "tournament"){
                     let bWin = winner_name_list[0] == userData.userName;
-                    this.gameFinishText = this.add.text(540,game_type == "battle" ? 700 : 990, bWin ? 'KAZANDIN!' : 'KAYBETTİN!', { fixedWidth: 700, fixedHeight: 120, align:'center' })
+                    this.gameFinishText = this.add.text(540,game_type == "battle" ? 700 : 890, bWin ? 'KAZANDIN!' : 'KAYBETTİN!', { fixedWidth: 700, fixedHeight: 120, align:'center' })
                     .setStyle({
                         fontSize: '120px',
                         fontFamily: 'RR',
