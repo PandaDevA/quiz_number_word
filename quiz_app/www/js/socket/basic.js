@@ -54,6 +54,13 @@ Client.policy_content = function(){
 
 ////////////////////////////////////////////////////////////////////////////
 
+Client.socket.on('disconnect',function(){
+    let activeScene = game.scene.getScenes(true)[0];
+    game.scene.stop(activeScene.scene.key);
+    game.scene.start('LoginScreen');
+    toast_error(game.scene.getScene('LoginScreen'), 'Connection lost');
+});
+
 Client.socket.on('login',function(data){
     if(data.result)
     {

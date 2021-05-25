@@ -86,7 +86,7 @@ const exportedMethods = {
                 if (user.heart < 3 && ( (user.revive - minutes) <= 30 && (user.revive - minutes) >= 1) || old <= minutes) {
                     const info = await users.addUserValue(user.userName, { heart: 1 });
                     if (!info) console.log('Error occured whild addHeart');
-                    else io.to(players[user.userName]).emit('update_userdata', {result: info});
+                    else io.to(players[user.userName]).emit('update_userdata', {result: info.result});
                 }
             });
         console.log('Hearts supplied.');
@@ -119,7 +119,7 @@ const exportedMethods = {
                                         await rooms.leaveRoom({username: joinusers[j].userName, room_id: result.result._id});
                                     } else {
                                         io.sockets.sockets.get(players[joinusers[j].userName]).handshake.session.status = 'Tournament';
-                                        io.sockets.sockets.get(players[joinusers[j].userName]).handshake.session.cur_step = 0;
+                                        io.sockets.sockets.get(players[joinusers[j].userName]).handshake.session.save();
                                     }
                                 }
                                 getMultiRandomData().then(({numDataList, wordDataList}) => {
@@ -149,7 +149,6 @@ const exportedMethods = {
                 players[userNameInSession] = socket.id;
                 socket.handshake.session.status = 'Idle';
                 socket.handshake.session.save();
-                socket.emit('update_userdata', { isRefresh: true });
                 rooms.listTournament().then((roomList) => {
                     if (roomList.length != 0) {
                         for ( i in roomList) {
@@ -180,37 +179,36 @@ const exportedMethods = {
                             //     break;
                             // }
                             // REQUIRE INFO: data.username, data.room_id, data.point, data.step, (data.coin, data.heart)OPTIONAL
-                            const room = await rooms.endRoom({username: userNameInSession, room_id: joinedInfo.roomId, step: socket.handshake.session.cur_step + 1, point: 0});
-                            if (room.result) {
-                                await rooms.leaveRoom({username: userNameInSession, room_id: joinedInfo.roomId}, /*isForce:*/true);
-                                if (room.allIsEnd) {
-                                    socket.to(`game_of_${joinedInfo.roomId}`).emit('online_end', {
-                                        result: true,
-                                        winner: room.result.winner,
-                                        winnerPoint: room.result.winnerPoint
+                            const room = await rooms.endRoom({username: userNameInSession, room_id: joinedInfo.roomId, step: -1, point: 0});
+                            await rooms.leaveRoom({username: userNameInSession, room_id: joinedInfo.roomId}, /*isForce:*/true);
+                            if (room.allIsEnd) {
+                                socket.to(`game_of_${joinedInfo.roomId}`).emit('online_end', {
+                                    result: true,
+                                    winner: room.result.winner,
+                                    winnerPoint: room.result.winnerPoint
+                                });
+                                if (room.result.winner.length != 0)
+                                    users.addUserValue(room.result.winner[0],
+                                        {
+                                            point: room.result.winnerPoint[0],
+                                            coin: room.result.prize,
+                                            heart: 1,
+                                        }).then((user) => {
+                                            io.to(players[room.result.winner[0]]).emit('update_userdata', {result: user.result});
                                     });
-                                    if (room.result.winner.length != 0)
-                                        users.addUserValue(room.result.winner[0],
-                                            {
-                                                point: room.result.winnerPoint[0],
-                                                coin: room.result.prize,
-                                                heart: 1,
-                                            }).then((user) => {
-                                                io.to(players[room.result.winner[0]]).emit('update_userdata', {result: user.result});
-                                        });
-                                    for (joinuser of room.result.joinUsers) {
-                                        if (!players[joinuser]) continue;
-                                        const client = io.sockets.sockets.get(players[joinuser]);
-                                        client.leave(`game_of_${joinedInfo.roomId}`);
-                                        client.handshake.session.status = 'Idle';
-                                    }
-                                } else if(room.allIsOver) {
-                                    socket.to(`game_of_${joinedInfo.roomId}`).emit('online_end', {
-                                        result: true,
-                                        winner: room.result.winner,
-                                        winnerPoint: room.result.winnerPoint
-                                    });
+                                for (joinuser of room.result.joinUsers) {
+                                    if (!players[joinuser]) continue;
+                                    const client = io.sockets.sockets.get(players[joinuser]);
+                                    client.leave(`game_of_${joinedInfo.roomId}`);
+                                    client.handshake.session.status = 'Idle';
+                                    client.handshake.session.save();
                                 }
+                            } else if(room.allIsOver) {
+                                socket.to(`game_of_${joinedInfo.roomId}`).emit('online_end', {
+                                    result: true,
+                                    winner: room.result.winner,
+                                    winnerPoint: room.result.winnerPoint
+                                });
                             }
                             await rooms.removeRoom({room_id: joinedInfo.roomId});
                             socket.leave(`game_of_${joinedInfo.roomId}`);
@@ -220,6 +218,10 @@ const exportedMethods = {
                             socket.leave(`game_of_${joinedInfo.roomId}`);
                             break;
                     }
+
+                    socket.handshake.session.username = undefined;
+                    socket.handshake.session.status = 'Idle';
+                    socket.handshake.session.save();
 
                     // Set PLAYERS value of this user as 'undefined' to remove the user from PLAYERS Object
                     players[userNameInSession] = undefined;
@@ -255,6 +257,7 @@ const exportedMethods = {
                         players[data.username] = socket.id;
                         socket.handshake.session.status = 'Idle';
                         socket.handshake.session.username = data.username;
+                        socket.handshake.session.save();
                         socket.emit('login', { result: result });
                         // console.log(`${data.username} is logged`);
                         rooms.listTournament().then((roomList) => {
@@ -548,7 +551,7 @@ const exportedMethods = {
                 console.log('online_end request received');
                 rooms.endRoom(data).then(async(room) => {
                     if (room.result) {
-                        socket.handshake.session.cur_step = data.step;
+                        socket.handshake.session.save();
                         if (room.allIsEnd) {
                             io.in(`game_of_${data.room_id}`).emit('online_end', {
                                 result: true,
@@ -569,10 +572,11 @@ const exportedMethods = {
                                 const client = io.sockets.sockets.get(players[joinuser]);
                                 client.leave(`game_of_${data.room_id}`);
                                 client.handshake.session.status = 'Idle';
+                                client.handshake.session.save();
                             };
                             socket.handshake.session.status = 'Idle';
                             socket.handshake.session.save();
-                            // console.log('All users are ended');
+                            console.log('All users are ended');
 
                             await rooms.removeRoom({room_id: data.room_id});
                         } else if(room.allIsOver) {
@@ -581,7 +585,7 @@ const exportedMethods = {
                                 winner: room.result.winner,
                                 winnerPoint: room.result.winnerPoint
                             });
-                            // console.log('All users are overed');
+                            console.log('All users are overed');
                         }
                         console.log('end is processed');
                     } else {
@@ -664,12 +668,10 @@ const exportedMethods = {
                                             result.result.joinUsers.map(async(user, index) => {
                                                 users.delUserValue(user.userName, {coin: result.result.joiningFee, heart: 1}).then((userData) => {
                                                     io.to(players[user.userName]).emit('update_userdata', {result: userData.result});
-                                                    io.sockets.sockets.get(players[user.userName]).handshake.session.cur_step = 0;
                                                 });
                                             });
                                             socket.join(`game_of_${data.roomId}`);
                                             socket.handshake.session.status = 'Battle';
-                                            socket.handshake.session.cur_step = 0;
                                             socket.handshake.session.save();
                                             getMultiRandomData().then(({numDataList, wordDataList}) => {
                                                 users.getUserByName(data.waituser).then((user1) => {
@@ -712,6 +714,7 @@ const exportedMethods = {
                             io.to(players[data.waituser]).leave(`game_of_${data.roomId}`);
                             io.to(players[data.waituser]).emit('invite_reject', { result: true });
                             io.sockets.sockets.get(players[data.waituser]).handshake.session.status = 'Idle';
+                            io.sockets.sockets.get(players[data.waituser]).handshake.session.save();
                         }
                     } else {
                         // socket.emit('invite_reject', { result: false });
@@ -765,9 +768,8 @@ const exportedMethods = {
                                             users.getUserByName(username).then(async(user1) => {
 
                                                 io.sockets.sockets.get(players[username]).handshake.session.status = 'Battle';
-                                                io.sockets.sockets.get(players[username]).handshake.session.cur_step = 0;
+                                                io.sockets.sockets.get(players[username]).handshake.session.save();
                                                 socket.handshake.session.status = 'Battle';
-                                                socket.handshake.session.cur_step = 0;
                                                 socket.handshake.session.save();
                                                 socket.emit('online_start', { result: {roomId}, oppoData: user1, gameData: { numData: numDataList, wordData: wordDataList } });
                                                 socket.to(`game_of_${roomId}`)

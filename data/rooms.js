@@ -160,7 +160,7 @@ const exportedMethods = {
         const updatedRoomData = room;
         let joinusers = updatedRoomData.joinUsers;
 
-        if (updatedRoomData.remainNum + data.step != 10) {
+        if (data.step >= 0 && (updatedRoomData.remainNum + data.step) != 10) {
             console.log('Invalid end Data is received');
             return {result: false, error: 'Invalid data with current step'};
         }
