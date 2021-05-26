@@ -3,8 +3,8 @@
  */
 
 var Client = {};
-// Client.socket = io("http://37.148.213.22:8081/");
-Client.socket = io("http://192.168.104.55:8081/");
+Client.socket = io("http://37.148.213.22:8081/");
+// Client.socket = io("http://192.168.104.55:8081/");
 // Client.socket = io("http://quizpuzzle.chileracing.net/");
 
 Client.login = function(username, password){
