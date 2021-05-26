@@ -8,6 +8,7 @@ const rooms = data.rooms;
 
 const players = {};
 const sentVerifyCode = {};
+var socketio = undefined;
 
 const getDateTimeString = (date) => {
 
@@ -72,6 +73,66 @@ const sendVerifyCode = (user) => {
     });
 }
 
+async function onRoomTime(room_id, nStep){
+    let cur_room = await rooms.getRoomById(room_id);
+    if(cur_room){
+        if(cur_room.remainNum + nStep != 10 || cur_room.isClosed == true){
+            console.log('skip room');
+            return;
+        }
+        let joinUsers = cur_room.joinUsers;
+        for(j in joinUsers) {
+            if (joinUsers[j].isOver == false){
+                const room = await rooms.endRoom({username: joinUsers[j].userName, room_id: room_id, step: -1, point: 0});
+                await rooms.leaveRoom({username: joinUsers[j].userName, room_id: room_id}, /*isForce:*/true);
+                const kicked_client = socketio.sockets.sockets.get(players[joinUsers[j].userName]);
+                kicked_client.leave(`game_of_${room_id}`);
+                kicked_client.emit('kicked');
+                console.log('kick ' + joinUsers[j].userName);
+                kicked_client.handshake.session.status = 'Idle';
+                kicked_client.handshake.session.save();
+                if (room.allIsEnd) {
+                    socketio.to(`game_of_${room_id}`).emit('online_end', {
+                        result: true,
+                        winner: room.result.winner,
+                        winnerPoint: room.result.winnerPoint
+                    });
+                    if (room.result.winner.length != 0)
+                        users.addUserValue(room.result.winner[0],
+                            {
+                                point: room.result.winnerPoint[0],
+                                coin: room.result.prize,
+                                heart: 1,
+                            }).then((user) => {
+                                socketio.to(players[room.result.winner[0]]).emit('update_userdata', {result: user.result});
+                        });
+                    for (joinuser of room.result.joinUsers) {
+                        if (!players[joinuser.userName]) continue;
+                        const client = socketio.sockets.sockets.get(players[joinuser.userName]);
+                        client.leave(`game_of_${room_id}`);
+                        client.handshake.session.status = 'Idle';
+                        client.handshake.session.save();
+                    }
+                } else if(room.allIsOver) {
+                    socketio.to(`game_of_${room_id}`).emit('online_end', {
+                        result: true,
+                        winner: room.result.winner,
+                        winnerPoint: room.result.winnerPoint
+                    });
+                    setTimeout( function() {
+                        onRoomTime(room_id, nStep+1);
+                    }, 80 * 1000);
+                }
+                await rooms.removeRoom({room_id: room_id});
+                kicked_client.leave(`game_of_${room_id}`);
+                break;
+            } 
+        }
+    } else {
+        console.log('invalid room_id');
+    }
+}
+
 
 const exportedMethods = {
     async onHeartSupply(io) {
@@ -127,6 +188,9 @@ const exportedMethods = {
                                         result: {roomId: String(room._id)},
                                         gameData: { numData: numDataList, wordData: wordDataList, prize: room.prize }
                                     });
+                                    setTimeout( function(){
+                                        onRoomTime(room._id, 1);
+                                    }, 80 * 1000);
                                 });
                             }
                         }
@@ -140,6 +204,7 @@ const exportedMethods = {
     },
 
     async useSocket(io) {
+        socketio = io;
         io.on('connection', socket => {
             console.log('a user connected');
 
@@ -197,8 +262,8 @@ const exportedMethods = {
                                             io.to(players[room.result.winner[0]]).emit('update_userdata', {result: user.result});
                                     });
                                 for (joinuser of room.result.joinUsers) {
-                                    if (!players[joinuser]) continue;
-                                    const client = io.sockets.sockets.get(players[joinuser]);
+                                    if (!players[joinuser.userName]) continue;
+                                    const client = io.sockets.sockets.get(players[joinuser.userName]);
                                     client.leave(`game_of_${joinedInfo.roomId}`);
                                     client.handshake.session.status = 'Idle';
                                     client.handshake.session.save();
@@ -209,6 +274,9 @@ const exportedMethods = {
                                     winner: room.result.winner,
                                     winnerPoint: room.result.winnerPoint
                                 });
+                                setTimeout( function(){
+                                    onRoomTime(room.result._id, 10-room.result.remainNum);
+                                }, 80 * 1000);
                             }
                             await rooms.removeRoom({room_id: joinedInfo.roomId});
                             socket.leave(`game_of_${joinedInfo.roomId}`);
@@ -568,8 +636,8 @@ const exportedMethods = {
                                 io.to(players[room.result.winner[0]]).emit('update_userdata', {result: user.result});
                             }
                             for( joinuser of room.result.joinUsers) {
-                                if (!players[joinuser]) continue;
-                                const client = io.sockets.sockets.get(players[joinuser]);
+                                if (!players[joinuser.userName]) continue;
+                                const client = io.sockets.sockets.get(players[joinuser.userName]);
                                 client.leave(`game_of_${data.room_id}`);
                                 client.handshake.session.status = 'Idle';
                                 client.handshake.session.save();
@@ -585,6 +653,9 @@ const exportedMethods = {
                                 winner: room.result.winner,
                                 winnerPoint: room.result.winnerPoint
                             });
+                            setTimeout( function(){
+                                onRoomTime(data.room_id, data.step+1);
+                            }, 80 * 1000);
                             console.log('All users are overed');
                         }
                         console.log('end is processed');
@@ -685,6 +756,9 @@ const exportedMethods = {
                                                         gameData: { numData: numDataList, wordData: wordDataList },
                                                         oppoData: user1,
                                                     });
+                                                    setTimeout( function(){
+                                                        onRoomTime(data.roomId, 1);
+                                                    }, 80 * 1000);
                                                 });
                                             });
                                         } else {
@@ -774,6 +848,9 @@ const exportedMethods = {
                                                 socket.emit('online_start', { result: {roomId}, oppoData: user1, gameData: { numData: numDataList, wordData: wordDataList } });
                                                 socket.to(`game_of_${roomId}`)
                                                     .emit('online_start', { result: {roomId}, oppoData: user, gameData: { numData: numDataList, wordData: wordDataList } });
+                                                setTimeout(function () {
+                                                    onRoomTime(roomId, 1)
+                                                }, 80 * 1000);
                                             });
                                         });
                                         return;

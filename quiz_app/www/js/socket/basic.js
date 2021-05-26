@@ -3,8 +3,8 @@
  */
 
 var Client = {};
-Client.socket = io("http://37.148.213.22:8081/");
-// Client.socket = io("http://192.168.104.55:8081/");
+// Client.socket = io("http://37.148.213.22:8081/");
+Client.socket = io("http://192.168.104.55:8081/");
 // Client.socket = io("http://quizpuzzle.chileracing.net/");
 
 Client.login = function(username, password){
@@ -59,6 +59,13 @@ Client.socket.on('disconnect',function(){
     game.scene.stop(activeScene.scene.key);
     game.scene.start('LoginScreen');
     toast_error(game.scene.getScene('LoginScreen'), 'Connection lost');
+});
+
+Client.socket.on('kicked',function(){
+    let activeScene = game.scene.getScenes(true)[0];
+    game.scene.stop(activeScene.scene.key);
+    game.scene.start('HomeScreen');
+    toast_error(game.scene.getScene('HomeScreen'), 'You have been kicked');
 });
 
 Client.socket.on('login',function(data){

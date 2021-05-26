@@ -136,6 +136,25 @@ const exportedMethods = {
         return { result: updatedRoomData };
     },
 
+    async getRoomById(room_id) {
+        let parsedId;
+        try {
+            parsedId = ObjectId(room_id);
+        } catch (error) {
+            return false;
+        }
+
+        const roomCollection = await rooms();
+        const room = await roomCollection.findOne({ _id: parsedId });
+        if(!room)
+            return false;
+        
+        if(room.isClosed)
+            return false;
+
+        return room;
+    }, 
+    
     async endRoom(data) {
         let parsedId;
         try {

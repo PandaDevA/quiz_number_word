@@ -190,7 +190,27 @@ class WordGameScreen extends Phaser.Scene{
         else if(game_type == "battle" || game_type == "tournament")
         {
             Client.online_end(this.point);
+            if(this.point >= 10)
+            {
+                this.convertToWaitng();
+            }
         }
+    }
+
+    convertToWaitng(){
+        this.checkButton.setVisible(false);
+        this.refreshButton.setVisible(false);
+        for(let i=0; i<this.characterImages.length; i++){
+            this.characterImages[i].disableInteractive().setAlpha(0.5);
+        }
+        this.waitingText = this.add.text(540, 1380, 'Waiting for server...', { fixedWidth: 700, fixedHeight: 120, align:'center' })
+        .setStyle({
+            fontSize: '64px',
+            fontFamily: 'RR',
+            fontWeight: 'bold',
+            color: '#ffffff',
+        })
+        .setOrigin(0.5,0.5);
     }
 
     updateTimer(scene){
@@ -198,6 +218,8 @@ class WordGameScreen extends Phaser.Scene{
         let current_time = 60 - Number.parseInt((curTime.getTime() - scene.timeStamp)/1000);
         if(current_time < 0)
         {
+            scene.timer.remove();
+            scene.time.removeEvent(scene.timer);
             if(sound_enable)
                 scene.lose_audio.play();
             scene.timeText.setText('0');
@@ -208,8 +230,6 @@ class WordGameScreen extends Phaser.Scene{
 
             if(game_type == "stage" || game_type == "daily")
             {
-                scene.timer.remove();
-                scene.time.removeEvent(scene.timer);
                 cur_point += scene.point;
                 // if(game_type == "stage"){
                 //     Client.stage_end(false);
@@ -227,7 +247,9 @@ class WordGameScreen extends Phaser.Scene{
                 {
                     scene.point = 0;
                 }
-                Client.online_end(scene.point);
+                if(scene.point == 0)
+                    Client.online_end(scene.point);
+                scene.convertToWaitng();
             }
         }
         else{
