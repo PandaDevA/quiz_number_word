@@ -3,7 +3,7 @@ Client.daily_start = function(){
 };
 
 Client.daily_end = function(){
-    Client.socket.emit('standalone_end', {username : userData.userName, heart:0, point:0, coin:3});
+    Client.socket.emit('standalone_end', {username : userData.userName, heart:0, point:0, coin:cur_point});
 };
 
 Client.socket.on('daily_start',function(data){

@@ -138,6 +138,16 @@ Client.socket.on('online_end',function(data){
     }
 });
 
+Client.socket.on('remain_alone',function(data){
+    let activeScene = game.scene.getScenes(true)[0];
+    winner_name_list = data.winner;
+    winner_point_list = data.winnerPoint;
+    console.log(data);
+    game_state = 'remain_alone';
+    game.scene.stop(activeScene.scene.key);
+    game.scene.start('EndScreen');
+});
+
 Client.socket.on('random_request',function(data){
     let activeScene = game.scene.getScenes(true)[0];
     if(data.result)

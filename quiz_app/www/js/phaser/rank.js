@@ -47,6 +47,16 @@ class RankScreen extends Phaser.Scene{
         this.button_audio = this.sound.add('button');
         this.graphics = this.add.graphics();
         if(rank_list.length > 0){
+            this.graphics.fillStyle(0xfa5c00, 1);
+            this.graphics.fillRoundedRect(510,140,60,80, 20);
+            this.add.text(540, 180, '1', {
+                fontFamily: 'RR',
+                fontWeight: 'bold',
+                fontSize: '45px',
+                color: "#ffffff",
+                align: "center"
+            }).setOrigin(0.5, 0.5);
+
             this.graphics.fillStyle(0xffffff, 1);
             this.graphics.fillRoundedRect(390,230,300,60, 20);
             this.add.text(540, 260, rank_list[0].point, {
@@ -79,6 +89,16 @@ class RankScreen extends Phaser.Scene{
         }
 
         if(rank_list.length > 1){
+            this.graphics.fillStyle(0xfa5c00, 1);
+            this.graphics.fillRoundedRect(315,610,50,60, 20);
+            this.add.text(340, 640, '2', {
+                fontFamily: 'RR',
+                fontWeight: 'bold',
+                fontSize: '32px',
+                color: "#ffffff",
+                align: "center"
+            }).setOrigin(0.5, 0.5);
+
             this.graphics.fillStyle(0xffffff, 1);
             this.graphics.fillRoundedRect(230,675,220,40, 20);
             this.add.text(340, 700, rank_list[1].point, {
@@ -111,6 +131,16 @@ class RankScreen extends Phaser.Scene{
         }
 
         if(rank_list.length > 2){
+            this.graphics.fillStyle(0xfa5c00, 1);
+            this.graphics.fillRoundedRect(715,610,50,60, 20);
+            this.add.text(740, 640, '3', {
+                fontFamily: 'RR',
+                fontWeight: 'bold',
+                fontSize: '32px',
+                color: "#ffffff",
+                align: "center"
+            }).setOrigin(0.5, 0.5);
+
             this.graphics.fillStyle(0xffffff, 1);
             this.graphics.fillRoundedRect(630,675,220,40, 20);
             this.add.text(740, 700, rank_list[2].point, {

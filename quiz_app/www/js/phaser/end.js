@@ -15,10 +15,16 @@ class EndScreen extends Phaser.Scene{
             sceneKey: 'rexUI'
         });
 
-        if((gameData.wordData != undefined && cur_word == gameData.wordData.length) || game_type == "passion")
+        if((gameData.wordData != undefined && cur_word == gameData.wordData.length) || game_type == "passion" || game_state == "remain_alone")
             this.bEnd = true;
         else
             this.bEnd = false;
+
+        if(this.bEnd && game_type == "battle"){
+            cur_point = 100;
+        } else if(this.bEnd && game_type == "tournament"){
+            cur_point = 1000;
+        }
     }
 
     create() {
@@ -65,7 +71,7 @@ class EndScreen extends Phaser.Scene{
                 })
                 .setOrigin(0.5,0.5);
             }
-        } else if(game_state == "pass"){
+        } else if(game_state == "pass" || game_state == "remain_alone"){
             if(!this.bEnd){
                 if(game_type == "stage" || game_type == "daily")
                 {
@@ -109,8 +115,8 @@ class EndScreen extends Phaser.Scene{
                         color: '#ffffff',
                     })
                     .setOrigin(0.5,0.5);
-                    this.point1Back = this.add.image(540,570,'Orange');
-                    this.point1Text = this.add.text(540,570, winner_point_list[0], { fixedWidth: 160, fixedHeight: 60, align:'center' })
+                    this.point1Back = this.add.image(540,520,'Orange');
+                    this.point1Text = this.add.text(540,520, winner_point_list[0], { fixedWidth: 160, fixedHeight: 60, align:'center' })
                     .setStyle({
                         fontSize: '60px',
                         fontFamily: 'RR',
@@ -126,8 +132,8 @@ class EndScreen extends Phaser.Scene{
                         color: '#ffffff',
                     })
                     .setOrigin(0.5,0.5);
-                    this.point2Back = this.add.image(540,870,'Orange');
-                    this.point2Text = this.add.text(540,870, winner_point_list[1], { fixedWidth: 160, fixedHeight: 60, align:'center' })
+                    this.point2Back = this.add.image(540,820,'Orange');
+                    this.point2Text = this.add.text(540,820, winner_point_list[1], { fixedWidth: 160, fixedHeight: 60, align:'center' })
                     .setStyle({
                         fontSize: '60px',
                         fontFamily: 'RR',
@@ -187,17 +193,9 @@ class EndScreen extends Phaser.Scene{
                     .setOrigin(0.5,0.5);
                 }
                 else if( game_type == "battle" || game_type == "tournament"){
-                    let bWin = winner_name_list[0] == userData.userName;
-                    this.gameFinishText = this.add.text(540,game_type == "battle" ? 700 : 890, bWin ? 'KAZANDIN!' : 'KAYBETTİN!', { fixedWidth: 700, fixedHeight: 120, align:'center' })
-                    .setStyle({
-                        fontSize: '120px',
-                        fontFamily: 'RR',
-                        fontWeight: 'bold',
-                        color: '#ffffff',
-                    })
-                    .setOrigin(0.5,0.5);
-                    if( game_type == "battle"){
-                        this.yourPointText = this.add.text(370,280, 'YOU', { fixedWidth: 700, fixedHeight: 120, align:'center' })
+                    if(game_state != 'remain_alone'){
+                        let bWin = winner_name_list[0] == userData.userName;
+                        this.gameFinishText = this.add.text(540,game_type == "battle" ? 700 : 890, bWin ? 'KAZANDIN!' : 'KAYBETTİN!', { fixedWidth: 700, fixedHeight: 120, align:'center' })
                         .setStyle({
                             fontSize: '120px',
                             fontFamily: 'RR',
@@ -205,27 +203,46 @@ class EndScreen extends Phaser.Scene{
                             color: '#ffffff',
                         })
                         .setOrigin(0.5,0.5);
-                        this.yourPointBack = this.add.image(370,400,'Orange');
-                        this.yourPointText = this.add.text(370,400, bWin? winner_point_list[0] : winner_point_list[1], { fixedWidth: 160, fixedHeight: 110, align:'center' })
+                        if( game_type == "battle"){
+                            this.yourPointText = this.add.text(370,280, 'YOU', { fixedWidth: 700, fixedHeight: 120, align:'center' })
+                            .setStyle({
+                                fontSize: '120px',
+                                fontFamily: 'RR',
+                                fontWeight: 'bold',
+                                color: '#ffffff',
+                            })
+                            .setOrigin(0.5,0.5);
+                            this.yourPointBack = this.add.image(370,400,'Orange');
+                            this.yourPointText = this.add.text(370,400, bWin? winner_point_list[0] : winner_point_list[1], { fixedWidth: 160, fixedHeight: 110, align:'center' })
+                            .setStyle({
+                                fontSize: '110px',
+                                fontFamily: 'RR',
+                                fontWeight: 'bold',
+                                color: '#ffffff',
+                            })
+                            .setOrigin(0.5,0.5);
+                            this.oppoPointText = this.add.text(710,280, 'OPP', { fixedWidth: 700, fixedHeight: 120, align:'center' })
+                            .setStyle({
+                                fontSize: '120px',
+                                fontFamily: 'RR',
+                                fontWeight: 'bold',
+                                color: '#ffffff',
+                            })
+                            .setOrigin(0.5,0.5);
+                            this.oppoPointBack = this.add.image(710,400,'Orange');
+                            this.oppoPointText = this.add.text(710,400, bWin? winner_point_list[1] : winner_point_list[0], { fixedWidth: 160, fixedHeight: 110, align:'center' })
+                            .setStyle({
+                                fontSize: '110px',
+                                fontFamily: 'RR',
+                                fontWeight: 'bold',
+                                color: '#ffffff',
+                            })
+                            .setOrigin(0.5,0.5);
+                        }
+                    } else {
+                        this.gameFinishText = this.add.text(540, 500, game_type == 'battle' ? 'Opponent quit\ngame and\nyou have win.' : 'Everybody quit\ngame and\nyou have win.', { fixedWidth: 700, fixedHeight: 300, align:'center' })
                         .setStyle({
-                            fontSize: '110px',
-                            fontFamily: 'RR',
-                            fontWeight: 'bold',
-                            color: '#ffffff',
-                        })
-                        .setOrigin(0.5,0.5);
-                        this.oppoPointText = this.add.text(710,280, 'OPP', { fixedWidth: 700, fixedHeight: 120, align:'center' })
-                        .setStyle({
-                            fontSize: '120px',
-                            fontFamily: 'RR',
-                            fontWeight: 'bold',
-                            color: '#ffffff',
-                        })
-                        .setOrigin(0.5,0.5);
-                        this.oppoPointBack = this.add.image(710,400,'Orange');
-                        this.oppoPointText = this.add.text(710,400, bWin? winner_point_list[1] : winner_point_list[0], { fixedWidth: 160, fixedHeight: 110, align:'center' })
-                        .setStyle({
-                            fontSize: '110px',
+                            fontSize: '80px',
                             fontFamily: 'RR',
                             fontWeight: 'bold',
                             color: '#ffffff',
@@ -234,35 +251,24 @@ class EndScreen extends Phaser.Scene{
                     }
                 }
                 
-                let getText1 = '';
-                let getText2 = 'GET ×2';
-                let coinText = 1;
-                let adsPos1 = 890;
-                let adsPos2 = 1140;
+                let getText = 'GET ×2';
+                let coinText = cur_point;
+                let adsPos = 1015;
                 if( game_type == 'stage' ){
-                    getText1 = 'GET ×3';
-                    adsPos1 = 1015;
+                    getText = 'GET ×3';
                 }
                 else if( game_type == 'daily'){
-                    getText1 = 'GET ×6';
-                    getText2 = 'GET ×4';
-                    coinText = 3;
-                    adsPos2 = 1015;
+                    getText = 'GET ×4';
                 }
                 else if( game_type == 'battle'){
-                    coinText = 3;
                     if(winner_name_list[0] == userData.userName)
-                        getText1 = 'GET ×5';
+                        getText = 'GET ×5';
                     else
-                    {
-                        getText1 = 'GET\nBACK';
-                        getText2 = 'GET\nBACK';
-                    }
+                        getText = 'GET\nBACK';
                 } else if (game_type == "tournament"){
-                    adsPos2 = 1080;
-                    coinText = gameData.prize;
+                    adsPos = 1080;
                     if(winner_name_list[0] != userData.userName){
-                        getText2 = 'GET\nBACK';
+                        getText = 'GET\nBACK';
                     }
                 } else if (game_type == "passion") {
                     coinText = cur_prize;
@@ -270,8 +276,8 @@ class EndScreen extends Phaser.Scene{
                         getText2 = 'GET\n1 COIN';
                 }
 
-                if(game_type != "tournament" && game_type != "passion" && game_type != "daily"){
-                    this.pointAds = this.add.image(540,adsPos1,'PointAds');
+                if(game_type != "passion" && game_type != "daily"){
+                    this.pointAds = this.add.image(540,adsPos,'PointAds');
                     this.pointAds.setInteractive().on('pointerdown', () => {
                         if(sound_enable)
                             this.button_audio.play();
@@ -295,10 +301,10 @@ class EndScreen extends Phaser.Scene{
                         else if( game_type == 'battle'){
                             multiplier = 4;
                         }        
-                        Client.prize(0, cur_point * multiplier, 0);
+                        Client.prize(0, coinText * multiplier, 0);
                     });
             
-                    this.pointText = this.add.text(400,adsPos1, cur_point, { fixedWidth: 160, fixedHeight: 60, align:'center' })
+                    this.pointText = this.add.text(400,adsPos, coinText, { fixedWidth: 160, fixedHeight: 60, align:'center' })
                     .setStyle({
                         fontSize: '60px',
                         fontFamily: 'RR',
@@ -307,7 +313,7 @@ class EndScreen extends Phaser.Scene{
                     })
                     .setOrigin(0.5,0.5);
     
-                    this.getPointText = this.add.text(800,adsPos1, getText1)
+                    this.getPointText = this.add.text(800,adsPos, getText)
                     .setStyle({
                         fontSize: '45px',
                         fontFamily: 'RR',
@@ -319,9 +325,9 @@ class EndScreen extends Phaser.Scene{
                 }
     
 
-                if(game_type != "stage")
+                if(game_type == "daily")
                 {
-                    this.coinAds = this.add.image(540,adsPos2,'CoinAds');
+                    this.coinAds = this.add.image(540,adsPos,'CoinAds');
                     this.coinAds.setInteractive().on('pointerdown', () => {
                         if(sound_enable)
                             this.button_audio.play();
@@ -335,20 +341,11 @@ class EndScreen extends Phaser.Scene{
                         this.coinAds.destroy();
                         this.coinText.destroy();
                         this.getCoinText.destroy();
-                        let multiplier = 1;
-                        if( game_type == 'stage' ){
-                            multiplier = 1;
-                        }
-                        else if( game_type == 'daily'){
-                            multiplier = 3;
-                        }
-                        else if( game_type == 'battle'){
-                            multiplier = 1;
-                        }
+                        multiplier = 3;
                         Client.prize(0, 0, coinText * multiplier);
                     });
         
-                    this.coinText = this.add.text(400,adsPos2, coinText, { fixedWidth: 160, fixedHeight: 60, align:'center' })
+                    this.coinText = this.add.text(400,adsPos, coinText, { fixedWidth: 160, fixedHeight: 60, align:'center' })
                     .setStyle({
                         fontSize: '60px',
                         fontFamily: 'RR',
@@ -356,7 +353,7 @@ class EndScreen extends Phaser.Scene{
                         color: '#ffffff',
                     })
                     .setOrigin(0.5,0.5);
-                    this.getCoinText = this.add.text(800,adsPos2, getText2)
+                    this.getCoinText = this.add.text(800,adsPos, getText)
                     .setStyle({
                         fontSize: '45px',
                         fontFamily: 'RR',
@@ -386,7 +383,7 @@ class EndScreen extends Phaser.Scene{
             }
         }
 
-        if(game_type == "tournament"){
+        if(game_type == "tournament" && game_state != 'remain_alone'){
             this.fieldUsernameText = this.add.text(190, 280, 'Username', {
                 fontFamily: 'RR',
                 fontWeight: 'bold',

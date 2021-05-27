@@ -22,6 +22,13 @@ class PassionScreen extends Phaser.Scene{
     }
 
     create() {
+        AdMob.showInterstitial();
+        AdMob.prepareInterstitial({
+            adId: admobid.interstitial,
+            autoShow:false,
+            isTesting: true,
+        });
+
         this.button_audio = this.sound.add('button');
         this.passion_flower = this.add.image(540,600,'Passion');
         let angle = Number.parseInt(Math.random()*360);
@@ -90,19 +97,12 @@ class PassionScreen extends Phaser.Scene{
         {
             scene.timer.remove();
             scene.time.removeEvent(scene.timer);
-            let prize_list = [2,-1,-1,0,-1,1,-1,-1,0,-1,1,-1];
+            let prize_list = [-2,3,-1,1,-3,2,-2,3,-1,1,-3,2];
             cur_prize = prize_list[Number.parseInt((scene.angle+345)/30)%12];
 
-            if(cur_prize == -1){
-                AdMob.showInterstitial();
-                AdMob.prepareInterstitial({
-                    adId: admobid.interstitial,
-                    autoShow:false,
-                    isTesting: true,
-                });
-            } else if(cur_prize == 0){
-                Client.prize(1,0,0);
-                toast_error(scene, "1 can kazandınız.");
+            if(cur_prize < 0){
+                Client.prize(Math.abs(cur_prize),0,0);
+                toast_error(scene, Math.abs(cur_prize) + " can kazandınız.");
             } else{
                 Client.prize(0,0,cur_prize);
                 toast_error(scene, cur_prize + " jeton kazandınız.");

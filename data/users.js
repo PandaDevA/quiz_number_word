@@ -165,6 +165,13 @@ const exportedMethods = {
             updatedUserData.coin -= data.coin;
             if ( updatedUserData.coin < 0 ) updatedUserData.coin = 0;
         }
+
+        if (data.point) {
+            if (updatedUserData.point < data.point) return {result: false, error: 'You need more coins', need_point: true};
+            updatedUserData.point -= data.point;
+            if ( updatedUserData.point < 0 ) updatedUserData.point = 0;
+        }
+
         if (data.heart) {
             if (updatedUserData.heart < data.heart) return {result: false, error: 'Please wait until heart is supplied', need_power: true};
             updatedUserData.heart -= data.heart;

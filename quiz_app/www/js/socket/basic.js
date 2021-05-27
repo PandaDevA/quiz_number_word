@@ -393,14 +393,14 @@ function toast_error(scene, error){
         x: 540,
         y: 300,
 
-        background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, 0xffffff).setStrokeStyle(10, 0xff0000, 1),
+        background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, 0xffffff).setStrokeStyle(10, 0xff0000, 1).setDepth(100),
         text: scene.add.text(0, 0, '', {
             fontFamily: 'RR',
             fontWeight: 'bold',
             fontSize: '64px',
             color: "#106eac",
             align: "center",
-        }),
+        }).setDepth(100),
         space: {
             left: 50,
             right: 50,

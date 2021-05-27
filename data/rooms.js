@@ -5,27 +5,6 @@ const users = require('./users');
 
 const exportedMethods = {
 
-    async getJoinRoomIdByUserName(name) {
-
-        const roomCollection = await rooms();
-        const allRoom = await roomCollection.find().toArray();
-
-        let idx;
-        for (i in allRoom) {
-            const room = allRoom[i];
-            if (room.isClosed) continue;
-            idx = -1;
-            for (j in room.joinUsers) {
-                const user = room.joinUsers[j];
-                idx++;
-                if (user.userName == name) break;
-            }
-            if (idx == -1) continue;
-            
-            return {roomId: String(room._id), isStarted: room.isStarted};
-        }
-    },
-
     async joinRoom(data) {
         // const userInfo = await users.getUserInfo(data.username);
         // if (!userInfo) {
@@ -216,14 +195,15 @@ const exportedMethods = {
                         winners.splice(idx, 1);
                         winnerPoints.splice(idx, 1);
                     }
-                    winners.splice(i - (idx > -1), 0, data.username);
-                    winnerPoints.splice(i - (idx > -1), 0, data.point);
+                    winners.splice(i , 0, data.username);
+                    winnerPoints.splice(i , 0, data.point);
                     if (winners.length > 3) {
                         winners.pop();
                         winnerPoints.pop();
                     }
                     break;
                 }
+                if(data.username == winners[i]) break;
             }
             if (i == winners.length && i < 3 && winners.indexOf(data.username) == -1) {
                 winners.push(data.username);
@@ -323,7 +303,7 @@ const exportedMethods = {
             winnerPoint: [],
             joiningFee: data.joiningFee || 3,
             startDateTime: data.startDateTime || new Date(),
-            prize: data.prize || 9,
+            prize: data.username && data.username == 'tournament' ? 1000 : 100,
             remainNum: 9,
             isStarted: false,
             isClosed: false,

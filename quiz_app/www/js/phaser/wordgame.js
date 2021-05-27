@@ -174,7 +174,10 @@ class WordGameScreen extends Phaser.Scene{
         {
             this.timer.remove();
             this.time.removeEvent(this.timer);
-            cur_point += this.point;
+            if(game_type == "stage")
+                cur_point += this.point;
+            else
+                cur_point = cur_point>=10?1:0 + this.point>=10?1:0 + 1;
             if(game_type == "stage"){
                 if(bPass)
                     Client.stage_end();

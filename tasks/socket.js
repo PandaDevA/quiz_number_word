@@ -100,8 +100,8 @@ async function onRoomTime(room_id, nStep){
                     if (room.result.winner.length != 0)
                         users.addUserValue(room.result.winner[0],
                             {
-                                point: room.result.winnerPoint[0],
-                                coin: room.result.prize,
+                                point: room.result.prize,
+                                coin: room.result.joiningFee,
                                 heart: 1,
                             }).then((user) => {
                                 socketio.to(players[room.result.winner[0]]).emit('update_userdata', {result: user.result});
@@ -176,10 +176,14 @@ const exportedMethods = {
                             if (joinusers.length == 0) { console.log('No one is joined tournament'); }
                             else {
                                 for (j in joinusers) {
-                                    if (players[joinusers[j].userName] == undefined) {
+                                    if (players[joinusers[j].userName] == undefined || io.sockets.sockets.get(players[joinusers[j].userName]).handshake.session.status != 'Idle') {
                                         await rooms.leaveRoom({username: joinusers[j].userName, room_id: result.result._id});
+                                        if(players[joinusers[j].userName] != undefined){
+                                            io.sockets.sockets.get(players[joinusers[j].userName]).leave(`game_of_${String(room._id)}`);
+                                        }
                                     } else {
                                         io.sockets.sockets.get(players[joinusers[j].userName]).handshake.session.status = 'Tournament';
+                                        io.sockets.sockets.get(players[joinusers[j].userName]).handshake.session.room_id = room._id;
                                         io.sockets.sockets.get(players[joinusers[j].userName]).handshake.session.save();
                                     }
                                 }
@@ -233,8 +237,12 @@ const exportedMethods = {
 
                 const userNameInSession = socket.handshake.session.username;
                 if (userNameInSession) {
+                    if(socket.handshake.session.status == 'Idle'){
+                        players[userNameInSession] = undefined;
+                        return;
+                    }
                     // Get the room Id which this user is joined in
-                    const joinedInfo = await rooms.getJoinRoomIdByUserName(userNameInSession);
+                    const joinedInfo = await rooms.getRoomById(socket.handshake.session.room_id);
                     switch (socket.handshake.session.status) {
                         case 'Tournament':
                         case 'Battle':
@@ -244,46 +252,67 @@ const exportedMethods = {
                             //     break;
                             // }
                             // REQUIRE INFO: data.username, data.room_id, data.point, data.step, (data.coin, data.heart)OPTIONAL
-                            const room = await rooms.endRoom({username: userNameInSession, room_id: joinedInfo.roomId, step: -1, point: 0});
-                            await rooms.leaveRoom({username: userNameInSession, room_id: joinedInfo.roomId}, /*isForce:*/true);
-                            if (room.allIsEnd) {
-                                socket.to(`game_of_${joinedInfo.roomId}`).emit('online_end', {
-                                    result: true,
-                                    winner: room.result.winner,
-                                    winnerPoint: room.result.winnerPoint
+                            var room_info = await rooms.endRoom({username: userNameInSession, room_id: joinedInfo._id, step: -1, point: 0});
+                            var room = await rooms.leaveRoom({username: userNameInSession, room_id: joinedInfo._id}, /*isForce:*/true);
+                            if(room.result.joinUsers.length == 1){
+                                lastUser = room.result.joinUsers[0];
+                                console.log(lastUser);
+                                room_info = await rooms.endRoom({username: lastUser.userName, room_id: joinedInfo._id, step: -1, point: 0});
+                                room = await rooms.leaveRoom({username: lastUser.userName, room_id: joinedInfo._id}, /*isForce:*/true);
+                                const userSocket = io.sockets.sockets.get(players[lastUser.userName]);
+                                userSocket.emit('remain_alone', {
                                 });
-                                if (room.result.winner.length != 0)
-                                    users.addUserValue(room.result.winner[0],
+                                users.addUserValue(lastUser.userName,
+                                    {
+                                        point: room_info.result.prize,
+                                        coin: room_info.result.joiningFee,
+                                        heart: 1,
+                                    }).then((user) => {
+                                        io.to(players[lastUser.userName]).emit('update_userdata', {result: user.result});
+                                });
+
+                                userSocket.leave(`game_of_${joinedInfo._id}`);
+                                userSocket.handshake.session.status = 'Idle';
+                                userSocket.handshake.session.save();
+                            }
+                            else if (room_info.allIsEnd) {
+                                socket.to(`game_of_${joinedInfo._id}`).emit('online_end', {
+                                    result: true,
+                                    winner: room_info.result.winner,
+                                    winnerPoint: room_info.result.winnerPoint
+                                });
+                                if (room_info.result.winner.length != 0)
+                                    users.addUserValue(room_info.result.winner[0],
                                         {
-                                            point: room.result.winnerPoint[0],
-                                            coin: room.result.prize,
+                                            point: room_info.result.prize,
+                                            coin: room_info.result.joiningFee,
                                             heart: 1,
                                         }).then((user) => {
-                                            io.to(players[room.result.winner[0]]).emit('update_userdata', {result: user.result});
+                                            io.to(players[room_info.result.winner[0]]).emit('update_userdata', {result: user.result});
                                     });
-                                for (joinuser of room.result.joinUsers) {
+                                for (joinuser of room_info.result.joinUsers) {
                                     if (!players[joinuser.userName]) continue;
                                     const client = io.sockets.sockets.get(players[joinuser.userName]);
-                                    client.leave(`game_of_${joinedInfo.roomId}`);
+                                    client.leave(`game_of_${joinedInfo._id}`);
                                     client.handshake.session.status = 'Idle';
                                     client.handshake.session.save();
                                 }
-                            } else if(room.allIsOver) {
-                                socket.to(`game_of_${joinedInfo.roomId}`).emit('online_end', {
+                            } else if(room_info.allIsOver) {
+                                socket.to(`game_of_${joinedInfo._id}`).emit('online_end', {
                                     result: true,
-                                    winner: room.result.winner,
-                                    winnerPoint: room.result.winnerPoint
+                                    winner: room_info.result.winner,
+                                    winnerPoint: room_info.result.winnerPoint
                                 });
                                 setTimeout( function(){
-                                    onRoomTime(room.result._id, 10-room.result.remainNum);
+                                    onRoomTime(room_info.result._id, 10-room_info.result.remainNum);
                                 }, 80 * 1000);
                             }
-                            await rooms.removeRoom({room_id: joinedInfo.roomId});
-                            socket.leave(`game_of_${joinedInfo.roomId}`);
+                            await rooms.removeRoom({room_id: joinedInfo._id});
+                            socket.leave(`game_of_${joinedInfo._id}`);
                             break;
                         case 'Waiting':
-                            await rooms.removeRoom({room_id: joinedInfo.roomId});
-                            socket.leave(`game_of_${joinedInfo.roomId}`);
+                            await rooms.removeRoom({room_id: joinedInfo._id});
+                            socket.leave(`game_of_${joinedInfo._id}`);
                             break;
                     }
 
@@ -560,7 +589,7 @@ const exportedMethods = {
 
                 rooms.joinRoom(data).then((room) => {
                     if (!room.error) {
-                        users.delUserValue(data.username, {coin: room.result.joiningFee, heart: 1}).then(async(userData) => {
+                        users.delUserValue(data.username, {coin: room.result.joiningFee, point: 100, heart: 1}).then(async(userData) => {
                             if (!userData.result) {
                                 await rooms.leaveRoom(data);
                                 socket.emit('tournament_in', { result: false, error: userData.error });
@@ -593,7 +622,7 @@ const exportedMethods = {
                             socket.handshake.session.status = 'Idle';
                             socket.handshake.session.save();
                         } else {
-                            users.addUserValue(data.username, {coin: room.result.joiningFee, heart: 1}).then((userData) => {
+                            users.addUserValue(data.username, {coin: room.result.joiningFee, point: 100, heart: 1}).then((userData) => {
                                 if (!userData.result) {
                                     socket.emit('tournament_out', { result: false, error: userData.error });
                                     console.log(`${ data.username } couldn 't leave tournament because ${userData.error}`);
@@ -629,8 +658,8 @@ const exportedMethods = {
                             if (room.result.winner.length != 0) {
                                 const user = await users.addUserValue(room.result.winner[0],
                                     {
-                                        point: room.result.winnerPoint[0],
-                                        coin: room.result.prize,
+                                        point: room.result.prize,
+                                        coin: room.result.joiningFee,
                                         heart: 1,
                                     });
                                 io.to(players[room.result.winner[0]]).emit('update_userdata', {result: user.result});
@@ -681,9 +710,9 @@ const exportedMethods = {
                             console.log('user could not find');
                             socket.emit('invite_request', {result: false, to: data.inviteuser, error: 'Online kullanıcı\nbulunamadı'});
                         } else {
-                            if (user.heart == 0 || user.coin < 3) {
-                                console.log('Need more coin or heart is zero');
-                                socket.emit('invite_request', {result: false, to: data.inviteuser, need_power: true, error: 'Need more coin or heart is zero'});
+                            if (user.heart == 0 || user.coin < 3 || user.point < 50) {
+                                console.log('Need more coin, point or heart is zero');
+                                socket.emit('invite_request', {result: false, to: data.inviteuser, need_power: user.point>=50 ? true : false, need_point: user.point>=50 ? false : true, error: 'Need more coin, point or heart is zero'});
                             } else {
                                 rooms.createRoom({username: data.waituser}).then((result) => {
                                     if (result) {
@@ -693,6 +722,7 @@ const exportedMethods = {
                                         if(players[data.inviteuser])
                                             io.to(players[data.inviteuser]).emit('invite_request', {result: {roomId: result.id}, from: data.waituser});
                                         socket.handshake.session.status = 'Battle';
+                                        socket.handshake.session.room_id = result.id;
                                         socket.handshake.session.save();
                                     } else {
                                         socket.emit('invite_request', { result: false, to: data.inviteuser, error: 'Could not create room.' });
@@ -720,9 +750,9 @@ const exportedMethods = {
                             console.log('user could not find');
                             socket.emit('invite_request', {result: false, to: data.inviteuser, error: 'User could not find'});
                         } else {
-                            if (user.heart == 0 || user.coin < 3) {
-                                console.log('Need more coin or heart is zero');
-                                socket.emit('invite_request', {result: false, to: data.inviteuser, need_power: true, error: 'Need more coin or heart is zero'});
+                            if (user.heart == 0 || user.coin < 3 || user.point<50) {
+                                console.log('Need more coin, point or heart is zero');
+                                socket.emit('invite_request', {result: false, to: data.inviteuser, need_power: user.point>=50 ? true : false, need_point: user.point>=50 ? false : true, error: 'Need more coin,point or heart is zero'});
                             } else {
                                 rooms.joinRoom({room_id: data.roomId, username: data.inviteuser}).then((room) => {
                                     if (room.error) {
@@ -737,12 +767,13 @@ const exportedMethods = {
                                     rooms.startRoom({room_id: data.roomId}).then((result) => {
                                         if (result.result) {
                                             result.result.joinUsers.map(async(user, index) => {
-                                                users.delUserValue(user.userName, {coin: result.result.joiningFee, heart: 1}).then((userData) => {
+                                                users.delUserValue(user.userName, {coin: result.result.joiningFee, point: 50, heart: 1}).then((userData) => {
                                                     io.to(players[user.userName]).emit('update_userdata', {result: userData.result});
                                                 });
                                             });
                                             socket.join(`game_of_${data.roomId}`);
                                             socket.handshake.session.status = 'Battle';
+                                            socket.handshake.session.room_id = data.roomId;
                                             socket.handshake.session.save();
                                             getMultiRandomData().then(({numDataList, wordDataList}) => {
                                                 users.getUserByName(data.waituser).then((user1) => {
@@ -824,16 +855,16 @@ const exportedMethods = {
                         console.log('user could not find');
                         socket.emit('random_request', {result: false, to: data.username, error: 'User could not find'});
                     } else {
-                        if (user.heart == 0 || user.coin < 3) {
-                            console.log('Need more coin or heart is zero');
-                            socket.emit('random_request', {result: false, to: data.username, need_power: true, error: 'Need more coin or heart is zero'});
+                        if (user.heart == 0 || user.coin < 3 || user.point<50) {
+                            console.log('Need more coin, point or heart is zero');
+                            socket.emit('random_request', {result: false, to: data.username, need_power: user.point>=50 ? true : false, need_point: user.point>=50 ? false : true, error: 'Need more coin, point or heart is zero'});
                         } else {
                             for (i in players) {
                                 const username = i;
                                 if(username == data.username || !players[username]) continue;
                                 if(io.sockets.sockets.get(players[username]).handshake.session.status == 'Waiting') {
                                     //join to players[username];
-                                    const roomId = io.sockets.sockets.get(players[username]).handshake.session.createdRoomId;
+                                    const roomId = io.sockets.sockets.get(players[username]).handshake.session.room_id;
                                     const result = await rooms.joinRoom({room_id: roomId, username: data.username});
                                     if(!result.error) {
                                         socket.join(`game_of_${roomId}`);
@@ -842,8 +873,10 @@ const exportedMethods = {
                                             users.getUserByName(username).then(async(user1) => {
 
                                                 io.sockets.sockets.get(players[username]).handshake.session.status = 'Battle';
+                                                io.sockets.sockets.get(players[username]).handshake.session.room_id = roomId;
                                                 io.sockets.sockets.get(players[username]).handshake.session.save();
                                                 socket.handshake.session.status = 'Battle';
+                                                socket.handshake.session.room_id = roomId;
                                                 socket.handshake.session.save();
                                                 socket.emit('online_start', { result: {roomId}, oppoData: user1, gameData: { numData: numDataList, wordData: wordDataList } });
                                                 socket.to(`game_of_${roomId}`)
@@ -864,7 +897,7 @@ const exportedMethods = {
                                     socket.join(`game_of_${result.id}`);
                                     socket.emit('random_request', {result: {roomId: result.id}});
                                     socket.handshake.session.status = 'Waiting';
-                                    socket.handshake.session.createdRoomId = result.id;
+                                    socket.handshake.session.room_id = result.id;
                                     socket.handshake.session.save();
                                 } else {
                                     socket.emit('random_request', { result: false, error: 'Could not create room.'  });
