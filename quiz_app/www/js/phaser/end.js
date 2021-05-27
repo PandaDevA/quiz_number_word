@@ -267,9 +267,11 @@ class EndScreen extends Phaser.Scene{
                         getText = 'GET\nBACK';
                 } else if (game_type == "tournament"){
                     adsPos = 1080;
-                    if(game_state == 'remain_alone' || winner_name_list[0] != userData.userName){
-                        getText = 'GET\nBACK';
+                    if(game_state == 'remain_alone' || winner_name_list[0] == userData.userName){
+                        getText = 'GET ×3';
                     }
+                    else
+                        getText = 'GET\nBACK';
                 } else if (game_type == "passion") {
                     coinText = cur_prize;
                     if(cur_prize == 0)

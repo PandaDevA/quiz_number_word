@@ -45,7 +45,10 @@ Client.socket.on('invite_request',function(data){
     }
     else
     {
-        if(data.need_power){
+        if(data.need_point){
+            toast_error(activeScene, "YOU NEED AT\nLEAST 50 POINT\nTO PLAY");
+        }
+        else if(data.need_power){
             passion_modal(activeScene);
         }
         else if(!data.from)
@@ -61,7 +64,10 @@ Client.socket.on('invite_accept',function(data){
         room_id = "";
         invite_name = "";
         let activeScene = game.scene.getScenes(true)[0];
-        if(data.need_power){
+        if(data.need_point){
+            toast_error(activeScene, "YOU NEED AT\nLEAST 50 POINT\nTO PLAY");
+        }
+        else if(data.need_power){
             passion_modal(activeScene);
         }
         else{
@@ -158,7 +164,10 @@ Client.socket.on('random_request',function(data){
     }
     else
     {
-        if(data.need_power){
+        if(data.need_point){
+            toast_error(activeScene, "YOU NEED AT\nLEAST 50 POINT\nTO PLAY");
+        }
+        else if(data.need_power){
             passion_modal(activeScene);
         }
         else{
