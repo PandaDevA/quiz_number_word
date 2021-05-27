@@ -97,7 +97,7 @@ async function onRoomTime(room_id, nStep){
                     console.log(lastUser);
                     room_info = await rooms.endRoom({username: lastUser.userName, room_id: room_id, step: -1, point: 0});
                     room = await rooms.leaveRoom({username: lastUser.userName, room_id: room_id}, /*isForce:*/true);
-                    const userSocket = io.sockets.sockets.get(players[lastUser.userName]);
+                    const userSocket = socketio.sockets.sockets.get(players[lastUser.userName]);
                     userSocket.emit('remain_alone', {
                     });
                     users.addUserValue(lastUser.userName,
@@ -106,7 +106,7 @@ async function onRoomTime(room_id, nStep){
                             coin: room_info.result.joiningFee,
                             heart: 1,
                         }).then((user) => {
-                            io.to(players[lastUser.userName]).emit('update_userdata', {result: user.result});
+                            socketio.to(players[lastUser.userName]).emit('update_userdata', {result: user.result});
                     });
 
                     userSocket.leave(`game_of_${room_id}`);
