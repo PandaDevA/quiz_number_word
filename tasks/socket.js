@@ -83,41 +83,62 @@ async function onRoomTime(room_id, nStep){
         let joinUsers = cur_room.joinUsers;
         for(j in joinUsers) {
             if (joinUsers[j].isOver == false){
-                const room = await rooms.endRoom({username: joinUsers[j].userName, room_id: room_id, step: -1, point: 0});
-                await rooms.leaveRoom({username: joinUsers[j].userName, room_id: room_id}, /*isForce:*/true);
+                const room_info = await rooms.endRoom({username: joinUsers[j].userName, room_id: room_id, step: -1, point: 0});
+                room = await rooms.leaveRoom({username: joinUsers[j].userName, room_id: room_id}, /*isForce:*/true);
                 const kicked_client = socketio.sockets.sockets.get(players[joinUsers[j].userName]);
                 kicked_client.leave(`game_of_${room_id}`);
                 kicked_client.emit('kicked');
                 console.log('kick ' + joinUsers[j].userName);
                 kicked_client.handshake.session.status = 'Idle';
                 kicked_client.handshake.session.save();
-                if (room.allIsEnd) {
+
+                if(room.result.joinUsers.length == 1){
+                    lastUser = room.result.joinUsers[0];
+                    console.log(lastUser);
+                    room_info = await rooms.endRoom({username: lastUser.userName, room_id: room_id, step: -1, point: 0});
+                    room = await rooms.leaveRoom({username: lastUser.userName, room_id: room_id}, /*isForce:*/true);
+                    const userSocket = io.sockets.sockets.get(players[lastUser.userName]);
+                    userSocket.emit('remain_alone', {
+                    });
+                    users.addUserValue(lastUser.userName,
+                        {
+                            point: room_info.result.prize,
+                            coin: room_info.result.joiningFee,
+                            heart: 1,
+                        }).then((user) => {
+                            io.to(players[lastUser.userName]).emit('update_userdata', {result: user.result});
+                    });
+
+                    userSocket.leave(`game_of_${room_id}`);
+                    userSocket.handshake.session.status = 'Idle';
+                    userSocket.handshake.session.save();
+                } else if (room_info.allIsEnd) {
                     socketio.to(`game_of_${room_id}`).emit('online_end', {
                         result: true,
-                        winner: room.result.winner,
-                        winnerPoint: room.result.winnerPoint
+                        winner: room_info.result.winner,
+                        winnerPoint: room_info.result.winnerPoint
                     });
-                    if (room.result.winner.length != 0)
-                        users.addUserValue(room.result.winner[0],
+                    if (room_info.result.winner.length != 0)
+                        users.addUserValue(room_info.result.winner[0],
                             {
-                                point: room.result.prize,
-                                coin: room.result.joiningFee,
+                                point: room_info.result.prize,
+                                coin: room_info.result.joiningFee,
                                 heart: 1,
                             }).then((user) => {
-                                socketio.to(players[room.result.winner[0]]).emit('update_userdata', {result: user.result});
+                                socketio.to(players[room_info.result.winner[0]]).emit('update_userdata', {result: user.result});
                         });
-                    for (joinuser of room.result.joinUsers) {
+                    for (joinuser of room_info.result.joinUsers) {
                         if (!players[joinuser.userName]) continue;
                         const client = socketio.sockets.sockets.get(players[joinuser.userName]);
                         client.leave(`game_of_${room_id}`);
                         client.handshake.session.status = 'Idle';
                         client.handshake.session.save();
                     }
-                } else if(room.allIsOver) {
+                } else if(room_info.allIsOver) {
                     socketio.to(`game_of_${room_id}`).emit('online_end', {
                         result: true,
-                        winner: room.result.winner,
-                        winnerPoint: room.result.winnerPoint
+                        winner: room_info.result.winner,
+                        winnerPoint: room_info.result.winnerPoint
                     });
                     setTimeout( function() {
                         onRoomTime(room_id, nStep+1);
