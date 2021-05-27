@@ -83,8 +83,8 @@ async function onRoomTime(room_id, nStep){
         let joinUsers = cur_room.joinUsers;
         for(j in joinUsers) {
             if (joinUsers[j].isOver == false){
-                const room_info = await rooms.endRoom({username: joinUsers[j].userName, room_id: room_id, step: -1, point: 0});
-                room = await rooms.leaveRoom({username: joinUsers[j].userName, room_id: room_id}, /*isForce:*/true);
+                var room_info = await rooms.endRoom({username: joinUsers[j].userName, room_id: room_id, step: -1, point: 0});
+                var room = await rooms.leaveRoom({username: joinUsers[j].userName, room_id: room_id}, /*isForce:*/true);
                 const kicked_client = socketio.sockets.sockets.get(players[joinUsers[j].userName]);
                 kicked_client.leave(`game_of_${room_id}`);
                 kicked_client.emit('kicked');
